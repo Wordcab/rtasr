@@ -56,7 +56,7 @@ class DownloadDatasetCommand:
         if self.dataset.lower() == "ami":
             asyncio.run(download_ami_dataset())
         elif self.dataset.lower() == "voxconverse":
-            pass
+            print("Sorry, this dataset is not supported yet. Please try again later.")
         else:
             print(
                 f"[bold red]Error: The dataset `{self.dataset}` is not supported.[/bold red]\n"

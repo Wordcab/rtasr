@@ -33,7 +33,7 @@ pip install .
 
 ## Contributing
 
-Be sure to habe [hatch](https://hatch.pypa.io/latest/install/) installed.
+Be sure to have [hatch](https://hatch.pypa.io/latest/install/) installed.
 
 ### Quality
 

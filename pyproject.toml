@@ -3,7 +3,7 @@ build-backend = "hatchling.build"
 requires = ["hatchling"]
 
 [project]
-authors = [{name = "REPLACE_FULL_NAME"}]
+authors = [{name = "Wordcab"}]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
@@ -15,21 +15,21 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = []
-description = "REPLACE_PACKAGE_DESCRIPTION"
+description = "🏆 Run benchmarks against the most common ASR tools on the market."
 dynamic = ["version"]
 keywords = []
 license = "MIT"
-name = "REPLACE_PACKAGE_NAME"
+name = "rtasr"
 readme = "README.md"
 requires-python = ">=3.8,<3.12"
 
 [project.urls]
-Documentation = "https://REPLACE_GITHUB_USERNAME.github.io/REPLACE_PACKAGE_NAME"
-Issues = "https://github.com/REPLACE_GITHUB_USERNAME/REPLACE_PACKAGE_NAME/issues"
-Source = "https://github.com/REPLACE_GITHUB_USERNAME/REPLACE_PACKAGE_NAME"
+Documentation = "https://Wordcab.github.io/rtasr"
+Issues = "https://github.com/Wordcab/rtasr/issues"
+Source = "https://github.com/Wordcab/rtasr"
 
 [tool.hatch.version]
-path = "src/REPLACE_PACKAGE_NAME/__init__.py"
+path = "src/rtasr/__init__.py"
 
 [project.optional-dependencies]
 docs = [
@@ -79,7 +79,7 @@ select = [
 ]
 
 [tool.ruff.isort]
-known-first-party = ["REPLACE_PACKAGE_NAME"]
+known-first-party = ["rtasr"]
 
 [tool.hatch.envs.tests]
 features = [

@@ -31,6 +31,28 @@ cd rtasr
 pip install .
 ```
 
+## Commands
+
+The CLI is available through the `rtasr` command.
+
+```bash
+rtasr --help
+```
+
+### Datasets download
+
+Available datasets are:
+
+* `ami`: [AMI Corpus](http://groups.inf.ed.ac.uk/ami/corpus/)
+
+In the future:
+
+* `voxconverse`: [VoxConverse](https://www.robots.ox.ac.uk/~vgg/data/voxconverse/)
+
+```bash
+rtasr download -d <dataset>
+```
+
 ## Contributing
 
 Be sure to have [hatch](https://hatch.pypa.io/latest/install/) installed.

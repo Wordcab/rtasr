@@ -14,7 +14,9 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "rich>=13.5.2",
+]
 description = "🏆 Run benchmarks against the most common ASR tools on the market."
 dynamic = ["version"]
 keywords = []
@@ -22,6 +24,9 @@ license = "MIT"
 name = "rtasr"
 readme = "README.md"
 requires-python = ">=3.8,<3.12"
+
+[project.scripts]
+rtasr = "rtasr.__main__:main"
 
 [project.urls]
 Documentation = "https://Wordcab.github.io/rtasr"

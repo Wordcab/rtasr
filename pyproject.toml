@@ -16,6 +16,7 @@ classifiers = [
 ]
 dependencies = [
   "rich>=13.5.2",
+  "rich-argparse>=1.2.0",
 ]
 description = "🏆 Run benchmarks against the most common ASR tools on the market."
 dynamic = ["version"]

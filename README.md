@@ -24,6 +24,14 @@
 
 ## Installation
 
+### Last stable version
+
+```bash
+pip install rtasr
+```
+
+### From source
+
 ```bash
 git clone https://github.com/Wordcab/rtasr
 cd rtasr

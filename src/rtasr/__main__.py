@@ -1,5 +1,6 @@
 """Define the entry point for the command line interface of rtasr."""
 
+import asyncio
 import argparse
 from typing import Union
 
@@ -28,6 +29,8 @@ def download_dataset_command_factory(args: argparse.Namespace):
 class DownloadDatasetCommand:
     """Download a dataset."""
 
+    DATASETS = ["ami", "voxconverse"]
+
     @staticmethod
     def register_subcommand(parser: argparse.ArgumentParser):
         subparser = parser.add_parser("download", help="Download a dataset.")
@@ -51,7 +54,7 @@ class DownloadDatasetCommand:
         from rtasr.datasets import download_ami_dataset
 
         if self.dataset.lower() == "ami":
-            download_ami_dataset()
+            asyncio.run(download_ami_dataset())
         elif self.dataset.lower() == "voxconverse":
             pass
         else:
@@ -59,9 +62,8 @@ class DownloadDatasetCommand:
                 f"[bold red]Error: The dataset `{self.dataset}` is not supported.[/bold red]\n"
                 f"[bold red]==================================================================[/bold red]\n"
             )
-            print("Do you mean one of these datasets?\n\n")
-            print("  - [bold]AMI[/bold]\n")
-            print("  - [bold]VoxConverse[/bold]\n")
+            print("Do you mean one of these datasets?\n")
+            print("".join([f"  - [bold]{d}[bold]\n" for d in self.DATASETS]))
             exit(1)
 
 

@@ -1,50 +1,13 @@
 """Utils functions for rtasr."""
 
-import asyncio
-import subprocess
 from pathlib import Path
-from typing import List
+
+import aiohttp
 
 
-async def async_run_subprocess(command: List[str]) -> tuple:
-    """
-    Run a subprocess asynchronously.
-
-    Args:
-        command (List[str]):
-            Command to run asynchronously.
-
-    Returns:
-        tuple: Tuple with the return code, stdout and stderr.
-    """
-    process = await asyncio.create_subprocess_exec(
-        *command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
-    stdout, stderr = await process.communicate()
-
-    return process.returncode, stdout, stderr
-
-
-def run_subprocess(command: List[str]) -> tuple:
-    """
-    Run a subprocess synchronously.
-
-    Args:
-        command (List[str]):
-            Command to run.
-
-    Returns:
-        tuple: Tuple with the return code, stdout and stderr.
-    """
-    process = subprocess.Popen(  # noqa: S603,S607
-        command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-    )
-    stdout, stderr = process.communicate()
-
-    return process.returncode, stdout, stderr
-
-
-def download_file(url: str, output_dir: Path) -> Path:
+async def download_file(
+    url: str, output_dir: Path, session: aiohttp.ClientSession,
+) -> Path:
     """
     Download a file from url to output_dir.
 
@@ -53,18 +16,21 @@ def download_file(url: str, output_dir: Path) -> Path:
             URL to download from.
         output_dir (Path):
             Path to output directory.
+        session (aiohttp.ClientSession):
+            aiohttp session to use for downloading.`
     """
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = output_dir / Path(url).name
 
-    if not output_file.exists():
-        command = ["wget", "-P", str(output_file), url]
-        r = asyncio.run(async_run_subprocess(command))
+    async with session.get(url) as response:
+        with output_file.open("wb") as f:
+            while True:
+                chunk = await response.content.read(1024)
 
-        if r[0] != 0:
-            raise RuntimeError(f"Failed to download {url} to {output_file}")
-        else:
-            print(f"Downloaded {url} to {output_file}")
+                if not chunk:
+                    break
+
+                f.write(chunk)
 
     return output_file
 

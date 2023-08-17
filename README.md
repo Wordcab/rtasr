@@ -44,9 +44,6 @@ rtasr --help
 Available datasets are:
 
 * `ami`: [AMI Corpus](http://groups.inf.ed.ac.uk/ami/corpus/)
-
-In the future:
-
 * `voxconverse`: [VoxConverse](https://www.robots.ox.ac.uk/~vgg/data/voxconverse/)
 
 ```bash

@@ -68,15 +68,15 @@ class DownloadDatasetCommand:
 
     def run(self) -> None:
         """Run the command."""
-        from rtasr.datasets import prepare_ami_dataset
-
         try:
             if self.dataset.lower() == "ami":
+                from rtasr.datasets import prepare_ami_dataset
                 asyncio.run(prepare_ami_dataset(self.output_dir, self.use_cache))
+
             elif self.dataset.lower() == "voxconverse":
-                print(
-                    "Sorry, this dataset is not supported yet. Please try again later."
-                )
+                from rtasr.datasets import prepare_voxconverse_dataset
+                asyncio.run(prepare_voxconverse_dataset(self.output_dir, self.use_cache))
+
             else:
                 print(
                     f"[bold red]Error: The dataset `{self.dataset}` is not"

@@ -1,5 +1,7 @@
 """Utils functions for rtasr."""
 
+import asyncio
+import zipfile
 from pathlib import Path
 
 import aiohttp
@@ -56,6 +58,41 @@ async def get_files(path: Path) -> Path:
     for p in path.iterdir():
         if p.is_file():
             yield p
+
+
+async def unzip_file(zip_path: Path, output_dir: Path, use_cache: bool = True) -> Path:
+    """
+    Unzip a file to a directory.
+
+    Args:
+        zip_path (Path):
+            Path to zip file.
+        output_dir (Path):
+            Path to output directory.
+        use_cache (bool):
+            Whether to use the cache or not. Defaults to True.
+
+    Returns:
+        Path to output directory.
+    """
+
+    def extract_zip_sync(zip_path: Path, extract_to: Path) -> None:
+        """Synchronous function to extract ZIP."""
+        with zipfile.ZipFile(zip_path, "r") as archive:
+            archive.extractall(extract_to)
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    if use_cache and (output_dir / zip_path.stem).exists():
+        return output_dir / zip_path.stem
+    else:
+        (output_dir / zip_path.stem).unlink(missing_ok=True)
+
+        loop = asyncio.get_event_loop()
+        await loop.run_in_executor(None, extract_zip_sync, zip_path, output_dir)
+
+    return output_dir / zip_path.stem
+    
+    
 
 
 def resolve_cache_dir() -> Path:

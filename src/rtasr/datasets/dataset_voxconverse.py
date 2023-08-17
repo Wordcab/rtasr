@@ -45,7 +45,9 @@ DATASET_METADATA = {
 }
 
 
-async def prepare_voxconverse_dataset(output_dir: str = None, use_cache: bool = True) -> None:
+async def prepare_voxconverse_dataset(
+    output_dir: str = None, use_cache: bool = True
+) -> None:
     """
     Download the VoxConverse dataset and prepare it for benchmarking.
 
@@ -128,9 +130,7 @@ async def prepare_voxconverse_dataset(output_dir: str = None, use_cache: bool = 
         current_progress_task_id = current_progress.add_task(
             "Unzipping files: VoxConverse"
         )
-        splits_progress_task_id = splits_progress.add_task(
-            "", total=len(zip_filepaths)
-        )
+        splits_progress_task_id = splits_progress.add_task("", total=len(zip_filepaths))
 
         unzipping_tasks = []
         for zip_filepath in zip_filepaths:
@@ -169,7 +169,11 @@ async def prepare_voxconverse_dataset(output_dir: str = None, use_cache: bool = 
             split_rttm = output_dir / DATASET_METADATA["filepaths"]["rttm"] / split
             split_tasks.append(
                 _prepare_voxconverse_manifest_split(
-                    split, split_audio, split_rttm, output_dir, use_cache,
+                    split,
+                    split_audio,
+                    split_rttm,
+                    output_dir,
+                    use_cache,
                 )
             )
 
@@ -213,7 +217,11 @@ async def _download_zip(
 
 
 async def _prepare_voxconverse_manifest_split(
-    split: str, split_audio: Path, split_rttm: Path, output_dir: Path, use_cache: bool,
+    split: str,
+    split_audio: Path,
+    split_rttm: Path,
+    output_dir: Path,
+    use_cache: bool,
 ) -> List[Path]:
     """Prepare a manifest file."""
     rttm_files = []

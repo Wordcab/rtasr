@@ -91,8 +91,6 @@ async def unzip_file(zip_path: Path, output_dir: Path, use_cache: bool = True) -
         await loop.run_in_executor(None, extract_zip_sync, zip_path, output_dir)
 
     return output_dir / zip_path.stem
-    
-    
 
 
 def resolve_cache_dir() -> Path:

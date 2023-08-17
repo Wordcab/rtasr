@@ -71,11 +71,15 @@ class DownloadDatasetCommand:
         try:
             if self.dataset.lower() == "ami":
                 from rtasr.datasets import prepare_ami_dataset
+
                 asyncio.run(prepare_ami_dataset(self.output_dir, self.use_cache))
 
             elif self.dataset.lower() == "voxconverse":
                 from rtasr.datasets import prepare_voxconverse_dataset
-                asyncio.run(prepare_voxconverse_dataset(self.output_dir, self.use_cache))
+
+                asyncio.run(
+                    prepare_voxconverse_dataset(self.output_dir, self.use_cache)
+                )
 
             else:
                 print(

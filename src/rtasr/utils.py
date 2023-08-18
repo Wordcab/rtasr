@@ -30,7 +30,9 @@ def build_query_string(params: Mapping[str, Any] = None) -> str:
         else:
             filtered_parameters.append(key, str(value).lower())
 
-    return ("?" if filtered_parameters else "") + urllib.parse.urlencode(filtered_parameters)
+    return ("?" if filtered_parameters else "") + urllib.parse.urlencode(
+        filtered_parameters
+    )
 
 
 async def download_file(

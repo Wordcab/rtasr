@@ -10,7 +10,8 @@ ascii_art = r"""
 """
 
 error_message = (
-    "[bold red]Error: The {input_type} `{user_input}` is not supported.[/bold red]\n"
-    "[bold red]==================================================================[/bold red]\n"
-    "Do you mean one of these {input_type}s?\n"
+    "[bold red]Error: The {input_type} `{user_input}` is not supported.[/bold"
+    " red]\n[bold"
+    " red]==================================================================[/bold"
+    " red]\nDo you mean one of these {input_type}s?\n"
 )

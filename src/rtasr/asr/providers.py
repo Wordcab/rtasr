@@ -13,7 +13,7 @@ from rtasr.utils import build_query_string
 
 class ProviderConfig(BaseModel):
     """The base class for all ASR provider configurations."""
-    
+
     api_url: HttpUrl
     api_key: SecretStr
 
@@ -28,12 +28,16 @@ class ASRProvider(ABC):
     @abstractmethod
     async def api_call(self) -> None:
         """Call the API of the ASR provider."""
-        raise NotImplementedError("The ASR provider must implement the `api_call` method.")
+        raise NotImplementedError(
+            "The ASR provider must implement the `api_call` method."
+        )
 
     @abstractmethod
     def result_to_rttm(self) -> None:
         """Convert the result to RTTM format."""
-        raise NotImplementedError("The ASR provider must implement the `result_to_rttm` method.")
+        raise NotImplementedError(
+            "The ASR provider must implement the `result_to_rttm` method."
+        )
 
 
 class Deepgram(ASRProvider):
@@ -46,7 +50,7 @@ class Deepgram(ASRProvider):
 
     async def api_call(self, audio_file: Path) -> None:
         """Call the API of the Deepgram ASR provider."""
-        audio: bytes = open(audio_file, "rb").encode('utf-8')
+        audio: bytes = open(audio_file, "rb").encode("utf-8")
 
         async with aiohttp.request(
             method="POST",
@@ -56,7 +60,7 @@ class Deepgram(ASRProvider):
                 "Content-Type": f"audio/{audio_file.suffix[1:]}",
                 "Authorization": f"Token {self.config.api_key.get_secret_value()}",
             },
-            raise_for_status=True
+            raise_for_status=True,
         ) as resp:
             content = (await resp.text()).strip()
 
@@ -89,4 +93,3 @@ class Wordcab(ASRProvider):
     def result_to_rttm(self) -> None:
         """Convert the result to RTTM format."""
         pass
-

@@ -1,6 +1,7 @@
 """The benchmark command."""
 
 import argparse
+import asyncio
 from typing import Union
 
 from rtasr.cli_messages import error_message
@@ -83,37 +84,38 @@ class BenchmarkASRCommand:
                 exit(1)
 
             _provider = self.provider.lower()
-            api_key = get_api_key(_provider)  # raises ValueError if no API key found
+            api_key = get_api_key(_provider)
 
             if _provider == "assemblyai":
-                from rtasr.asr import AssemblyAI
                 raise NotImplementedError
 
             elif _provider == "aws":
-                from rtasr.asr import Aws
                 raise NotImplementedError
 
             elif _provider == "azure":
-                from rtasr.asr import Azure
                 raise NotImplementedError
 
             elif _provider == "deepgram":
                 from rtasr.asr import Deepgram
 
+                engine = Deepgram(
+                    api_url=PROVIDERS[_provider],
+                    api_key=api_key,
+                    options={},
+                )
+
+                asyncio.run(engine.api_call())
+
             elif _provider == "google":
-                from rtasr.asr import Google
                 raise NotImplementedError
 
             elif _provider == "revai":
-                from rtasr.asr import RevAI
                 raise NotImplementedError
 
             elif _provider == "speechmatics":
-                from rtasr.asr import Speechmatics
                 raise NotImplementedError
 
             elif _provider == "wordcab":
-                from rtasr.asr import Wordcab
                 raise NotImplementedError
 
             else:

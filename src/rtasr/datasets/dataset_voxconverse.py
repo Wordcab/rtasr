@@ -12,7 +12,7 @@ import asyncio
 import json
 import traceback
 from pathlib import Path
-from typing import List
+from typing import Any, Dict, List
 
 import aiofiles
 import aiohttp
@@ -28,21 +28,8 @@ from rich.progress import (
     TimeElapsedColumn,
 )
 
+from rtasr.constants import DATASETS
 from rtasr.utils import download_file, get_files, resolve_cache_dir, unzip_file
-
-DATASET_METADATA = {
-    "splits": ["dev", "test"],
-    "zip_urls": {
-        "rttm": "https://github.com/joonson/voxconverse/archive/refs/heads/master.zip",
-        "dev": "https://www.robots.ox.ac.uk/~vgg/data/voxconverse/data/voxconverse_dev_wav.zip",
-        "test": "https://www.robots.ox.ac.uk/~vgg/data/voxconverse/data/voxconverse_test_wav.zip",
-    },
-    "filepaths": {
-        "dev": "dev/audio",
-        "test": "test/voxconverse_test_wav",
-        "rttm": "rttm/voxconverse-master",
-    },
-}
 
 
 async def prepare_voxconverse_dataset(
@@ -70,6 +57,8 @@ async def prepare_voxconverse_dataset(
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    dataset_metadata: Dict[str, Any] = DATASETS["voxconverse"]
+
     current_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
     step_progress = Progress(
         TextColumn("  "),
@@ -94,11 +83,11 @@ async def prepare_voxconverse_dataset(
                 "Downloading dataset files: VoxConverse"
             )
             splits_progress_task_id = splits_progress.add_task(
-                "", total=len(DATASET_METADATA["zip_urls"])
+                "", total=len(dataset_metadata["zip_urls"])
             )
 
             zip_tasks = []
-            for zip_name, zip_url in DATASET_METADATA["zip_urls"].items():
+            for zip_name, zip_url in dataset_metadata["zip_urls"].items():
                 zip_dir = output_dir / zip_name
                 zip_dir.mkdir(parents=True, exist_ok=True)
 
@@ -164,9 +153,9 @@ async def prepare_voxconverse_dataset(
         splits_progress_task_id = splits_progress.add_task("", total=2)
 
         split_tasks = []
-        for split in DATASET_METADATA["splits"]:
-            split_audio = output_dir / DATASET_METADATA["filepaths"][split]
-            split_rttm = output_dir / DATASET_METADATA["filepaths"]["rttm"] / split
+        for split in dataset_metadata["splits"]:
+            split_audio = output_dir / dataset_metadata["filepaths"][split]
+            split_rttm = output_dir / dataset_metadata["filepaths"]["rttm"] / split
             split_tasks.append(
                 _prepare_voxconverse_manifest_split(
                     split,

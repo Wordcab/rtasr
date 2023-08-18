@@ -9,6 +9,17 @@ from typing import Callable, List
 import aiofiles
 import aiohttp
 from pydantic import BaseModel, HttpUrl, SecretStr
+from rich import print
+from rich.console import Group
+from rich.live import Live
+from rich.panel import Panel
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+)
 
 from rtasr.asr.options import DeepgramOptions
 from rtasr.utils import build_query_string
@@ -35,17 +46,38 @@ class ASRProvider(ABC):
             "Authorization": f"Token {self.config.api_key.get_secret_value()}",
         }
 
-        async with aiohttp.ClientSession() as session:
-            tasks: List[Callable] = []
-            for audio_file in audio_files:
-                headers["Content-Type"] = f"audio/{audio_file.suffix[1:]}"
-                tasks.append(
-                    self._run(
-                        audio_file=audio_file, url=url, headers=headers, session=session
-                    )
-                )
+        current_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
+        step_progress = Progress(
+            TextColumn("  "),
+            TimeElapsedColumn(),
+            SpinnerColumn("dots", finished_text="✅", speed=0.5),
+            TextColumn("[bold purple]{task.fields[action]}"),
+            BarColumn(bar_width=20),
+        )
+        splits_progress = Progress(
+            TextColumn("[bold blue]Progres: {task.percentage:.0f}%"),
+            BarColumn(),
+            TextColumn("({task.completed} of {task.total} steps done)"),
+        )
+        progress_group = Group(
+            Panel(Group(current_progress, step_progress, splits_progress))
+        )
 
-            await asyncio.gather(*tasks)
+        with Live(progress_group):
+            async with aiohttp.ClientSession() as session:
+                tasks: List[Callable] = []
+                for audio_file in audio_files:
+                    headers["Content-Type"] = f"audio/{audio_file.suffix[1:]}"
+                    tasks.append(
+                        self._run(
+                            audio_file=audio_file, url=url, headers=headers, session=session
+                        )
+                    )
+
+                results = await asyncio.gather(*tasks)
+
+            for result in results:
+                print(result)
 
     @abstractmethod
     async def _run(

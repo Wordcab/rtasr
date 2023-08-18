@@ -40,6 +40,54 @@ class ASRProvider(ABC):
         )
 
 
+class AssemblyAI(ASRProvider):
+    """The ASR provider class for AssemblyAI."""
+
+    def __init__(self, api_url: str, api_key: str, options: dict) -> None:
+        super().__init__(api_url, api_key)
+        self.options = options
+
+    async def api_call(self) -> None:
+        """Call the API of the AssemblyAI ASR provider."""
+        pass
+
+    def result_to_rttm(self) -> None:
+        """Convert the result to RTTM format."""
+        pass
+
+
+class Aws(ASRProvider):
+    """The ASR provider class for AWS."""
+
+    def __init__(self, api_url: str, api_key: str, options: dict) -> None:
+        super().__init__(api_url, api_key)
+        self.options = options
+
+    async def api_call(self) -> None:
+        """Call the API of the AWS ASR provider."""
+        pass
+
+    def result_to_rttm(self) -> None:
+        """Convert the result to RTTM format."""
+        pass
+
+
+class Azure(ASRProvider):
+    """The ASR provider class for Azure."""
+
+    def __init__(self, api_url: str, api_key: str, options: dict) -> None:
+        super().__init__(api_url, api_key)
+        self.options = options
+
+    async def api_call(self) -> None:
+        """Call the API of the Azure ASR provider."""
+        pass
+
+    def result_to_rttm(self) -> None:
+        """Convert the result to RTTM format."""
+        pass
+
+
 class Deepgram(ASRProvider):
     """The ASR provider class for Deepgram."""
 
@@ -54,7 +102,7 @@ class Deepgram(ASRProvider):
 
         async with aiohttp.request(
             method="POST",
-            url=f"https://api.deepgram.com/v1/listen{build_query_string(self.options)}",
+            url=f"{self.config.api_url}{build_query_string(self.options)}",
             data=audio,
             headers={
                 "Content-Type": f"audio/{audio_file.suffix[1:]}",
@@ -79,14 +127,63 @@ class Deepgram(ASRProvider):
         pass
 
 
+class Google(ASRProvider):
+    """The ASR provider class for Google."""
+
+    def __init__(self, api_url: str, api_key: str, options: dict) -> None:
+        super().__init__(api_url, api_key)
+        self.options = options
+
+    async def api_call(self) -> None:
+        """Call the API of the Google ASR provider."""
+        pass
+
+    def result_to_rttm(self) -> None:
+        """Convert the result to RTTM format."""
+        pass
+
+
+class RevAI(ASRProvider):
+    """The ASR provider class for RevAI."""
+
+    def __init__(self, api_url: str, api_key: str, options: dict) -> None:
+        super().__init__(api_url, api_key)
+        self.options = options
+
+    async def api_call(self) -> None:
+        """Call the API of the RevAI ASR provider."""
+        pass
+
+    def result_to_rttm(self) -> None:
+        """Convert the result to RTTM format."""
+        pass
+
+
+class Speechmatics(ASRProvider):
+    """The ASR provider class for Speechmatics."""
+
+    def __init__(self, api_url: str, api_key: str, options: dict) -> None:
+        super().__init__(api_url, api_key)
+        self.options = options
+
+    async def api_call(self) -> None:
+        """Call the API of the Speechmatics ASR provider."""
+        pass
+
+    def result_to_rttm(self) -> None:
+        """Convert the result to RTTM format."""
+        pass
+
+
 class Wordcab(ASRProvider):
     """The ASR provider class for Wordcab."""
 
-    def __init__(self, api_url: str, api_key: str) -> None:
+    def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         """Initialize the Wordcab ASR provider."""
         super().__init__(api_url, api_key)
+        self.options = options
 
-    def api_call(self) -> None:
+    async def api_call(self) -> None:
         """Call the API of the Wordcab ASR provider."""
         pass
 

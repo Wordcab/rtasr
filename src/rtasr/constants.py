@@ -1,13 +1,17 @@
 """Define all the constants used in rtasr."""
 
+from typing import OrderedDict
+
 DATASETS = ["ami", "voxconverse"]
-PROVIDERS = [
-    "assemblyai",
-    "aws",
-    "azure",
-    "deepgram",
-    "google",
-    "revai",
-    "speechmatics",
-    "wordcab",
-]
+PROVIDERS = OrderedDict(
+    [
+        ("assemblyai", ""),
+        ("aws", ""),
+        ("azure", ""),
+        ("deepgram", "https://api.deepgram.com/v1/listen"),
+        ("google", ""),
+        ("revai", ""),
+        ("speechmatics", ""),
+        ("wordcab", ""),
+    ]
+)

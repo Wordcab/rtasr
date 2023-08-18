@@ -17,6 +17,8 @@ classifiers = [
 dependencies = [
   "aiofiles>=23.2.1",
   "aiohttp>=3.8.5",
+  "pydantic>=2.2.0",
+  "python-dotenv>=1.0.0",
   "rich>=13.5.2",
   "rich-argparse>=1.2.0",
 ]

@@ -1,10 +1,38 @@
 """Utils functions for rtasr."""
 
 import asyncio
+import urllib.parse
 import zipfile
 from pathlib import Path
+from typing import Any, List, Mapping, Tuple
 
 import aiohttp
+
+
+def build_query_string(params: Mapping[str, Any] = None) -> str:
+    """
+    Build a query string from a dictionary of parameters for API calls.
+
+    Args:
+        params (Mapping[str, Any]):
+            Dictionary of parameters for API calls.
+
+    Returns:
+        Query string.
+    """
+    if params is None:
+        params = {}
+
+    filtered_parameters: List[Tuple[str, str]] = []
+    for key, value in params.items():
+        if value is None or value == "":
+            continue
+        else:
+            filtered_parameters.append(key, str(value).lower())
+
+    return ("?" if filtered_parameters else "") + urllib.parse.urlencode(
+        filtered_parameters
+    )
 
 
 async def download_file(
@@ -25,6 +53,9 @@ async def download_file(
             aiohttp session to use for downloading.`
         use_cache (bool):
             Whether to use the cache or not.
+
+    Returns:
+        Path to output file.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
     output_file = output_dir / Path(url).name
@@ -54,6 +85,9 @@ async def get_files(path: Path) -> Path:
     Args:
         path (Path):
             Path to directory to get files from.
+
+    Returns:
+        Generator of files in directory.
     """
     for p in path.iterdir():
         if p.is_file():

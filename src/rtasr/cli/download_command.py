@@ -70,7 +70,7 @@ class DownloadDatasetCommand:
                 print(
                     error_message.format(input_type="dataset", user_input=self.dataset)
                 )
-                print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS]))
+                print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS.keys()]))
                 exit(1)
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")

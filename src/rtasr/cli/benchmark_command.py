@@ -76,11 +76,11 @@ class BenchmarkASRCommand:
                 )
                 print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
                 exit(1)
-            if self.dataset.lower() not in DATASETS:
+            if self.dataset.lower() not in DATASETS.keys():
                 print(
                     error_message.format(input_type="dataset", user_input=self.dataset)
                 )
-                print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS]))
+                print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS.keys()]))
                 exit(1)
 
             _provider = self.provider.lower()

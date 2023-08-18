@@ -35,12 +35,12 @@ class ListItemsCommand:
         """Run the command."""
         if self.item_type is None:
             print("Datasets:")
-            print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS]))
+            print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS.keys()]))
             print("Providers:")
             print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
             exit(1)
         if self.item_type.lower() == "datasets":
-            print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS]))
+            print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS.keys()]))
         elif self.item_type.lower() == "providers":
             print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
         else:

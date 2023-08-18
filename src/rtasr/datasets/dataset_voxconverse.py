@@ -124,7 +124,7 @@ async def prepare_voxconverse_dataset(
             current_progress.stop_task(current_progress_task_id)
             current_progress.update(
                 current_progress_task_id,
-                description="[bold green]Dataset VoxConference zip files downloaded.",
+                description="[bold green]Dataset VoxConverse zip files downloaded.",
             )
 
         current_progress_task_id = current_progress.add_task(
@@ -155,7 +155,7 @@ async def prepare_voxconverse_dataset(
         current_progress.stop_task(current_progress_task_id)
         current_progress.update(
             current_progress_task_id,
-            description="[bold green]Dataset VoxConference files unzipped.",
+            description="[bold green]Dataset VoxConverse files unzipped.",
         )
 
         current_progress_task_id = current_progress.add_task(

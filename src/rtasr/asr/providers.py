@@ -1,9 +1,12 @@
 """Providers are the classes that actually do the API calls to the different ASR services."""
 
+import asyncio
 import json
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import Callable, List
 
+import aiofiles
 import aiohttp
 from pydantic import BaseModel, HttpUrl, SecretStr
 
@@ -96,21 +99,41 @@ class Deepgram(ASRProvider):
         super().__init__(api_url, api_key)
         self.options = DeepgramOptions(**options)
 
-    async def api_call(self, audio_file: Path) -> None:
+    async def api_call(self, audio_files: List[Path], output_dir: Path) -> None:
         """Call the API of the Deepgram ASR provider."""
-        audio: bytes = open(audio_file, "rb").encode("utf-8")
+        url = f"{self.config.api_url}{build_query_string(self.options)}"
+        headers = {
+            "Authorization": f"Token {self.config.api_key.get_secret_value()}",
+        }
 
-        async with aiohttp.request(
-            method="POST",
-            url=f"{self.config.api_url}{build_query_string(self.options)}",
-            data=audio,
-            headers={
-                "Content-Type": f"audio/{audio_file.suffix[1:]}",
-                "Authorization": f"Token {self.config.api_key.get_secret_value()}",
-            },
+        async with aiohttp.ClientSession() as session:
+            tasks: List[Callable] = []
+            for audio_file in audio_files:
+                headers["Content-Type"] = f"audio/{audio_file.suffix[1:]}"
+                tasks.append(
+                    self._run(
+                        audio_file=audio_file, url=url, headers=headers, session=session
+                    )
+                )
+
+            results = await asyncio.gather(*tasks)
+
+        print(results)
+
+    async def _run(
+        self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
+    ) -> None:
+        """Run the ASR provider."""
+        async with aiofiles.open(audio_file, "rb") as f:
+            _audio = await f.read()
+
+        async with session.post(
+            url=url,
+            data=_audio,
+            headers=headers,
             raise_for_status=True,
-        ) as resp:
-            content = (await resp.text()).strip()
+        ) as response:
+            content = (await response.text()).strip()
 
             if not content:
                 return None

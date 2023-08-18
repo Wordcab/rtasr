@@ -4,6 +4,8 @@ import argparse
 import asyncio
 from typing import Union
 
+from rich import print
+
 from rtasr.cli_messages import error_message
 from rtasr.constants import DATASETS
 

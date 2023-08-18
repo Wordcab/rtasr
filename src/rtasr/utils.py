@@ -96,7 +96,10 @@ def get_api_key(provider: str) -> str:
 
     key = config[f"{provider.upper()}_API_KEY"]
     if key is None or key == "" or key == "<your key here>":
-        raise ValueError(f"No API key found for {provider.upper()}.")
+        raise ValueError(
+            f"No API key found for {provider.upper()}. "
+            f"Please add `{provider.upper()}_API_KEY` to the `.env` file."
+        )
 
     return key
 

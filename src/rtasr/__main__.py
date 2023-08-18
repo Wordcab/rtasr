@@ -6,14 +6,14 @@ from rich import print
 from rich.traceback import install
 from rich_argparse import RichHelpFormatter
 
-install(show_locals=True)
-
 from rtasr.cli import (
     BenchmarkASRCommand,
     DownloadDatasetCommand,
     ListItemsCommand,
 )
 from rtasr.cli_messages import ascii_art
+
+install(show_locals=True)
 
 
 def main() -> None:

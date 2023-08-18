@@ -28,12 +28,31 @@ class ASRProvider(ABC):
         """Initialize the ASR provider."""
         self.config = ProviderConfig(api_url=api_url, api_key=api_key)
 
-    @abstractmethod
-    async def api_call(self) -> None:
+    async def api_call(self, audio_files: List[Path], output_dir: Path) -> None:
         """Call the API of the ASR provider."""
-        raise NotImplementedError(
-            "The ASR provider must implement the `api_call` method."
-        )
+        url = f"{self.config.api_url}{build_query_string(self.options)}"
+        headers = {
+            "Authorization": f"Token {self.config.api_key.get_secret_value()}",
+        }
+
+        async with aiohttp.ClientSession() as session:
+            tasks: List[Callable] = []
+            for audio_file in audio_files:
+                headers["Content-Type"] = f"audio/{audio_file.suffix[1:]}"
+                tasks.append(
+                    self._run(
+                        audio_file=audio_file, url=url, headers=headers, session=session
+                    )
+                )
+
+            await asyncio.gather(*tasks)
+
+    @abstractmethod
+    async def _run(
+        self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
+    ) -> dict:
+        """Run the ASR provider."""
+        raise NotImplementedError("The ASR provider must implement the `_run` method.")
 
     @abstractmethod
     def result_to_rttm(self) -> None:
@@ -99,51 +118,28 @@ class Deepgram(ASRProvider):
         super().__init__(api_url, api_key)
         self.options = DeepgramOptions(**options)
 
-    async def api_call(self, audio_files: List[Path], output_dir: Path) -> None:
-        """Call the API of the Deepgram ASR provider."""
-        url = f"{self.config.api_url}{build_query_string(self.options)}"
-        headers = {
-            "Authorization": f"Token {self.config.api_key.get_secret_value()}",
-        }
-
-        async with aiohttp.ClientSession() as session:
-            tasks: List[Callable] = []
-            for audio_file in audio_files:
-                headers["Content-Type"] = f"audio/{audio_file.suffix[1:]}"
-                tasks.append(
-                    self._run(
-                        audio_file=audio_file, url=url, headers=headers, session=session
-                    )
-                )
-
-            results = await asyncio.gather(*tasks)
-
-        print(results)
-
     async def _run(
         self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
-    ) -> None:
-        """Run the ASR provider."""
-        async with aiofiles.open(audio_file, "rb") as f:
-            _audio = await f.read()
+    ) -> dict:
+        """Run the Deepgram ASR provider."""
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            async with session.post(
+                url=url,
+                data=f,
+                headers=headers,
+                raise_for_status=True,
+            ) as response:
+                content = (await response.text()).strip()
 
-        async with session.post(
-            url=url,
-            data=_audio,
-            headers=headers,
-            raise_for_status=True,
-        ) as response:
-            content = (await response.text()).strip()
+                if not content:
+                    return None
 
-            if not content:
-                return None
+                body = json.loads(content)
 
-            body = json.loads(content)
+                if body.get("error"):
+                    raise Exception(f"DG: {content}")
 
-            if body.get("error"):
-                raise Exception(f"DG: {content}")
-
-            return body
+                return body
 
     def result_to_rttm(self) -> None:
         """Convert the result to RTTM format."""
@@ -157,8 +153,10 @@ class Google(ASRProvider):
         super().__init__(api_url, api_key)
         self.options = options
 
-    async def api_call(self) -> None:
-        """Call the API of the Google ASR provider."""
+    async def _run(
+        self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
+    ) -> None:
+        """Run the ASR provider."""
         pass
 
     def result_to_rttm(self) -> None:

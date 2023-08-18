@@ -55,13 +55,59 @@ DATASETS = OrderedDict(
 )
 PROVIDERS = OrderedDict(
     [
-        ("assemblyai", ""),
-        ("aws", ""),
-        ("azure", ""),
-        ("deepgram", "https://api.deepgram.com/v1/listen"),
-        ("google", ""),
-        ("revai", ""),
-        ("speechmatics", ""),
-        ("wordcab", "https://wordcab.com/api/v1/transcribe"),
+        (
+            "assemblyai",
+            {
+                "url": "",
+            },
+        ),
+        (
+            "aws",
+            {
+                "url": "",
+            },
+        ),
+        (
+            "azure",
+            {
+                "url": "",
+            },
+        ),
+        (
+            "deepgram",
+            {
+                "url": "https://api.deepgram.com/v1/listen",
+                "options": {
+                    "diarize": True,
+                    "model": "nova",
+                    "punctuate": True,
+                    "utterances": True,
+                },
+            },
+        ),
+        (
+            "google",
+            {
+                "url": "",
+            },
+        ),
+        (
+            "revai",
+            {
+                "url": "",
+            },
+        ),
+        (
+            "speechmatics",
+            {
+                "url": "",
+            },
+        ),
+        (
+            "wordcab",
+            {
+                "url": "https://wordcab.com/api/v1/transcribe",
+            },
+        ),
     ]
 )

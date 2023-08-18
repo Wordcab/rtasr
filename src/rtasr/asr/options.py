@@ -1,6 +1,6 @@
 """Options regroup all the ASR providers options classes."""
 
-from typing import List, TypedDict
+from typing import TypedDict
 
 from typing_extensions import Literal
 
@@ -46,30 +46,15 @@ class DeepgramOptions(TypedDict, total=False):
     https://developers.deepgram.com/documentation/features/
     """
 
-    model: str
-    version: str
-    language: str
-    punctuate: bool
-    profanity_filter: bool
     diarize: Literal["false", "true"]
     diarize_version: str
-    version: str
+    language: str
+    model: str
     multichannel: bool
-    alternatives: int
-    numbers: bool
-    numbers_spaces: bool
-    search: List[str]
-    callback: str
-    keywords: List[str]
-    ner: str
+    punctuate: bool
     tier: str
-    dates: bool
-    date_format: str
-    times: bool
-    dictation: bool
-    measurements: bool
-    smart_format: bool
-    replace: str
+    utterances: bool
+    version: str
 
 
 class GoogleOptions(TypedDict, total=False):
@@ -87,7 +72,7 @@ class RevAIOptions(TypedDict, total=False):
     """
     The options for the RevAI transcription.
 
-    References from the RevAI docs:
+    References from the Rev docs:
     https://www.rev.ai/docs/streaming
     """
 

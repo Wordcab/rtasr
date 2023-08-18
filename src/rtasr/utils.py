@@ -29,10 +29,10 @@ def build_query_string(params: Mapping[str, Any] = None) -> str:
         if value is None or value == "":
             continue
         else:
-            filtered_parameters.append(key, str(value).lower())
+            filtered_parameters.append((key, str(value).lower()))
 
-    return ("?" if filtered_parameters else "") + urllib.parse.urlencode(
-        filtered_parameters
+    return (
+        "?" + urllib.parse.urlencode(filtered_parameters) if filtered_parameters else ""
     )
 
 

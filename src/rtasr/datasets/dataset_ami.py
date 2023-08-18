@@ -12,7 +12,7 @@ import asyncio
 import json
 import traceback
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import aiofiles
 import aiohttp
@@ -29,18 +29,8 @@ from rich.progress import (
     TimeElapsedColumn,
 )
 
+from rtasr.constants import DATASETS
 from rtasr.utils import download_file, get_files, resolve_cache_dir
-
-DATASET_METADATA = {
-    "splits": ["test", "dev", "train"],
-    "audio_types": ["Mix-Headset", "Array1-01"],
-    "urls": {
-        "rttm": "https://raw.githubusercontent.com/BUTSpeechFIT/AMI-diarization-setup/main/only_words/rttms/{}/{}.rttm",
-        "uem": "https://raw.githubusercontent.com/BUTSpeechFIT/AMI-diarization-setup/main/uems/{}/{}.uem",
-        "list": "https://raw.githubusercontent.com/BUTSpeechFIT/AMI-diarization-setup/main/lists/{}.meetings.txt",
-    },
-    "exclude_ids": ["IS1007d", "IS1003b"],
-}
 
 
 async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) -> None:
@@ -66,6 +56,8 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    dataset_metadata: Dict[str, Any] = DATASETS["ami"]
+
     current_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
     step_progress = Progress(
         TextColumn("  "),
@@ -90,17 +82,22 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
                 "Downloading dataset files: AMI"
             )
             splits_progress_task_id = splits_progress.add_task(
-                "", total=len(DATASET_METADATA["splits"])
+                "", total=len(dataset_metadata["splits"])
             )
 
             split_tasks = []
-            for split in DATASET_METADATA["splits"]:
+            for split in dataset_metadata["splits"]:
                 split_dir = output_dir / split
                 split_dir.mkdir(parents=True, exist_ok=True)
 
                 split_tasks.append(
                     _download_ami_split(
-                        split, split_dir, session, step_progress, use_cache
+                        split,
+                        split_dir,
+                        session,
+                        step_progress,
+                        use_cache,
+                        dataset_metadata,
                     )
                 )
 
@@ -134,13 +131,15 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
             "Preparing manifest files: AMI"
         )
         splits_progress_task_id = splits_progress.add_task(
-            "", total=len(DATASET_METADATA["splits"])
+            "", total=len(dataset_metadata["splits"])
         )
 
         split_tasks = []
-        for split in DATASET_METADATA["splits"]:
+        for split in dataset_metadata["splits"]:
             split_dir = output_dir / split
-            split_tasks.append(_prepare_ami_manifest_split(split_dir, use_cache))
+            split_tasks.append(
+                _prepare_ami_manifest_split(split_dir, use_cache, dataset_metadata)
+            )
 
         for future in asyncio.as_completed(split_tasks):
             try:
@@ -175,10 +174,11 @@ async def _download_ami_split(
     session: aiohttp.ClientSession,
     step_progress: Progress,
     use_cache: bool,
+    dataset_metadata: Dict[str, Any],
 ) -> TaskID:
     """Download a split of the AMI dataset."""
     filepath = await download_file(
-        DATASET_METADATA["urls"]["list"].format(split),
+        dataset_metadata["urls"]["list"].format(split),
         split_dir,
         session,
         use_cache=use_cache,
@@ -190,9 +190,9 @@ async def _download_ami_split(
     filtered_file_ids = [
         file_id
         for file_id in file_ids
-        if file_id not in DATASET_METADATA["exclude_ids"]
+        if file_id not in dataset_metadata["exclude_ids"]
     ]
-    audio_types = DATASET_METADATA["audio_types"]
+    audio_types = dataset_metadata["audio_types"]
 
     file_download_results: List[Dict[str, str]] = []
     for file_id in filtered_file_ids:
@@ -207,7 +207,7 @@ async def _download_ami_split(
             )
         file_download_results.append(
             download_file(
-                url=DATASET_METADATA["urls"]["rttm"].format(split, file_id),
+                url=dataset_metadata["urls"]["rttm"].format(split, file_id),
                 output_dir=split_dir / "rttm",
                 session=session,
                 use_cache=use_cache,
@@ -215,7 +215,7 @@ async def _download_ami_split(
         )
         file_download_results.append(
             download_file(
-                url=DATASET_METADATA["urls"]["uem"].format(split, file_id),
+                url=dataset_metadata["urls"]["uem"].format(split, file_id),
                 output_dir=split_dir / "uem",
                 session=session,
                 use_cache=use_cache,
@@ -241,6 +241,7 @@ async def _download_ami_split(
 async def _prepare_ami_manifest_split(
     split_dir: Path,
     use_cache: bool,
+    dataset_metadata: Dict[str, Any],
 ) -> List[Path]:
     """Prepare a manifest file."""
     rttm_files = []
@@ -252,7 +253,7 @@ async def _prepare_ami_manifest_split(
         uem_files.append(path)
 
     manifest_paths: List[Path] = []
-    audio_types = DATASET_METADATA["audio_types"]
+    audio_types = dataset_metadata["audio_types"]
     for audio_type in audio_types:
         audio_type_path = split_dir / "audio" / audio_type
         audio_files = []

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, List, Mapping, Tuple
 
 import aiohttp
+from dotenv import dotenv_values
 
 
 def build_query_string(params: Mapping[str, Any] = None) -> str:
@@ -76,6 +77,31 @@ async def download_file(
                 f.write(chunk)
 
     return output_file
+
+
+def get_api_key(provider: str) -> str:
+    """Get the API key for the provider.
+
+    All the API keys must be stored in a .env file in the root directory of the
+    project.
+
+    Args:
+        provider (str):
+            The provider to get the API key for.
+
+    Returns:
+        The API key for the provider.
+    """
+    config = dotenv_values(".env")
+
+    key = config[f"{provider.upper()}_API_KEY"]
+    if key is None or key == "" or key == "<your key here>":
+        raise ValueError(
+            f"No API key found for {provider.upper()}. "
+            f"Please add `{provider.upper()}_API_KEY` to the `.env` file."
+        )
+
+    return key
 
 
 async def get_files(path: Path) -> Path:

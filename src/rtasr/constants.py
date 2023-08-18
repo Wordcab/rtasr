@@ -15,6 +15,20 @@ DATASETS = OrderedDict(
                     "list": "https://raw.githubusercontent.com/BUTSpeechFIT/AMI-diarization-setup/main/lists/{}.meetings.txt",
                 },
                 "exclude_ids": ["IS1007d", "IS1003b"],
+                "manifest_filepaths": {
+                    "test": [
+                        "test/manifest_Array1-01.json",
+                        "test/manifest_Mix-Headset.json",
+                    ],
+                    "dev": [
+                        "dev/manifest_Array1-01.json",
+                        "dev/manifest_Mix-Headset.json",
+                    ],
+                    "train": [
+                        "train/manifest_Array1-01.json",
+                        "train/manifest_Mix-Headset.json",
+                    ],
+                },
             },
         ),
         (
@@ -31,6 +45,10 @@ DATASETS = OrderedDict(
                     "test": "test/voxconverse_test_wav",
                     "rttm": "rttm/voxconverse-master",
                 },
+                "manifest_filepaths": {
+                    "dev": ["dev_manifest.json"],
+                    "test": ["test_manifest.json"],
+                },
             },
         ),
     ]
@@ -44,6 +62,6 @@ PROVIDERS = OrderedDict(
         ("google", ""),
         ("revai", ""),
         ("speechmatics", ""),
-        ("wordcab", ""),
+        ("wordcab", "https://wordcab.com/api/v1/transcribe"),
     ]
 )

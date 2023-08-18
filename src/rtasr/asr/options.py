@@ -83,11 +83,11 @@ class GoogleOptions(TypedDict, total=False):
     # TODO: Add the options.
 
 
-class RevOptions(TypedDict, total=False):
+class RevAIOptions(TypedDict, total=False):
     """
-    The options for the Rev transcription.
+    The options for the RevAI transcription.
 
-    References from the Rev docs:
+    References from the RevAI docs:
     https://www.rev.ai/docs/streaming
     """
 

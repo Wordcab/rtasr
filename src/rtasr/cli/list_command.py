@@ -3,6 +3,8 @@
 import argparse
 from typing import Union
 
+from rich import print
+
 from rtasr.cli_messages import error_message
 from rtasr.constants import DATASETS, PROVIDERS
 
@@ -34,15 +36,29 @@ class ListItemsCommand:
     def run(self) -> None:
         """Run the command."""
         if self.item_type is None:
-            print("Datasets:")
-            print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS]))
+            print("Datasets | Splits:")
+            print(
+                "".join(
+                    [
+                        f"  - [bold]{k}[/bold] | {v['splits']}\n"
+                        for k, v in DATASETS.items()
+                    ]
+                )
+            )
             print("Providers:")
-            print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS]))
+            print("".join([f"  - {p}\n" for p in PROVIDERS.keys()]))
             exit(1)
         if self.item_type.lower() == "datasets":
-            print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS]))
+            print(
+                "".join(
+                    [
+                        f"  - [bold]{k}[/bold] | {v['splits']}\n"
+                        for k, v in DATASETS.items()
+                    ]
+                )
+            )
         elif self.item_type.lower() == "providers":
-            print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS]))
+            print("".join([f"  - {p}\n" for p in PROVIDERS.keys()]))
         else:
             print(
                 error_message.format(input_type="item type", user_input=self.item_type)

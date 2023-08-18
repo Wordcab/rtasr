@@ -5,6 +5,7 @@ from typing import Union
 
 from rtasr.cli_messages import error_message
 from rtasr.constants import DATASETS, PROVIDERS
+from rtasr.utils import get_api_key
 
 
 def benchmark_asr_command_factory(args: argparse.Namespace):
@@ -66,13 +67,13 @@ class BenchmarkASRCommand:
     def run(self) -> None:
         """Run the command."""
         try:
-            if self.provider.lower() not in PROVIDERS:
+            if self.provider.lower() not in PROVIDERS.keys():
                 print(
                     error_message.format(
                         input_type="provider", user_input=self.provider
                     )
                 )
-                print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS]))
+                print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
                 exit(1)
             if self.dataset.lower() not in DATASETS:
                 print(
@@ -81,14 +82,42 @@ class BenchmarkASRCommand:
                 print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS]))
                 exit(1)
 
-            if self.provider.lower() == "deepgram":
-                pass
-            elif self.provider.lower() == "wordcab":
-                pass
+            _provider = self.provider.lower()
+            api_key = get_api_key(_provider)  # raises ValueError if no API key found
+
+            if _provider == "assemblyai":
+                from rtasr.asr import AssemblyAI
+                raise NotImplementedError
+
+            elif _provider == "aws":
+                from rtasr.asr import Aws
+                raise NotImplementedError
+
+            elif _provider == "azure":
+                from rtasr.asr import Azure
+                raise NotImplementedError
+
+            elif _provider == "deepgram":
+                from rtasr.asr import Deepgram
+
+            elif _provider == "google":
+                from rtasr.asr import Google
+                raise NotImplementedError
+
+            elif _provider == "revai":
+                from rtasr.asr import RevAI
+                raise NotImplementedError
+
+            elif _provider == "speechmatics":
+                from rtasr.asr import Speechmatics
+                raise NotImplementedError
+
+            elif _provider == "wordcab":
+                from rtasr.asr import Wordcab
+                raise NotImplementedError
+
             else:
-                raise NotImplementedError(
-                    "The provider must be either `deepgram` or `wordcab`."
-                )
+                raise ValueError(f"Unknown provider: {_provider}")
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")
             exit(1)

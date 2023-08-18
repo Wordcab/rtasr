@@ -37,12 +37,12 @@ class ListItemsCommand:
             print("Datasets:")
             print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS]))
             print("Providers:")
-            print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS]))
+            print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
             exit(1)
         if self.item_type.lower() == "datasets":
             print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS]))
         elif self.item_type.lower() == "providers":
-            print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS]))
+            print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
         else:
             print(
                 error_message.format(input_type="item type", user_input=self.item_type)

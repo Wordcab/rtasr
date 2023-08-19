@@ -53,22 +53,26 @@ class ASRProvider(ABC):
             "Authorization": f"Token {self.config.api_key.get_secret_value()}",
         }
 
-        current_progress, step_progress, splits_progress, progress_group = create_live_panel()
+        (
+            current_progress,
+            step_progress,
+            splits_progress,
+            progress_group,
+        ) = create_live_panel()
 
         with Live(progress_group):
             async with aiohttp.ClientSession() as session:
-                current_progress_task_id = current_progress.add_task(
-                    f"Benchmarking on the {dataset_name} dataset"
-                )
-                splits_progress_task_id = splits_progress.add_task(
-                    "", total=len(audio_files)
-                )
+                current_progress.add_task(f"Benchmarking on the {dataset_name} dataset")
+                splits_progress.add_task("", total=len(audio_files))
                 tasks: List[Callable] = []
                 for audio_file in audio_files:
                     headers["Content-Type"] = f"audio/{audio_file.suffix[1:]}"
                     tasks.append(
                         self._run(
-                            audio_file=audio_file, url=url, headers=headers, session=session
+                            audio_file=audio_file,
+                            url=url,
+                            headers=headers,
+                            session=session,
                         )
                     )
 

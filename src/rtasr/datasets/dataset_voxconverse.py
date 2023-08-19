@@ -20,7 +20,13 @@ from rich import print
 from rich.live import Live
 
 from rtasr.constants import DATASETS
-from rtasr.utils import create_live_panel, download_file, get_files, resolve_cache_dir, unzip_file
+from rtasr.utils import (
+    create_live_panel,
+    download_file,
+    get_files,
+    resolve_cache_dir,
+    unzip_file,
+)
 
 
 async def prepare_voxconverse_dataset(

@@ -49,7 +49,12 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
 
     dataset_metadata: Dict[str, Any] = DATASETS["ami"]
 
-    current_progress, step_progress, splits_progress, progress_group = create_live_panel()
+    (
+        current_progress,
+        step_progress,
+        splits_progress,
+        progress_group,
+    ) = create_live_panel()
 
     manifest_split_paths: List[Path] = []
     with Live(progress_group):

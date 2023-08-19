@@ -3,7 +3,7 @@
 import re
 from pathlib import Path
 from typing import Any, List, Mapping
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 import pytest
 import rich
@@ -11,7 +11,6 @@ import rich
 from rtasr.utils import (
     build_query_string,
     create_live_panel,
-    download_file,
     get_api_key,
     get_files,
     resolve_cache_dir,
@@ -26,7 +25,7 @@ class TestUtilsModule:
     MOCK_ENV_VALUES = {
         "PROVIDER1_API_KEY": "test_key_1234",
         "PROVIDER2_API_KEY": "<your key here>",
-        "PROVIDER3_API_KEY": ""
+        "PROVIDER3_API_KEY": "",
     }
     # Mock async no-op function
     async def async_noop(*args, **kwargs) -> None:
@@ -94,7 +93,7 @@ class TestUtilsModule:
         empty_dir = tmp_path / "emptydir"
         empty_dir.mkdir()
 
-        file1 = (dir_with_files / "file1.txt")
+        file1 = dir_with_files / "file1.txt"
         file1.write_text("content")
         file2 = dir_with_files / "file2.txt"
         file2.write_text("content")
@@ -112,11 +111,14 @@ class TestUtilsModule:
         "params, expected",
         [
             ({"param1": "Value1", "param2": "Value2"}, "?param1=value1&param2=value2"),
-            ({"param1": "Value1", "emptyParam": "", "noneParam": None}, "?param1=value1"),
+            (
+                {"param1": "Value1", "emptyParam": "", "noneParam": None},
+                "?param1=value1",
+            ),
             ({"param1": "VALUE", "param2": "VaLuE2"}, "?param1=value&param2=value2"),
             ({"diarize": True, "model": "the_best"}, "?diarize=true&model=the_best"),
             ({}, ""),
-            (None, "")
+            (None, ""),
         ],
     )
     def test_build_query_string(self, params: Mapping[str, Any], expected: str) -> None:

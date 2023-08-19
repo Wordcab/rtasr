@@ -5,6 +5,7 @@ from unittest.mock import Mock
 import pytest
 from aiohttp import ClientResponse, StreamReader
 
+
 @pytest.fixture
 def mock_response() -> Mock:
     """Mock aiohttp.ClientResponse."""

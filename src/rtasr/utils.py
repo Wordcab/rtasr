@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, List, Mapping, Tuple
 
 import aiohttp
-from dotenv import dotenv_values
+import dotenv
 from rich.console import Group
 from rich.panel import Panel
 from rich.progress import (
@@ -147,9 +147,9 @@ def get_api_key(provider: str) -> str:
     Returns:
         The API key for the provider.
     """
-    config = dotenv_values(".env")
+    config = dotenv.dotenv_values(".env")
 
-    key = config[f"{provider.upper()}_API_KEY"]
+    key = config.get(f"{provider.upper()}_API_KEY", None)
     if key is None or key == "" or key == "<your key here>":
         raise ValueError(
             f"No API key found for {provider.upper()}. "

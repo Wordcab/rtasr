@@ -54,7 +54,9 @@ quality = [
   "pre-commit~=2.20.0",
 ]
 tests = [
-  "pytest~=7.1.2",
+  "pytest>=7.1.2",
+  "pytest-asyncio>=0.21.1",
+  "pytest-cov>=4.1",
 ]
 
 [tool.hatch.envs.quality]
@@ -97,7 +99,7 @@ features = [
 ]
 
 [tool.hatch.envs.tests.scripts]
-run = "pytest tests/ --durations 0 -s"
+run = "pytest --cov=rtasr --cov-report=term-missing tests/ --durations 0 -s -vv"
 
 [[tool.hatch.envs.tests.matrix]]
 python = ["38", "39", "310", "311"]

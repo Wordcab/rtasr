@@ -1,16 +1,6 @@
 """Define all the constants used in rtasr."""
 
-from typing import OrderedDict, Tuple
-
-from rich.console import Group
-from rich.panel import Panel
-from rich.progress import (
-    BarColumn,
-    Progress,
-    SpinnerColumn,
-    TextColumn,
-    TimeElapsedColumn,
-)
+from typing import OrderedDict
 
 
 DATASETS = OrderedDict(
@@ -122,42 +112,3 @@ PROVIDERS = OrderedDict(
         ),
     ]
 )
-
-
-def create_live_panel(
-    bar_width: int = 20,
-    finished_text: str = "✅",
-    spinner: str = "dots",
-    spinner_speed: float = 0.5,
-) -> Tuple[Progress, Progress, Progress, Group]:
-    """
-    Create a live panel for the progress bar.
-
-    Args:
-        bar_width (int):
-            Width of the progress bar. Defaults to 20.
-
-    Returns:
-        Tuple[Progress, Progress, Progress, Group]:
-            The current progress, step progress, splits progress,
-            and the progress group.
-    """
-    current_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
-    step_progress = Progress(
-        TextColumn("  "),
-        TimeElapsedColumn(),
-        SpinnerColumn(spinner, finished_text=finished_text, speed=spinner_speed),
-        TextColumn("[bold purple]{task.fields[action]}"),
-        BarColumn(bar_width=bar_width),
-    )
-    splits_progress = Progress(
-        TextColumn("[bold blue]Progres: {task.percentage:.0f}%"),
-        BarColumn(),
-        TextColumn("({task.completed} of {task.total} steps done)"),
-    )
-
-    progress_group = Group(
-        Panel(Group(current_progress, step_progress, splits_progress))
-    )
-
-    return current_progress, step_progress, splits_progress, progress_group

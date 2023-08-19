@@ -8,6 +8,15 @@ from typing import Any, List, Mapping, Tuple
 
 import aiohttp
 from dotenv import dotenv_values
+from rich.console import Group
+from rich.panel import Panel
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+)
 
 
 def build_query_string(params: Mapping[str, Any] = None) -> str:
@@ -34,6 +43,52 @@ def build_query_string(params: Mapping[str, Any] = None) -> str:
     return (
         "?" + urllib.parse.urlencode(filtered_parameters) if filtered_parameters else ""
     )
+
+
+def create_live_panel(
+    bar_width: int = 20,
+    finished_text: str = "✅",
+    spinner: str = "dots",
+    spinner_speed: float = 0.5,
+) -> Tuple[Progress, Progress, Progress, Group]:
+    """
+    Create a live panel for the progress bar.
+
+    Args:
+        bar_width (int):
+            Width of the progress bar. Defaults to 20.
+        finished_text (str):
+            Text to display when the progress bar is finished.
+            Defaults to "✅".
+        spinner (str):
+            The spinner type. Defaults to "dots".
+        spinner_speed (float):
+            The speed of the spinner. Defaults to 0.5.
+
+    Returns:
+        Tuple[Progress, Progress, Progress, Group]:
+            The current progress, step progress, splits progress,
+            and the progress group.
+    """
+    current_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
+    step_progress = Progress(
+        TextColumn("  "),
+        TimeElapsedColumn(),
+        SpinnerColumn(spinner, finished_text=finished_text, speed=spinner_speed),
+        TextColumn("[bold purple]{task.fields[action]}"),
+        BarColumn(bar_width=bar_width),
+    )
+    splits_progress = Progress(
+        TextColumn("[bold blue]Progres: {task.percentage:.0f}%"),
+        BarColumn(),
+        TextColumn("({task.completed} of {task.total} steps done)"),
+    )
+
+    progress_group = Group(
+        Panel(Group(current_progress, step_progress, splits_progress))
+    )
+
+    return current_progress, step_progress, splits_progress, progress_group
 
 
 async def download_file(

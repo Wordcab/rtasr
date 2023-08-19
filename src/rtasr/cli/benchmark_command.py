@@ -301,7 +301,7 @@ class BenchmarkASRCommand:
                 exit(1)
 
             asyncio.run(
-                engine.api_call(
+                engine.launch(
                     audio_files=verified_audio_filepaths[:1],
                     output_dir=benchmark_dir,
                 )

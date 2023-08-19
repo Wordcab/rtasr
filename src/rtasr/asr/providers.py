@@ -10,18 +10,10 @@ import aiofiles
 import aiohttp
 from pydantic import BaseModel, HttpUrl, SecretStr
 from rich import print
-from rich.console import Group
 from rich.live import Live
-from rich.panel import Panel
-from rich.progress import (
-    BarColumn,
-    Progress,
-    SpinnerColumn,
-    TextColumn,
-    TimeElapsedColumn,
-)
 
 from rtasr.asr.options import DeepgramOptions
+from rtasr.constants import create_live_panel
 from rtasr.utils import build_query_string
 
 
@@ -39,32 +31,29 @@ class ASRProvider(ABC):
         """Initialize the ASR provider."""
         self.config = ProviderConfig(api_url=api_url, api_key=api_key)
 
-    async def api_call(self, audio_files: List[Path], output_dir: Path) -> None:
+    async def launch(
+        self,
+        audio_files: List[Path],
+        dataset_name: str,
+        provider_name: str,
+        output_dir: Path,
+    ) -> None:
         """Call the API of the ASR provider."""
         url = f"{self.config.api_url}{build_query_string(self.options)}"
         headers = {
             "Authorization": f"Token {self.config.api_key.get_secret_value()}",
         }
 
-        current_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
-        step_progress = Progress(
-            TextColumn("  "),
-            TimeElapsedColumn(),
-            SpinnerColumn("dots", finished_text="✅", speed=0.5),
-            TextColumn("[bold purple]{task.fields[action]}"),
-            BarColumn(bar_width=20),
-        )
-        splits_progress = Progress(
-            TextColumn("[bold blue]Progres: {task.percentage:.0f}%"),
-            BarColumn(),
-            TextColumn("({task.completed} of {task.total} steps done)"),
-        )
-        progress_group = Group(
-            Panel(Group(current_progress, step_progress, splits_progress))
-        )
+        current_progress, step_progress, splits_progress, progress_group = create_live_panel()
 
         with Live(progress_group):
             async with aiohttp.ClientSession() as session:
+                current_progress_task_id = current_progress.add_task(
+                    f"Benchmarking on the {dataset_name} dataset"
+                )
+                splits_progress_task_id = splits_progress.add_task(
+                    "", total=len(audio_files)
+                )
                 tasks: List[Callable] = []
                 for audio_file in audio_files:
                     headers["Content-Type"] = f"audio/{audio_file.suffix[1:]}"

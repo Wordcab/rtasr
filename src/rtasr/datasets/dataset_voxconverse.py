@@ -17,19 +17,16 @@ from typing import Any, Dict, List
 import aiofiles
 import aiohttp
 from rich import print
-from rich.console import Group
 from rich.live import Live
-from rich.panel import Panel
-from rich.progress import (
-    BarColumn,
-    Progress,
-    SpinnerColumn,
-    TextColumn,
-    TimeElapsedColumn,
-)
 
 from rtasr.constants import DATASETS
-from rtasr.utils import download_file, get_files, resolve_cache_dir, unzip_file
+from rtasr.utils import (
+    create_live_panel,
+    download_file,
+    get_files,
+    resolve_cache_dir,
+    unzip_file,
+)
 
 
 async def prepare_voxconverse_dataset(
@@ -59,22 +56,7 @@ async def prepare_voxconverse_dataset(
 
     dataset_metadata: Dict[str, Any] = DATASETS["voxconverse"]
 
-    current_progress = Progress(TimeElapsedColumn(), TextColumn("{task.description}"))
-    step_progress = Progress(
-        TextColumn("  "),
-        TimeElapsedColumn(),
-        SpinnerColumn("dots", finished_text="✅", speed=0.5),
-        TextColumn("[bold purple]{task.fields[action]}"),
-        BarColumn(bar_width=20),
-    )
-    splits_progress = Progress(
-        TextColumn("[bold blue]Progres: {task.percentage:.0f}%"),
-        BarColumn(),
-        TextColumn("({task.completed} of {task.total} steps done)"),
-    )
-    progress_group = Group(
-        Panel(Group(current_progress, step_progress, splits_progress))
-    )
+    current_progress, _, splits_progress, progress_group = create_live_panel()
 
     manifest_split_paths: List[Path] = []
     with Live(progress_group):

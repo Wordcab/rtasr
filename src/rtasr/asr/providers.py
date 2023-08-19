@@ -9,8 +9,20 @@ from typing import Callable, List
 import aiofiles
 import aiohttp
 from pydantic import BaseModel, HttpUrl, SecretStr
+from rich import print
+from rich.live import Live
 
-from rtasr.asr.options import DeepgramOptions
+from rtasr.asr.options import (
+    AssemblyAIOptions,
+    AwsOptions,
+    AzureOptions,
+    DeepgramOptions,
+    GoogleOptions,
+    RevAIOptions,
+    SpeechmaticsOptions,
+    WordcabOptions,
+)
+from rtasr.constants import create_live_panel
 from rtasr.utils import build_query_string
 
 
@@ -28,12 +40,53 @@ class ASRProvider(ABC):
         """Initialize the ASR provider."""
         self.config = ProviderConfig(api_url=api_url, api_key=api_key)
 
-    @abstractmethod
-    async def api_call(self) -> None:
+    async def launch(
+        self,
+        audio_files: List[Path],
+        dataset_name: str,
+        provider_name: str,
+        output_dir: Path,
+    ) -> None:
         """Call the API of the ASR provider."""
-        raise NotImplementedError(
-            "The ASR provider must implement the `api_call` method."
-        )
+        url = f"{self.config.api_url}{build_query_string(self.options)}"
+        headers = {
+            "Authorization": f"Token {self.config.api_key.get_secret_value()}",
+        }
+
+        (
+            current_progress,
+            step_progress,
+            splits_progress,
+            progress_group,
+        ) = create_live_panel()
+
+        with Live(progress_group):
+            async with aiohttp.ClientSession() as session:
+                current_progress.add_task(f"Benchmarking on the {dataset_name} dataset")
+                splits_progress.add_task("", total=len(audio_files))
+                tasks: List[Callable] = []
+                for audio_file in audio_files:
+                    headers["Content-Type"] = f"audio/{audio_file.suffix[1:]}"
+                    tasks.append(
+                        self._run(
+                            audio_file=audio_file,
+                            url=url,
+                            headers=headers,
+                            session=session,
+                        )
+                    )
+
+                results = await asyncio.gather(*tasks)
+
+            for result in results:
+                print(result)
+
+    @abstractmethod
+    async def _run(
+        self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
+    ) -> dict:
+        """Run the ASR provider."""
+        raise NotImplementedError("The ASR provider must implement the `_run` method.")
 
     @abstractmethod
     def result_to_rttm(self) -> None:
@@ -48,7 +101,7 @@ class AssemblyAI(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = AssemblyAIOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the AssemblyAI ASR provider."""
@@ -64,7 +117,7 @@ class Aws(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = AwsOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the AWS ASR provider."""
@@ -80,7 +133,7 @@ class Azure(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = AzureOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the Azure ASR provider."""
@@ -99,51 +152,28 @@ class Deepgram(ASRProvider):
         super().__init__(api_url, api_key)
         self.options = DeepgramOptions(**options)
 
-    async def api_call(self, audio_files: List[Path], output_dir: Path) -> None:
-        """Call the API of the Deepgram ASR provider."""
-        url = f"{self.config.api_url}{build_query_string(self.options)}"
-        headers = {
-            "Authorization": f"Token {self.config.api_key.get_secret_value()}",
-        }
-
-        async with aiohttp.ClientSession() as session:
-            tasks: List[Callable] = []
-            for audio_file in audio_files:
-                headers["Content-Type"] = f"audio/{audio_file.suffix[1:]}"
-                tasks.append(
-                    self._run(
-                        audio_file=audio_file, url=url, headers=headers, session=session
-                    )
-                )
-
-            results = await asyncio.gather(*tasks)
-
-        print(results)
-
     async def _run(
         self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
-    ) -> None:
-        """Run the ASR provider."""
-        async with aiofiles.open(audio_file, "rb") as f:
-            _audio = await f.read()
+    ) -> dict:
+        """Run the Deepgram ASR provider."""
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            async with session.post(
+                url=url,
+                data=f,
+                headers=headers,
+                raise_for_status=True,
+            ) as response:
+                content = (await response.text()).strip()
 
-        async with session.post(
-            url=url,
-            data=_audio,
-            headers=headers,
-            raise_for_status=True,
-        ) as response:
-            content = (await response.text()).strip()
+                if not content:
+                    return None
 
-            if not content:
-                return None
+                body = json.loads(content)
 
-            body = json.loads(content)
+                if body.get("error"):
+                    raise Exception(f"DG: {content}")
 
-            if body.get("error"):
-                raise Exception(f"DG: {content}")
-
-            return body
+                return body
 
     def result_to_rttm(self) -> None:
         """Convert the result to RTTM format."""
@@ -155,10 +185,12 @@ class Google(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = GoogleOptions(**options)
 
-    async def api_call(self) -> None:
-        """Call the API of the Google ASR provider."""
+    async def _run(
+        self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
+    ) -> None:
+        """Run the ASR provider."""
         pass
 
     def result_to_rttm(self) -> None:
@@ -171,7 +203,7 @@ class RevAI(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = RevAIOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the RevAI ASR provider."""
@@ -187,7 +219,7 @@ class Speechmatics(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = SpeechmaticsOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the Speechmatics ASR provider."""
@@ -204,11 +236,30 @@ class Wordcab(ASRProvider):
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         """Initialize the Wordcab ASR provider."""
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = WordcabOptions(**options)
 
-    async def api_call(self) -> None:
-        """Call the API of the Wordcab ASR provider."""
-        pass
+    async def _run(
+        self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
+    ) -> None:
+        """Run the Wordcab ASR provider."""
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            async with session.post(
+                url=url,
+                data=f,
+                headers=headers,
+                raise_for_status=True,
+            ) as response:
+                content = (await response.text()).strip()
+
+                if not content:
+                    return None
+
+                body = json.loads(content)
+
+                if body.get("error"):
+                    raise Exception(f"Wordcab: {content}")
+
+                return body
 
     def result_to_rttm(self) -> None:
         """Convert the result to RTTM format."""

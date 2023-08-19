@@ -216,9 +216,9 @@ class BenchmarkASRCommand:
                 from rtasr.asr import AssemblyAI
 
                 engine = AssemblyAI(
-                    api_url=PROVIDERS[_provider],
+                    api_url=PROVIDERS[_provider]["url"],
                     api_key=api_key,
-                    options={},
+                    options=PROVIDERS[_provider]["options"],
                 )
                 print("AssemblyAI is not supported yet.")
                 exit(1)
@@ -227,9 +227,9 @@ class BenchmarkASRCommand:
                 from rtasr.asr import Aws
 
                 engine = Aws(
-                    api_url=PROVIDERS[_provider],
+                    api_url=PROVIDERS[_provider]["url"],
                     api_key=api_key,
-                    options={},
+                    options=PROVIDERS[_provider]["options"],
                 )
                 print("AWS is not supported yet.")
                 exit(1)
@@ -238,9 +238,9 @@ class BenchmarkASRCommand:
                 from rtasr.asr import Azure
 
                 engine = Azure(
-                    api_url=PROVIDERS[_provider],
+                    api_url=PROVIDERS[_provider]["url"],
                     api_key=api_key,
-                    options={},
+                    options=PROVIDERS[_provider]["options"],
                 )
                 print("Azure is not supported yet.")
                 exit(1)
@@ -249,18 +249,18 @@ class BenchmarkASRCommand:
                 from rtasr.asr import Deepgram
 
                 engine = Deepgram(
-                    api_url=PROVIDERS[_provider],
+                    api_url=PROVIDERS[_provider]["url"],
                     api_key=api_key,
-                    options={},
+                    options=PROVIDERS[_provider]["options"],
                 )
 
             elif _provider == "google":
                 from rtasr.asr import Google
 
                 engine = Google(
-                    api_url=PROVIDERS[_provider],
+                    api_url=PROVIDERS[_provider]["url"],
                     api_key=api_key,
-                    options={},
+                    options=PROVIDERS[_provider]["options"],
                 )
                 print("Google is not supported yet.")
                 exit(1)
@@ -269,9 +269,9 @@ class BenchmarkASRCommand:
                 from rtasr.asr import RevAI
 
                 engine = RevAI(
-                    api_url=PROVIDERS[_provider],
+                    api_url=PROVIDERS[_provider]["url"],
                     api_key=api_key,
-                    options={},
+                    options=PROVIDERS[_provider]["options"],
                 )
                 print("RevAI is not supported yet.")
                 exit(1)
@@ -280,9 +280,9 @@ class BenchmarkASRCommand:
                 from rtasr.asr import Speechmatics
 
                 engine = Speechmatics(
-                    api_url=PROVIDERS[_provider],
+                    api_url=PROVIDERS[_provider]["url"],
                     api_key=api_key,
-                    options={},
+                    options=PROVIDERS[_provider]["options"],
                 )
                 print("Speechmatics is not supported yet.")
                 exit(1)
@@ -291,9 +291,9 @@ class BenchmarkASRCommand:
                 from rtasr.asr import Wordcab
 
                 engine = Wordcab(
-                    api_url=PROVIDERS[_provider],
+                    api_url=PROVIDERS[_provider]["url"],
                     api_key=api_key,
-                    options={},
+                    options=PROVIDERS[_provider]["options"],
                 )
 
             else:
@@ -301,7 +301,7 @@ class BenchmarkASRCommand:
                 exit(1)
 
             asyncio.run(
-                engine.api_call(
+                engine.launch(
                     audio_files=verified_audio_filepaths[:1],
                     output_dir=benchmark_dir,
                 )

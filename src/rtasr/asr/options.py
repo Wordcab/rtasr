@@ -95,7 +95,11 @@ class WordcabOptions(TypedDict, total=False):
     The options for the Wordcab transcription.
 
     References from the Wordcab docs:
+    https://docs.wordcab.com/reference/post_transcribe
     """
 
-    # TODO: Add the references from the Wordcab docs.
-    # TODO: Add the options.
+    alignment: Literal["true", "false"]
+    diarization: Literal["true", "false"]
+    display_name: str
+    dual_channel: Literal["true", "false"]
+    source_lang: str

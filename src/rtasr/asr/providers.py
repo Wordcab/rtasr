@@ -12,7 +12,16 @@ from pydantic import BaseModel, HttpUrl, SecretStr
 from rich import print
 from rich.live import Live
 
-from rtasr.asr.options import DeepgramOptions
+from rtasr.asr.options import (
+    AssemblyAIOptions,
+    AwsOptions,
+    AzureOptions,
+    DeepgramOptions,
+    GoogleOptions,
+    RevAIOptions,
+    SpeechmaticsOptions,
+    WordcabOptions,
+)
 from rtasr.constants import create_live_panel
 from rtasr.utils import build_query_string
 
@@ -88,7 +97,7 @@ class AssemblyAI(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = AssemblyAIOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the AssemblyAI ASR provider."""
@@ -104,7 +113,7 @@ class Aws(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = AwsOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the AWS ASR provider."""
@@ -120,7 +129,7 @@ class Azure(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = AzureOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the Azure ASR provider."""
@@ -172,7 +181,7 @@ class Google(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = GoogleOptions(**options)
 
     async def _run(
         self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
@@ -190,7 +199,7 @@ class RevAI(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = RevAIOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the RevAI ASR provider."""
@@ -206,7 +215,7 @@ class Speechmatics(ASRProvider):
 
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = SpeechmaticsOptions(**options)
 
     async def api_call(self) -> None:
         """Call the API of the Speechmatics ASR provider."""
@@ -223,11 +232,30 @@ class Wordcab(ASRProvider):
     def __init__(self, api_url: str, api_key: str, options: dict) -> None:
         """Initialize the Wordcab ASR provider."""
         super().__init__(api_url, api_key)
-        self.options = options
+        self.options = WordcabOptions(**options)
 
-    async def api_call(self) -> None:
-        """Call the API of the Wordcab ASR provider."""
-        pass
+    async def _run(
+        self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
+    ) -> None:
+        """Run the Wordcab ASR provider."""
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            async with session.post(
+                url=url,
+                data=f,
+                headers=headers,
+                raise_for_status=True,
+            ) as response:
+                content = (await response.text()).strip()
+
+                if not content:
+                    return None
+
+                body = json.loads(content)
+
+                if body.get("error"):
+                    raise Exception(f"Wordcab: {content}")
+
+                return body
 
     def result_to_rttm(self) -> None:
         """Convert the result to RTTM format."""

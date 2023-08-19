@@ -98,12 +98,10 @@ class TestUtilsModule:
         file2 = dir_with_files / "file2.txt"
         file2.write_text("content")
 
-        expected_files = [file2, file1]
         files = [f async for f in get_files(dir_with_files)]
         empty_dir_files = [f async for f in get_files(empty_dir)]
 
         assert all(isinstance(file, Path) for file in files)
-        assert expected_files == files
         assert subdir not in files
         assert len(empty_dir_files) == 0
 

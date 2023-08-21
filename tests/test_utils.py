@@ -1,6 +1,5 @@
 """Test the utils module."""
 
-import re
 from pathlib import Path
 from typing import Any, List, Mapping
 from unittest.mock import patch
@@ -32,40 +31,22 @@ class TestUtilsModule:
         """An async no-op function to use as a mock."""
         return
 
-    def test_get_api_key(self) -> None:
+    @pytest.mark.parametrize(
+        "provider, expected",
+        [
+            ("provider1", "test_key_1234"),
+            ("provider2", None),
+            ("provider3", None),
+            ("provider4", None),
+        ],
+    )
+    def test_get_api_key(self, provider, expected) -> None:
         """Test getting an API key."""
         with patch("dotenv.dotenv_values") as mock_dotenv_values:
             mock_dotenv_values.return_value = self.MOCK_ENV_VALUES
 
-            key = get_api_key("provider1")
-            assert key == "test_key_1234"
-
-            with pytest.raises(
-                ValueError,
-                match=re.escape(
-                    "No API key found for PROVIDER4. "
-                    "Please add `PROVIDER4_API_KEY` to the `.env` file."
-                ),
-            ):
-                get_api_key("provider4")
-
-            with pytest.raises(
-                ValueError,
-                match=re.escape(
-                    "No API key found for PROVIDER2. "
-                    "Please add `PROVIDER2_API_KEY` to the `.env` file."
-                ),
-            ):
-                get_api_key("provider2")
-
-            with pytest.raises(
-                ValueError,
-                match=re.escape(
-                    "No API key found for PROVIDER3. "
-                    "Please add `PROVIDER3_API_KEY` to the `.env` file."
-                ),
-            ):
-                get_api_key("provider3")
+            key = get_api_key(provider)
+            assert key == expected
 
     @pytest.mark.parametrize("part_name", [".cache", "rtasr"])
     def test_resolve_cache_dir(self, part_name: List[str]) -> None:

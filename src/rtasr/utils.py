@@ -4,10 +4,11 @@ import asyncio
 import urllib.parse
 import zipfile
 from pathlib import Path
-from typing import Any, List, Mapping, Tuple
+from typing import Any, List, Mapping, Tuple, Union
 
 import aiohttp
 import dotenv
+from rich import print
 from rich.console import Group
 from rich.panel import Panel
 from rich.progress import (
@@ -134,7 +135,7 @@ async def download_file(
     return output_file
 
 
-def get_api_key(provider: str) -> str:
+def get_api_key(provider: str) -> Union[str, None]:
     """Get the API key for the provider.
 
     All the API keys must be stored in a .env file in the root directory of the
@@ -145,16 +146,17 @@ def get_api_key(provider: str) -> str:
             The provider to get the API key for.
 
     Returns:
-        The API key for the provider.
+        The API key for the provider or None if not found.
     """
     config = dotenv.dotenv_values(".env")
 
     key = config.get(f"{provider.upper()}_API_KEY", None)
     if key is None or key == "" or key == "<your key here>":
-        raise ValueError(
+        print(
             f"No API key found for {provider.upper()}. "
             f"Please add `{provider.upper()}_API_KEY` to the `.env` file."
         )
+        return None
 
     return key
 

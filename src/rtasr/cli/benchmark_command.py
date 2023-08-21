@@ -228,13 +228,19 @@ class BenchmarkASRCommand:
                     importlib.import_module("rtasr.asr.providers"),
                     PROVIDERS[_provider].get("engine", None),
                 )
-                engines.append(
-                    engine_class(
-                        api_url=PROVIDERS[_provider].get("url", None),
-                        api_key=get_api_key(_provider),
-                        options=PROVIDERS[_provider].get("options", {}),
+
+                _api_key: Union[str, None] = get_api_key(_provider)
+                if _api_key is not None:
+                    engines.append(
+                        engine_class(
+                            api_url=PROVIDERS[_provider].get("url", None),
+                            api_key=_api_key,
+                            options=PROVIDERS[_provider].get("options", {}),
+                            concurrency_limit=PROVIDERS[_provider].get(
+                                "concurrency_limit", None
+                            ),
+                        )
                     )
-                )
 
             (
                 current_progress,
@@ -267,10 +273,13 @@ class BenchmarkASRCommand:
             print("Results by provider: [green]completed[/green]|[red]failed[/red]")
 
             for result in results:
-                print(
-                    f"- {result.provider_name}:"
-                    f" [green]{result.completed}[/green]|[red]{result.failed}[/red]"
-                )
+                if not isinstance(result, Exception):
+                    print(
+                        f"- {result.provider_name}:"
+                        f" [green]{result.completed}[/green]|[red]{result.failed}[/red]"
+                    )
+                else:
+                    print(f"[red]Error: {result}[/red]")
 
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")

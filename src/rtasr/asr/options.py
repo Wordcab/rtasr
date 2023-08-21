@@ -1,6 +1,6 @@
 """Options regroup all the ASR providers options classes."""
 
-from typing import TypedDict
+from typing import List, TypedDict
 
 from typing_extensions import Literal
 
@@ -10,10 +10,37 @@ class AssemblyAIOptions(TypedDict, total=False):
     The options for the AssemblyAI transcription.
 
     References from the AssemblyAI docs:
+    https://www.assemblyai.com/docs/API%20reference/transcript#create-a-transcript
     """
 
-    # TODO: Add the references from the AssemblyAI docs.
-    # TODO: Add the options.
+    audio_url: str
+    language_code: str
+    punctuate: bool
+    format_text: bool
+    dual_channel: bool
+    webhook_url: str
+    webhook_auth_header_name: str
+    webhook_auth_header_value: str
+    audio_start_from: int
+    audio_end_at: int
+    word_boost: List[str]
+    boost_param: Literal["low", "default", "high"]
+    filter_profanity: bool
+    redact_pii: bool
+    redact_pii_audio: bool
+    redact_pii_audio_quality: Literal["mp3", "wav"]
+    redact_pii_policies: List[str]
+    redact_pii_sub: Literal["entity_type", "hash"]
+    speaker_labels: bool
+    speakers_expected: int
+    content_safety: bool
+    iab_categories: bool
+    custom_spelling: List[str]
+    disfluencies: bool
+    sentiment_analysis: bool
+    auto_chapters: bool
+    entity_detection: bool
+    speech_threshold: float
 
 
 class AwsOptions(TypedDict, total=False):
@@ -46,7 +73,7 @@ class DeepgramOptions(TypedDict, total=False):
     https://developers.deepgram.com/documentation/features/
     """
 
-    diarize: Literal["false", "true"]
+    diarize: bool
     diarize_version: str
     language: str
     model: str
@@ -98,8 +125,8 @@ class WordcabOptions(TypedDict, total=False):
     https://docs.wordcab.com/reference/post_transcribe
     """
 
-    alignment: Literal["true", "false"]
-    diarization: Literal["true", "false"]
+    alignment: bool
+    diarization: bool
     display_name: str
-    dual_channel: Literal["true", "false"]
+    dual_channel: bool
     source_lang: str

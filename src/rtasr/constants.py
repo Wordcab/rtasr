@@ -58,8 +58,13 @@ PROVIDERS = OrderedDict(
         (
             "assemblyai",
             {
-                "url": "",
+                "url": "https://api.assemblyai.com/v2",
                 "engine": "AssemblyAI",
+                "concurrency_limit": 5,
+                "options": {
+                    "speaker_labels": True,
+                    "punctuate": True,
+                },
             },
         ),
         (
@@ -113,12 +118,14 @@ PROVIDERS = OrderedDict(
         (
             "wordcab",
             {
-                "url": "https://wordcab.com/api/v1/transcribe",
+                "url": "https://wordcab.com/api/v1",
                 "engine": "Wordcab",
                 "options": {
                     "alignment": False,
                     "diarize": True,
                     "dual_channel": False,
+                    "only_api": False,
+                    "source": "audio",
                 },
             },
         ),

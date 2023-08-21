@@ -104,8 +104,16 @@ PROVIDERS = OrderedDict(
         (
             "revai",
             {
-                "url": "",
+                "url": "https://api.rev.ai/speechtotext/v1",
                 "engine": "RevAI",
+                "concurrency_limit": 5,
+                "options": {
+                    "remove_disfluencies": False,
+                    "skip_diarization": False,
+                    "skip_postprocessing": False,
+                    "skip_punctuation": False,
+                    "transcriber": "machine",
+                },
             },
         ),
         (

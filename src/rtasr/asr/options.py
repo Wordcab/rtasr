@@ -13,34 +13,34 @@ class AssemblyAIOptions(TypedDict, total=False):
     https://www.assemblyai.com/docs/API%20reference/transcript#create-a-transcript
     """
 
-    audio_url: str
-    language_code: str
-    punctuate: bool
-    format_text: bool
-    dual_channel: bool
-    webhook_url: str
-    webhook_auth_header_name: str
-    webhook_auth_header_value: str
     audio_start_from: int
     audio_end_at: int
-    word_boost: List[str]
+    audio_url: str
+    auto_chapters: bool
     boost_param: Literal["low", "default", "high"]
+    content_safety: bool
+    custom_spelling: List[str]
+    disfluencies: bool
+    dual_channel: bool
+    entity_detection: bool
     filter_profanity: bool
+    format_text: bool
+    iab_categories: bool
+    language_code: str
+    punctuate: bool
     redact_pii: bool
     redact_pii_audio: bool
     redact_pii_audio_quality: Literal["mp3", "wav"]
     redact_pii_policies: List[str]
     redact_pii_sub: Literal["entity_type", "hash"]
-    speaker_labels: bool
-    speakers_expected: int
-    content_safety: bool
-    iab_categories: bool
-    custom_spelling: List[str]
-    disfluencies: bool
     sentiment_analysis: bool
-    auto_chapters: bool
-    entity_detection: bool
+    speakers_expected: int
+    speaker_labels: bool
     speech_threshold: float
+    webhook_url: str
+    webhook_auth_header_name: str
+    webhook_auth_header_value: str
+    word_boost: List[str]
 
 
 class AwsOptions(TypedDict, total=False):
@@ -100,10 +100,23 @@ class RevAIOptions(TypedDict, total=False):
     The options for the RevAI transcription.
 
     References from the Rev docs:
-    https://www.rev.ai/docs/streaming
+    https://docs.rev.ai/api/asynchronous/reference/#operation/SubmitTranscriptionJob
     """
 
-    # TODO: Add the options.
+    callback_url: str
+    custom_vocabularies: List[str]
+    custom_vocabulary_id: str
+    delete_after_seconds: int
+    filter_profanity: bool
+    language: str
+    metadata: str
+    remove_disfluencies: bool
+    skip_diarization: bool
+    skip_postprocessing: bool
+    skip_punctuation: bool
+    speaker_channels_count: int
+    transcriber: Literal["human", "machine"]
+    verbatim: bool
 
 
 class SpeechmaticsOptions(TypedDict, total=False):

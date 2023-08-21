@@ -313,23 +313,21 @@ class Wordcab(ASRProvider):
     ) -> None:
         """Run the Wordcab ASR provider."""
         async with aiofiles.open(audio_file, mode="rb") as f:
-            async with session.post(
-                url=url,
-                data=f,
-                headers=headers,
-                raise_for_status=True,
-            ) as response:
+            async with session.post(url=url, data=f, headers=headers) as response:
                 content = (await response.text()).strip()
 
-                if not content:
-                    return None
+        if not content:
+            _status = TranscriptionStatus.FAILED
+            body = None
+        else:
+            body = json.loads(content)
 
-                body = json.loads(content)
+            if body.get("detail"):
+                _status = TranscriptionStatus.FAILED
+            else:
+                _status = TranscriptionStatus.COMPLETED
 
-                if body.get("error"):
-                    raise Exception(f"Wordcab: {content}")
-
-                return body
+        return audio_file.name, _status, body
 
     def result_to_rttm(self) -> None:
         """Convert the result to RTTM format."""

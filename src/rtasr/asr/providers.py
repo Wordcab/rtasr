@@ -110,8 +110,6 @@ class ASRProvider(ABC):
                 the number of files that were successfully transcribed and the number
                 of files that failed to be transcribed.
         """
-        url = f"{self.config.api_url}{build_query_string(self.options)}"
-
         step_progress_task_id = step_progress.add_task(
             "",
             action=f"[bold green]{self.__class__.__name__}[/bold green]",
@@ -128,7 +126,7 @@ class ASRProvider(ABC):
                     tasks.append(
                         self._launch(
                             audio_file=audio_file,
-                            url=url,
+                            url=self.config.api_url,
                             session=session,
                         )
                     )
@@ -158,13 +156,6 @@ class ASRProvider(ABC):
                     raise Exception(e) from e
                 finally:
                     step_progress.advance(step_progress_task_id)
-
-            for audio_file_name, task in task_tracking.items():
-                if task["status"] == TranscriptionStatus.IN_PROGRESS:
-                    print(
-                        "[bold red]The transcription of the audio file"
-                        f" {audio_file_name} failed.[/bold red]"
-                    )
 
             split_progress.advance(split_progress_task_id)
 
@@ -202,8 +193,8 @@ class ASRProvider(ABC):
 
     @abstractmethod
     async def _launch(
-        self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
-    ) -> dict:
+        self, audio_file: Path, url: HttpUrl, headers: dict, session: aiohttp.ClientSession
+    ) -> Tuple[str, TranscriptionStatus, dict]:
         """Run the ASR provider."""
         raise NotImplementedError("The ASR provider must implement the `_run` method.")
 
@@ -225,7 +216,7 @@ class AssemblyAI(ASRProvider):
         self.options = AssemblyAIOptions(**options)
 
     async def _launch(
-        self, audio_file: Path, url: str, session: aiohttp.ClientSession,
+        self, audio_file: Path, url: HttpUrl, session: aiohttp.ClientSession,
     ) -> Tuple[str, TranscriptionStatus, dict]:
         """Call the API of the AssemblyAI ASR provider."""
         headers = {
@@ -236,7 +227,7 @@ class AssemblyAI(ASRProvider):
 
         async with aiofiles.open(audio_file, mode="rb") as f:
             async with session.post(
-                url=f"{url}/upload", data=f, headers=headers,
+                url=f"{url}/upload{build_query_string(self.options)}", data=f, headers=headers,
             ) as response:
                 content = (await response.text()).strip()
 
@@ -285,7 +276,7 @@ class Aws(ASRProvider):
         self.options = AwsOptions(**options)
 
     async def _launch(
-        self, audio_file: Path, url: str, session: aiohttp.ClientSession,
+        self, audio_file: Path, url: HttpUrl, session: aiohttp.ClientSession,
     ) -> None:
         """Call the API of the AWS ASR provider."""
         concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
@@ -324,7 +315,7 @@ class Deepgram(ASRProvider):
         self.options = DeepgramOptions(**options)
 
     async def _launch(
-        self, audio_file: Path, url: str, session: aiohttp.ClientSession
+        self, audio_file: Path, url: HttpUrl, session: aiohttp.ClientSession
     ) -> dict:
         """Run the Deepgram ASR provider."""
         headers = {
@@ -332,8 +323,9 @@ class Deepgram(ASRProvider):
             "Content-Type": f"audio/{audio_file.suffix[1:]}",
         }
 
+        _url = f"{url}{build_query_string(self.options)}"
         async with aiofiles.open(audio_file, mode="rb") as f:
-            async with session.post(url=url, data=f, headers=headers) as response:
+            async with session.post(url=_url, data=f, headers=headers) as response:
                 content = (await response.text()).strip()
 
         if not content:
@@ -362,7 +354,7 @@ class Google(ASRProvider):
         self.options = GoogleOptions(**options)
 
     async def _launch(
-        self, audio_file: Path, url: str, headers: dict, session: aiohttp.ClientSession
+        self, audio_file: Path, url: HttpUrl, headers: dict, session: aiohttp.ClientSession
     ) -> None:
         """Run the ASR provider."""
         pass
@@ -407,13 +399,15 @@ class Speechmatics(ASRProvider):
 class Wordcab(ASRProvider):
     """The ASR provider class for Wordcab."""
 
-    def __init__(self, api_url: str, api_key: str, options: dict) -> None:
+    def __init__(
+        self, api_url: str, api_key: str, options: dict, concurrency_limit: Union[int, None],
+    ) -> None:
         """Initialize the Wordcab ASR provider."""
-        super().__init__(api_url, api_key)
+        super().__init__(api_url, api_key, concurrency_limit)
         self.options = WordcabOptions(**options)
 
     async def _launch(
-        self, audio_file: Path, url: str, session: aiohttp.ClientSession
+        self, audio_file: Path, url: HttpUrl, session: aiohttp.ClientSession
     ) -> None:
         """Run the Wordcab ASR provider."""
         headers = {
@@ -421,45 +415,52 @@ class Wordcab(ASRProvider):
             "Content-Disposition": f'attachment; filename="{audio_file.name}"',
         }
 
+        concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
+
+        _url = f"{url}/transcribe{build_query_string(self.options)}"
         async with aiofiles.open(audio_file, mode="rb") as f:
+            form = aiohttp.FormData()
+            form.add_field("file", f, filename=audio_file.name)
+
             async with session.post(
-                url=url, data={"file": f}, headers=headers
+                url=_url, data=form, headers=headers
             ) as response:
                 content = (await response.text()).strip()
 
-        if not content:
-            _status = TranscriptionStatus.FAILED
-            body = None
-        else:
-            body = json.loads(content)
-
-            if body.get("detail"):
-                _status = TranscriptionStatus.FAILED
-            else:
-                _status = TranscriptionStatus.COMPLETED
-
-        return audio_file.name, _status, body
-
-    async def _retrieve_result(self, job_name: str, session: aiohttp.ClientSession) -> None:
-        """Retrieve the result from the Wordcab ASR provider."""
-        headers = {
-            "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
-            "Accept": "application/json",
-        }
+        body = json.loads(content)
+        job_name = body.get("job_name")
+        transcript_id = body.get("transcript_id")
 
         while True:
-            async with session.post(
-                url=f"https://wordcab.com/api/v1/jobs/{job_name}", headers=headers
+            async with session.get(
+                url=f"{url}/jobs/{job_name}", headers=headers
             ) as response:
                 content = (await response.text()).strip()
 
             body = json.loads(content)
-            if body.get("status") == "Completed":
+            if body.get("job_status") == "TranscriptComplete":
+                _status = TranscriptionStatus.COMPLETED
+                break
+            elif body.get("job_status") == "Error":
+                _status = TranscriptionStatus.FAILED
                 break
             else:
                 await asyncio.sleep(3)
 
-        return body
+        if _status == TranscriptionStatus.COMPLETED:
+            async with session.get(
+                url=f"{url}/transcripts/{transcript_id}", headers=headers
+            ) as response:
+                content = (await response.text()).strip()
+
+            body = json.loads(content)
+
+        else:
+            body = None
+
+        self.concurrency_handler.put(concurr_token)
+
+        return audio_file.name, _status, body
 
     def result_to_rttm(self) -> None:
         """Convert the result to RTTM format."""

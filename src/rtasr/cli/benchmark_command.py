@@ -270,10 +270,13 @@ class BenchmarkASRCommand:
             print("Results by provider: [green]completed[/green]|[red]failed[/red]")
 
             for result in results:
-                print(
-                    f"- {result.provider_name}:"
-                    f" [green]{result.completed}[/green]|[red]{result.failed}[/red]"
-                )
+                if not isinstance(result, Exception):
+                    print(
+                        f"- {result.provider_name}:"
+                        f" [green]{result.completed}[/green]|[red]{result.failed}[/red]"
+                    )
+                else:
+                    print(f"[red]Error: {result}[/red]")
 
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")

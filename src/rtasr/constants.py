@@ -114,7 +114,7 @@ PROVIDERS = OrderedDict(
         (
             "wordcab",
             {
-                "url": "https://wordcab.com/api/v1/transcribe",
+                "url": "https://wordcab.com/api/v1",
                 "engine": "Wordcab",
                 "options": {
                     "alignment": False,

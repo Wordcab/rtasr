@@ -58,8 +58,9 @@ PROVIDERS = OrderedDict(
         (
             "assemblyai",
             {
-                "url": "",
+                "url": "https://api.assemblyai.com/v2",
                 "engine": "AssemblyAI",
+                "concurrency_limit": 5,
             },
         ),
         (
@@ -119,6 +120,8 @@ PROVIDERS = OrderedDict(
                     "alignment": False,
                     "diarize": True,
                     "dual_channel": False,
+                    "only_api": False,
+                    "source": "audio"
                 },
             },
         ),

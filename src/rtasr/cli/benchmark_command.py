@@ -233,6 +233,9 @@ class BenchmarkASRCommand:
                         api_url=PROVIDERS[_provider].get("url", None),
                         api_key=get_api_key(_provider),
                         options=PROVIDERS[_provider].get("options", {}),
+                        concurrency_limit=PROVIDERS[_provider].get(
+                            "concurrency_limit", None
+                        ),
                     )
                 )
 

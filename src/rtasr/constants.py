@@ -61,6 +61,10 @@ PROVIDERS = OrderedDict(
                 "url": "https://api.assemblyai.com/v2",
                 "engine": "AssemblyAI",
                 "concurrency_limit": 5,
+                "options": {
+                    "speaker_labels": True,
+                    "punctuate": True,
+                },
             },
         ),
         (

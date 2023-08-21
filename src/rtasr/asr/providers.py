@@ -79,7 +79,7 @@ class ASRProvider(ABC):
         )
 
         task_tracking: Dict[str, Any] = {}
-        
+
         test_counter = 0  # TODO: Remove this line, test purpose only
         for split_name, split_audio_files in audio_files.items():
             tasks: List[Callable] = []
@@ -229,9 +229,7 @@ class Deepgram(ASRProvider):
     ) -> dict:
         """Run the Deepgram ASR provider."""
         async with aiofiles.open(audio_file, mode="rb") as f:
-            async with session.post(
-                url=url, data=f, headers=headers
-            ) as response:
+            async with session.post(url=url, data=f, headers=headers) as response:
                 content = (await response.text()).strip()
 
         if not content:

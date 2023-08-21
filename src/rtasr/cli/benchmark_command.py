@@ -225,7 +225,7 @@ class BenchmarkASRCommand:
             engines: List[ASRProvider] = []
             for _provider in _providers:
                 engine_class = getattr(
-                    importlib.import_module(f"rtasr.asr.providers"),
+                    importlib.import_module("rtasr.asr.providers"),
                     PROVIDERS[_provider].get("engine", None),
                 )
                 engines.append(
@@ -264,11 +264,12 @@ class BenchmarkASRCommand:
                 )
 
             print(f"Find the benchmark results in {benchmark_dir.resolve()}")
-            print(f"Results by provider: [green]completed[/green]|[red]failed[/red]")
+            print("Results by provider: [green]completed[/green]|[red]failed[/red]")
 
             for result in results:
                 print(
-                    f"- {result.provider_name}: [green]{result.completed}[/green]|[red]{result.failed}[/red]"
+                    f"- {result.provider_name}:"
+                    f" [green]{result.completed}[/green]|[red]{result.failed}[/red]"
                 )
 
         except KeyboardInterrupt:
@@ -300,7 +301,9 @@ class BenchmarkASRCommand:
                 )
                 for engine in engines
             ]
-            results: List[ProviderResult] = await asyncio.gather(*tasks, return_exceptions=True)
+            results: List[ProviderResult] = await asyncio.gather(
+                *tasks, return_exceptions=True
+            )
 
         splits_progress.update(splits_progress_task_id, visible=False)
 

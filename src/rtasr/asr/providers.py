@@ -515,7 +515,54 @@ class Speechmatics(ASRProvider):
         session: aiohttp.ClientSession,
     ) -> Tuple[str, TranscriptionStatus, dict]:
         """Call the API of the Speechmatics ASR provider."""
-        pass
+        headers = {
+            "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
+        }
+
+        concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
+
+        _url = f"{url}/jobs"
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            form = aiohttp.FormData()
+            form.add_field("data_file", f, filename=audio_file.name)
+            form.add_field("config", json.dumps(self.options, ensure_ascii=False))
+
+            async with session.post(url=_url, data=form, headers=headers) as response:
+                content = (await response.text()).strip()
+
+        body = json.loads(content)
+        job_id = body.get("id")
+
+        while True:
+            async with session.get(url=f"{_url}/{job_id}", headers=headers) as response:
+                content = (await response.text()).strip()
+
+            body = json.loads(content)
+            _job = body.get("job")
+
+            if _job.get("status") == "done":
+                _status = TranscriptionStatus.COMPLETED
+                break
+            elif _job.get("status") == "rejected":
+                _status = TranscriptionStatus.FAILED
+                break
+            else:
+                await asyncio.sleep(3)
+
+        if _status == TranscriptionStatus.COMPLETED:
+            async with session.get(
+                url=f"{_url}/{job_id}/transcript?format=json-v2", headers=headers
+            ) as response:
+                content = (await response.text()).strip()
+
+            body = json.loads(content)
+
+        else:
+            body = None
+
+        self.concurrency_handler.put(concurr_token)
+
+        return audio_file.name, _status, body
 
     def result_to_rttm(self) -> None:
         """Convert the result to RTTM format."""

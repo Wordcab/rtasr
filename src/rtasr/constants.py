@@ -125,7 +125,7 @@ PROVIDERS = OrderedDict(
                     "diarize": True,
                     "dual_channel": False,
                     "only_api": False,
-                    "source": "audio"
+                    "source": "audio",
                 },
             },
         ),

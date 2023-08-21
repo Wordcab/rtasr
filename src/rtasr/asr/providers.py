@@ -151,7 +151,10 @@ class ASRProvider(ABC):
                         )
                     elif status == TranscriptionStatus.FAILED:
                         task_tracking[audio_file_name]["status"] = status
-                        print(f"[bold red]\[{self.__class__.__name__}] -> {body}[/bold red]")
+                        print(
+                            rf"[bold red]\[{self.__class__.__name__}] -> {body}[/bold"
+                            " red]"
+                        )
                 except Exception as e:
                     raise Exception(e) from e
                 finally:
@@ -193,7 +196,11 @@ class ASRProvider(ABC):
 
     @abstractmethod
     async def _launch(
-        self, audio_file: Path, url: HttpUrl, headers: dict, session: aiohttp.ClientSession
+        self,
+        audio_file: Path,
+        url: HttpUrl,
+        headers: dict,
+        session: aiohttp.ClientSession,
     ) -> Tuple[str, TranscriptionStatus, dict]:
         """Run the ASR provider."""
         raise NotImplementedError("The ASR provider must implement the `_run` method.")
@@ -210,13 +217,20 @@ class AssemblyAI(ASRProvider):
     """The ASR provider class for AssemblyAI."""
 
     def __init__(
-        self, api_url: str, api_key: str, options: dict, concurrency_limit: Union[int, None],
+        self,
+        api_url: str,
+        api_key: str,
+        options: dict,
+        concurrency_limit: Union[int, None],
     ) -> None:
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = AssemblyAIOptions(**options)
 
     async def _launch(
-        self, audio_file: Path, url: HttpUrl, session: aiohttp.ClientSession,
+        self,
+        audio_file: Path,
+        url: HttpUrl,
+        session: aiohttp.ClientSession,
     ) -> Tuple[str, TranscriptionStatus, dict]:
         """Call the API of the AssemblyAI ASR provider."""
         headers = {
@@ -227,7 +241,9 @@ class AssemblyAI(ASRProvider):
 
         async with aiofiles.open(audio_file, mode="rb") as f:
             async with session.post(
-                url=f"{url}/upload{build_query_string(self.options)}", data=f, headers=headers,
+                url=f"{url}/upload{build_query_string(self.options)}",
+                data=f,
+                headers=headers,
             ) as response:
                 content = (await response.text()).strip()
 
@@ -270,13 +286,20 @@ class Aws(ASRProvider):
     """The ASR provider class for AWS."""
 
     def __init__(
-        self, api_url: str, api_key: str, options: dict, concurrency_limit: Union[int, None]
+        self,
+        api_url: str,
+        api_key: str,
+        options: dict,
+        concurrency_limit: Union[int, None],
     ) -> None:
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = AwsOptions(**options)
 
     async def _launch(
-        self, audio_file: Path, url: HttpUrl, session: aiohttp.ClientSession,
+        self,
+        audio_file: Path,
+        url: HttpUrl,
+        session: aiohttp.ClientSession,
     ) -> None:
         """Call the API of the AWS ASR provider."""
         concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
@@ -310,7 +333,11 @@ class Deepgram(ASRProvider):
     """The ASR provider class for Deepgram."""
 
     def __init__(
-        self, api_url: str, api_key: str, options: dict, concurrency_limit: Union[int, None],
+        self,
+        api_url: str,
+        api_key: str,
+        options: dict,
+        concurrency_limit: Union[int, None],
     ) -> None:
         """Initialize the Deepgram ASR provider."""
         super().__init__(api_url, api_key, concurrency_limit)
@@ -356,7 +383,11 @@ class Google(ASRProvider):
         self.options = GoogleOptions(**options)
 
     async def _launch(
-        self, audio_file: Path, url: HttpUrl, headers: dict, session: aiohttp.ClientSession
+        self,
+        audio_file: Path,
+        url: HttpUrl,
+        headers: dict,
+        session: aiohttp.ClientSession,
     ) -> None:
         """Run the ASR provider."""
         pass
@@ -402,7 +433,11 @@ class Wordcab(ASRProvider):
     """The ASR provider class for Wordcab."""
 
     def __init__(
-        self, api_url: str, api_key: str, options: dict, concurrency_limit: Union[int, None],
+        self,
+        api_url: str,
+        api_key: str,
+        options: dict,
+        concurrency_limit: Union[int, None],
     ) -> None:
         """Initialize the Wordcab ASR provider."""
         super().__init__(api_url, api_key, concurrency_limit)
@@ -424,9 +459,7 @@ class Wordcab(ASRProvider):
             form = aiohttp.FormData()
             form.add_field("file", f, filename=audio_file.name)
 
-            async with session.post(
-                url=_url, data=form, headers=headers
-            ) as response:
+            async with session.post(url=_url, data=form, headers=headers) as response:
                 content = (await response.text()).strip()
 
         body = json.loads(content)

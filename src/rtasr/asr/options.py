@@ -43,7 +43,6 @@ class AssemblyAIOptions(TypedDict, total=False):
     speech_threshold: float
 
 
-
 class AwsOptions(TypedDict, total=False):
     """
     The options for the AWS transcription.

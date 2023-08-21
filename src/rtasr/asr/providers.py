@@ -309,9 +309,11 @@ class Azure(ASRProvider):
 class Deepgram(ASRProvider):
     """The ASR provider class for Deepgram."""
 
-    def __init__(self, api_url: str, api_key: str, options: dict) -> None:
+    def __init__(
+        self, api_url: str, api_key: str, options: dict, concurrency_limit: Union[int, None],
+    ) -> None:
         """Initialize the Deepgram ASR provider."""
-        super().__init__(api_url, api_key)
+        super().__init__(api_url, api_key, concurrency_limit)
         self.options = DeepgramOptions(**options)
 
     async def _launch(

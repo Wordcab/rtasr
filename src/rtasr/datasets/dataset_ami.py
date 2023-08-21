@@ -265,6 +265,8 @@ async def _create_manifest(
         raise Exception(
             f"Number of audio files ({len(audio_files)}), rttm files"
             f" ({len(rttm_files)}) and uem files ({len(uem_files)}) do not match."
+            " Please check the dataset folder, there might be some extra or missing"
+            " files."
         )
 
     if manifest_filepath.exists():

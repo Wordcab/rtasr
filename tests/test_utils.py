@@ -8,6 +8,7 @@ import pytest
 import rich
 
 from rtasr.utils import (
+    _filename_dots_filter,
     build_query_string,
     create_live_panel,
     get_api_key,
@@ -142,6 +143,20 @@ class TestUtilsModule:
         result = await unzip_file(zip_path, output_dir)
         assert result == output_subdir
         assert output_subdir.exists()
+
+    @pytest.mark.parametrize(
+        ["filename", "expected"],
+        [
+            ("file_name.txt", "file_name.txt"),
+            ("file.name.txt", "file_name.txt"),
+            ("file.name.txt.txt", "file_name_txt.txt"),
+            ("file.name.txt.txt.txt", "file_name_txt_txt.txt"),
+        ],
+    )
+    def test_filename_dots_filter(self, filename, expected) -> None:
+        """Test the _filename_dots_filter function."""
+        result = _filename_dots_filter(Path(filename))
+        assert str(result) == expected
 
     # @pytest.mark.asyncio
     # @pytest.mark.usefixtures("mock_response")

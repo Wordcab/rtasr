@@ -115,7 +115,9 @@ async def download_file(
         Path to output file.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_file = output_dir / Path(url).name
+
+    _output_file = output_dir / Path(url).name
+    output_file = _filename_dots_filter(_output_file)
 
     if use_cache and output_file.exists():
         return output_file
@@ -213,3 +215,21 @@ async def unzip_file(zip_path: Path, output_dir: Path, use_cache: bool = True) -
 def resolve_cache_dir() -> Path:
     """Resolve the cache directory for rtasr."""
     return Path.home() / ".cache" / "rtasr"
+
+
+def _filename_dots_filter(file_path: Path) -> Path:
+    """
+    Filter dots in the filename to avoid issues with API calls.
+
+    Args:
+        file_path (Path):
+            Path to file.
+
+    Returns:
+        Path to file with dots replaced with underscores.
+    """
+    filename = file_path.name
+    new_filename = filename.replace(".", "_", filename.count(".") - 1)
+    new_file_path = file_path.with_name(new_filename)
+
+    return new_file_path

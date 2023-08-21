@@ -59,24 +59,28 @@ PROVIDERS = OrderedDict(
             "assemblyai",
             {
                 "url": "",
+                "engine": "AssemblyAI",
             },
         ),
         (
             "aws",
             {
                 "url": "",
+                "engine": "Aws",
             },
         ),
         (
             "azure",
             {
                 "url": "",
+                "engine": "Azure",
             },
         ),
         (
             "deepgram",
             {
                 "url": "https://api.deepgram.com/v1/listen",
+                "engine": "Deepgram",
                 "options": {
                     "diarize": True,
                     "model": "nova",
@@ -89,24 +93,28 @@ PROVIDERS = OrderedDict(
             "google",
             {
                 "url": "",
+                "engine": "Google",
             },
         ),
         (
             "revai",
             {
                 "url": "",
+                "engine": "RevAI",
             },
         ),
         (
             "speechmatics",
             {
                 "url": "",
+                "engine": "Speechmatics",
             },
         ),
         (
             "wordcab",
             {
                 "url": "https://wordcab.com/api/v1/transcribe",
+                "engine": "Wordcab",
                 "options": {
                     "alignment": False,
                     "diarize": True,

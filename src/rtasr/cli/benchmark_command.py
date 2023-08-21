@@ -2,20 +2,25 @@
 
 import argparse
 import asyncio
+import importlib
 import json
 from pathlib import Path
-from typing import List, Union
+from typing import Dict, List, Tuple, Union
 
+import aiohttp
 from rich import print
+from rich.live import Live
+from rich.progress import Progress
 
+from rtasr.asr import ASRProvider, ProviderResult
 from rtasr.cli_messages import error_message
 from rtasr.constants import DATASETS, PROVIDERS
-from rtasr.utils import get_api_key, resolve_cache_dir
+from rtasr.utils import create_live_panel, get_api_key, resolve_cache_dir
 
 
 def benchmark_asr_command_factory(args: argparse.Namespace):
     return BenchmarkASRCommand(
-        args.provider,
+        args.providers,
         args.dataset,
         args.split,
         args.dataset_dir,
@@ -30,14 +35,18 @@ class BenchmarkASRCommand:
     @staticmethod
     def register_subcommand(parser: argparse.ArgumentParser) -> None:
         subparser = parser.add_parser(
-            "benchmark", help="Benchmark an ASR provider against a dataset."
+            "benchmark",
+            help="Benchmark one or multiple ASR providers against a dataset.",
         )
         subparser.add_argument(
             "-p",
-            "--provider",
-            help="The ASR provider to benchmark.",
+            "--providers",
+            help=(
+                "The ASR provider(s) to benchmark. You can specify multiple providers."
+            ),
             required=True,
             type=str,
+            nargs="+",
         )
         subparser.add_argument(
             "-d", "--dataset", help="The dataset to use.", required=True, type=str
@@ -81,7 +90,7 @@ class BenchmarkASRCommand:
 
     def __init__(
         self,
-        provider: str,
+        providers: List[str],
         dataset: str,
         split: str,
         dataset_dir: Union[str, None] = None,
@@ -89,7 +98,7 @@ class BenchmarkASRCommand:
         use_cache: bool = True,
     ) -> None:
         """Initialize the command."""
-        self.provider = provider
+        self.providers = providers
         self.dataset = dataset
         self.split = split
         self.dataset_dir = dataset_dir
@@ -104,14 +113,13 @@ class BenchmarkASRCommand:
 
         """
         try:
-            if self.provider.lower() not in PROVIDERS.keys():
-                print(
-                    error_message.format(
-                        input_type="provider", user_input=self.provider
+            for provider in self.providers:
+                if provider.lower() not in PROVIDERS.keys():
+                    print(
+                        error_message.format(input_type="provider", user_input=provider)
                     )
-                )
-                print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
-                exit(1)
+                    print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
+                    exit(1)
 
             if self.dataset.lower() not in DATASETS.keys():
                 print(
@@ -120,13 +128,8 @@ class BenchmarkASRCommand:
                 print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS.keys()]))
                 exit(1)
 
-            _provider = self.provider.lower()
+            _providers = [p.lower() for p in self.providers]
             _dataset = self.dataset.lower()
-            api_key = get_api_key(_provider)
-
-            print(
-                rf"Provider [bold green]\[{_provider}][/bold green]: API key found 🎉."
-            )
 
             if self.dataset_dir is None:
                 dataset_dir = resolve_cache_dir() / "datasets" / _dataset
@@ -167,7 +170,7 @@ class BenchmarkASRCommand:
 
             all_manifest_filepaths = DATASETS[_dataset]["manifest_filepaths"]
 
-            selected_manifest_filepaths: List[Path] = []
+            selected_manifest_filepaths: List[Tuple[str, Path]] = []
             for split in splits:
                 for filepath in all_manifest_filepaths[split]:
                     manifest_filepath = dataset_dir / filepath
@@ -181,27 +184,34 @@ class BenchmarkASRCommand:
                         )
                         exit(1)
                     else:
-                        selected_manifest_filepaths.append(manifest_filepath)
+                        selected_manifest_filepaths.append((split, manifest_filepath))
 
             print(
                 f"Manifest filepaths: {len(selected_manifest_filepaths)} files found."
             )
 
-            audio_filepaths: List[Path] = []
-            for manifest_filepath in selected_manifest_filepaths:
+            audio_filepaths: Dict[str, List[Path]] = {s: [] for s in splits}
+            for split, manifest_filepath in selected_manifest_filepaths:
                 with open(manifest_filepath, "r") as f:
                     manifest = json.load(f)
 
-                audio_filepaths.extend([Path(m["audio_filepath"]) for m in manifest])
+                audio_filepaths[split].extend(
+                    [Path(m["audio_filepath"]) for m in manifest]
+                )
 
-            verified_audio_filepaths: List[Path] = [
-                filepath for filepath in audio_filepaths if filepath.exists()
-            ]
+            verified_audio_filepaths: Dict[str, List[Path]] = {s: [] for s in splits}
+            for split, filepaths in audio_filepaths.items():
+                verified_audio_filepaths[split] = [
+                    audio_filepath
+                    for audio_filepath in filepaths
+                    if audio_filepath.exists()
+                ]
 
-            print(
-                f"Audio files: [bold green]{len(verified_audio_filepaths)}[/bold"
-                f" green]/{len(audio_filepaths)} (found/total)"
-            )
+                print(
+                    rf"    \[{split}] Audio files: [bold"
+                    f" green]{len(verified_audio_filepaths[split])}[/bold"
+                    f" green]/{len(audio_filepaths[split])} (found/total)"
+                )
 
             if self.output_dir is None:
                 output_dir = resolve_cache_dir() / "benchmark"
@@ -212,103 +222,89 @@ class BenchmarkASRCommand:
             if not benchmark_dir.exists():
                 benchmark_dir.mkdir(parents=True, exist_ok=True)
 
-            if _provider == "assemblyai":
-                from rtasr.asr import AssemblyAI
-
-                engine = AssemblyAI(
-                    api_url=PROVIDERS[_provider]["url"],
-                    api_key=api_key,
-                    options=PROVIDERS[_provider]["options"],
+            engines: List[ASRProvider] = []
+            for _provider in _providers:
+                engine_class = getattr(
+                    importlib.import_module("rtasr.asr.providers"),
+                    PROVIDERS[_provider].get("engine", None),
                 )
-                print("AssemblyAI is not supported yet.")
-                exit(1)
-
-            elif _provider == "aws":
-                from rtasr.asr import Aws
-
-                engine = Aws(
-                    api_url=PROVIDERS[_provider]["url"],
-                    api_key=api_key,
-                    options=PROVIDERS[_provider]["options"],
-                )
-                print("AWS is not supported yet.")
-                exit(1)
-
-            elif _provider == "azure":
-                from rtasr.asr import Azure
-
-                engine = Azure(
-                    api_url=PROVIDERS[_provider]["url"],
-                    api_key=api_key,
-                    options=PROVIDERS[_provider]["options"],
-                )
-                print("Azure is not supported yet.")
-                exit(1)
-
-            elif _provider == "deepgram":
-                from rtasr.asr import Deepgram
-
-                engine = Deepgram(
-                    api_url=PROVIDERS[_provider]["url"],
-                    api_key=api_key,
-                    options=PROVIDERS[_provider]["options"],
+                engines.append(
+                    engine_class(
+                        api_url=PROVIDERS[_provider].get("url", None),
+                        api_key=get_api_key(_provider),
+                        options=PROVIDERS[_provider].get("options", {}),
+                    )
                 )
 
-            elif _provider == "google":
-                from rtasr.asr import Google
+            (
+                current_progress,
+                step_progress,
+                splits_progress,
+                progress_group,
+            ) = create_live_panel()
 
-                engine = Google(
-                    api_url=PROVIDERS[_provider]["url"],
-                    api_key=api_key,
-                    options=PROVIDERS[_provider]["options"],
+            with Live(progress_group):
+                current_progress_task_id = current_progress.add_task(
+                    f"Benchmarking on the `{_dataset}` dataset"
                 )
-                print("Google is not supported yet.")
-                exit(1)
-
-            elif _provider == "revai":
-                from rtasr.asr import RevAI
-
-                engine = RevAI(
-                    api_url=PROVIDERS[_provider]["url"],
-                    api_key=api_key,
-                    options=PROVIDERS[_provider]["options"],
-                )
-                print("RevAI is not supported yet.")
-                exit(1)
-
-            elif _provider == "speechmatics":
-                from rtasr.asr import Speechmatics
-
-                engine = Speechmatics(
-                    api_url=PROVIDERS[_provider]["url"],
-                    api_key=api_key,
-                    options=PROVIDERS[_provider]["options"],
-                )
-                print("Speechmatics is not supported yet.")
-                exit(1)
-
-            elif _provider == "wordcab":
-                from rtasr.asr import Wordcab
-
-                engine = Wordcab(
-                    api_url=PROVIDERS[_provider]["url"],
-                    api_key=api_key,
-                    options=PROVIDERS[_provider]["options"],
+                results = asyncio.run(
+                    self._run(
+                        engines,
+                        verified_audio_filepaths,
+                        benchmark_dir,
+                        splits_progress,
+                        step_progress,
+                    )
                 )
 
-            else:
-                print(f"Unknown provider: {_provider}")
-                exit(1)
-
-            asyncio.run(
-                engine.launch(
-                    audio_files=verified_audio_filepaths[:1],
-                    output_dir=benchmark_dir,
+                current_progress.stop_task(current_progress_task_id)
+                current_progress.update(
+                    current_progress_task_id,
+                    description="[bold green]Benchmarking finished.",
                 )
-            )
+
+            print(f"Find the benchmark results in {benchmark_dir.resolve()}")
+            print("Results by provider: [green]completed[/green]|[red]failed[/red]")
+
+            for result in results:
+                print(
+                    f"- {result.provider_name}:"
+                    f" [green]{result.completed}[/green]|[red]{result.failed}[/red]"
+                )
 
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")
             exit(1)
         except Exception as e:
             raise Exception(e) from e
+
+    async def _run(
+        self,
+        engines: List[ASRProvider],
+        audio_files: Dict[str, List[Path]],
+        output_dir: Path,
+        splits_progress: Progress,
+        step_progress: Progress,
+    ) -> List[ProviderResult]:
+        splits_progress_task_id = splits_progress.add_task("", total=len(engines))
+
+        timeout = aiohttp.ClientTimeout(total=1800)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            tasks = [
+                engine.launch(
+                    audio_files=audio_files,
+                    output_dir=output_dir,
+                    session=session,
+                    split_progress=splits_progress,
+                    split_progress_task_id=splits_progress_task_id,
+                    step_progress=step_progress,
+                )
+                for engine in engines
+            ]
+            results: List[ProviderResult] = await asyncio.gather(
+                *tasks, return_exceptions=True
+            )
+
+        splits_progress.update(splits_progress_task_id, visible=False)
+
+        return results

@@ -11,17 +11,20 @@ from .options import (
     WordcabOptions,
 )
 from .providers import (
+    ASRProvider,
     AssemblyAI,
     Aws,
     Azure,
     Deepgram,
     Google,
+    ProviderResult,
     RevAI,
     Speechmatics,
     Wordcab,
 )
 
 __all__ = [
+    "ASRProvider",
     "AssemblyAI",
     "AssemblyAIOptions",
     "Aws",
@@ -32,6 +35,7 @@ __all__ = [
     "DeepgramOptions",
     "Google",
     "GoogleOptions",
+    "ProviderResult",
     "RevAI",
     "RevAIOptions",
     "Speechmatics",

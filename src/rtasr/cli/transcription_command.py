@@ -261,6 +261,7 @@ class TranscriptionASRCommand:
                         transcription_dir,
                         splits_progress,
                         step_progress,
+                        self.use_cache,
                     )
                 )
 
@@ -271,13 +272,13 @@ class TranscriptionASRCommand:
                 )
 
             print(f"Find the transcription results in {transcription_dir.resolve()}")
-            print("Results by provider: [green]completed[/green]|[red]failed[/red]")
+            print("Results by provider: [green]completed[/green]|[red]failed[/red]|[cyan]cached[/cyan]]")
 
             for result in results:
                 if not isinstance(result, Exception):
                     print(
                         f"- {result.provider_name}:"
-                        f" [green]{result.completed}[/green]|[red]{result.failed}[/red]"
+                        f" [green]{result.completed}[/green]|[red]{result.failed}[/red]|[cyan]{result.cached}[/cyan]"
                     )
                 else:
                     print(f"[red]Error: {result}[/red]")
@@ -295,6 +296,7 @@ class TranscriptionASRCommand:
         output_dir: Path,
         splits_progress: Progress,
         step_progress: Progress,
+        use_cache: bool,
     ) -> List[ProviderResult]:
         splits_progress_task_id = splits_progress.add_task("", total=len(engines))
 
@@ -308,6 +310,7 @@ class TranscriptionASRCommand:
                     split_progress=splits_progress,
                     split_progress_task_id=splits_progress_task_id,
                     step_progress=step_progress,
+                    use_cache=use_cache,
                 )
                 for engine in engines
             ]

@@ -64,9 +64,10 @@ class ProviderResult(BaseModel):
 class TranscriptionStatus(str, Enum):
     """Status of the transcription."""
 
-    IN_PROGRESS = "IN_PROGRESS"
+    CACHED = "CACHED"
     COMPLETED = "COMPLETED"
     FAILED = "FAILED"
+    IN_PROGRESS = "IN_PROGRESS"
 
 
 class ASRProvider(ABC):
@@ -90,6 +91,12 @@ class ASRProvider(ABC):
         self.config = ProviderConfig(api_url=api_url, api_key=api_key)
         self.concurrency_handler = ConcurrencyHandler(limit=concurrency_limit)
 
+    @property
+    @abstractmethod
+    def output_schema(self) -> ASROutput:
+        """The output schema of the ASR provider."""
+        return ASROutput
+
     async def launch(
         self,
         audio_files: Dict[str, List[Path]],
@@ -98,6 +105,7 @@ class ASRProvider(ABC):
         split_progress: Progress,
         split_progress_task_id: TaskID,
         step_progress: Progress,
+        use_cache: bool,
     ) -> ProviderResult:
         """
         Call the API of the ASR provider.
@@ -121,6 +129,11 @@ class ASRProvider(ABC):
                 The progress bar for the step progress. It is used to track the
                 progress of the transcription of all the audio files for a
                 specific ASR provider.
+            use_cache (bool):
+                Whether to use the cache or not. If `True`, the ASR provider will
+                not transcribe the audio files that are already in the cache.
+                The RTTM files will be generated from the cache if not already
+                present.
 
         Returns:
             ProviderResult:
@@ -136,11 +149,36 @@ class ASRProvider(ABC):
 
         task_tracking: Dict[str, Any] = {}
 
-        test_counter = 0  # TODO: Remove this line, test purpose only
         for split_name, split_audio_files in audio_files.items():
             tasks: List[Callable] = []
             for audio_file in split_audio_files:
-                if test_counter < 1:  # TODO: Remove this line, test purpose only
+                task_tracking[audio_file.name] = {
+                    "status": TranscriptionStatus.IN_PROGRESS,
+                    "audio_file_name": audio_file.name,
+                    "split": split_name,
+                }
+                _check_cache_task = await self._check_cache(
+                    audio_file=audio_file, output_dir=output_dir / split_name,
+                )
+                asr_output_exists, rttm_file_exists = _check_cache_task
+
+                if use_cache and asr_output_exists:
+                    task_tracking[audio_file.name]["asr_output_cache"] = True
+
+                    if not rttm_file_exists:
+                        task_tracking[audio_file.name]["rttm_cache"] = False
+                        tasks.append(
+                            self._get_asr_output_from_cache(
+                                audio_file=audio_file,
+                                output_dir=output_dir / split_name,
+                            )
+                        )
+                    else:
+                        task_tracking[audio_file.name]["rttm_cache"] = True
+
+                else:
+                    task_tracking[audio_file.name]["asr_output_cache"] = False
+                    task_tracking[audio_file.name]["rttm_cache"] = False
                     tasks.append(
                         self._launch(
                             audio_file=audio_file,
@@ -148,29 +186,36 @@ class ASRProvider(ABC):
                             session=session,
                         )
                     )
-                    task_tracking[audio_file.name] = {
-                        "status": TranscriptionStatus.IN_PROGRESS,
-                        "audio_file_name": audio_file.name,
-                        "split": split_name,
-                    }
-                    test_counter += 1  # TODO: Remove this line, test purpose only
 
             for future in asyncio.as_completed(tasks):
                 try:
                     task_result = await future
                     audio_file_name, status, asr_output = task_result
 
-                    if status == TranscriptionStatus.COMPLETED:
+                    if (
+                        status == TranscriptionStatus.CACHED
+                        or status == TranscriptionStatus.COMPLETED
+                    ):
                         task_tracking[audio_file_name]["status"] = status
                         _split = task_tracking[audio_file_name]["split"]
 
-                        rttm_lines = await self.result_to_rttm(asr_output=asr_output)
-                        await self._save_results(
-                            audio_file_name=audio_file_name,
-                            asr_output=asr_output,
-                            rttm_lines=rttm_lines,
-                            output_dir=output_dir / _split,
-                        )
+                        if not task_tracking[audio_file_name]["rttm_cache"]:
+                            rttm_lines = await self.result_to_rttm(
+                                asr_output=asr_output
+                            )
+                            await self._save_rttm_files(
+                                audio_file_name=audio_file_name,
+                                rttm_lines=rttm_lines,
+                                output_dir=output_dir / _split,
+                            )
+
+                        if not task_tracking[audio_file_name]["asr_output_cache"]:
+                            await self._save_results(
+                                audio_file_name=audio_file_name,
+                                asr_output=asr_output,
+                                rttm_lines=rttm_lines,
+                                output_dir=output_dir / _split,
+                            )
 
                     elif status == TranscriptionStatus.FAILED:
                         task_tracking[audio_file_name]["status"] = status
@@ -179,8 +224,10 @@ class ASRProvider(ABC):
                             rf" {asr_output}[/bold"
                             " red]"
                         )
+
                 except Exception as e:
                     raise Exception(e) from e
+
                 finally:
                     step_progress.advance(step_progress_task_id)
 
@@ -193,25 +240,110 @@ class ASRProvider(ABC):
             provider_name=self.__class__.__name__,
             completed=status_counts[TranscriptionStatus.COMPLETED],
             failed=status_counts[TranscriptionStatus.FAILED],
+            cached=status_counts[TranscriptionStatus.CACHED]
         )
 
-    async def _save_results(
-        self,
-        audio_file_name: str,
-        asr_output: ASROutput,
-        rttm_lines: List[str],
-        output_dir: Path,
+    async def _check_cache(self, audio_file: Path, output_dir: Path) -> Tuple[bool, bool]:
+        """Check the cache for the audio file.
+
+        This method check if the audio file has already been transcribed and is
+        in the cache. It will check the asr output file and the RTTM file.
+
+        Args:
+            audio_file (Path):
+                The audio file to check.
+            output_dir (Path):
+                The output directory where the results are saved, i.e. the cache.
+
+        Returns:
+            bool:
+                Whether the audio file is already in the cache or not.
+        """
+        _file_name = audio_file.name.split(".")[0]
+        asr_output_file_path = (
+            output_dir
+            / f"{self.__class__.__name__.lower()}"
+            / "original"
+            / f"{_file_name}.json"
+        )
+        rttm_file_path = (
+            output_dir
+            / f"{self.__class__.__name__.lower()}"
+            / "rttm"
+            / f"{_file_name}.txt"
+        )
+
+        asr_output_exists = await aiofiles.os.path.exists(asr_output_file_path)
+        rttm_exists = await aiofiles.os.path.exists(rttm_file_path)
+
+        return asr_output_exists, rttm_exists
+
+    async def _get_asr_output_from_cache(
+        self, audio_file: Path, output_dir: Path
+    ) -> Tuple[str, TranscriptionStatus, ASROutput]:
+        """Get the asr output from the cache and return it.
+
+        This function return the same output as the `_launch` method but it
+        loads the asr output from the cache instead of calling the API.
+
+        Args:
+            audio_file (Path):
+                The audio file to load.
+            output_dir (Path):
+                The output directory where the results are saved, i.e. the cache.
+
+        Returns:
+            Tuple[str, TranscriptionStatus, ASROutput]:
+                The same output as the `_launch` method but with the asr output
+                loaded from the cache.
+        """
+        raw_asr_output = await self._load_cache(audio_file, output_dir)
+
+        asr_output = self.output_schema.from_json(raw_asr_output)
+
+        return audio_file.name, TranscriptionStatus.CACHED, asr_output
+
+    async def _load_cache(self, audio_file: Path, output_dir: Path) -> dict:
+        """Load the cache for the audio file.
+
+        This method load the asr output file from the cache.
+
+        Args:
+            audio_file (Path):
+                The audio file to load.
+            output_dir (Path):
+                The output directory where the results are saved, i.e. the cache.
+
+        Returns:
+            dict:
+                The raw asr output loaded from the cache.
+        """
+        _file_name = audio_file.name.split(".")[0]
+        asr_output_file_path = (
+            output_dir
+            / f"{self.__class__.__name__.lower()}"
+            / "original"
+            / f"{_file_name}.json"
+        )
+
+        async with aiofiles.open(asr_output_file_path, mode="r") as f:
+            data = await f.read()
+
+        raw_data = json.loads(data)
+
+        return raw_data
+
+    async def _save_asr_outputs(
+        self, audio_file_name: str, asr_output: ASROutput, output_dir: Path,
     ) -> None:
         """
-        Save the asr outputs and the RTTM files to disk.
+        Save the asr outputs to disk.
 
         Args:
             audio_file_name (str):
                 The name of the audio file.
             asr_output (ASROutput):
                 The output of the ASR provider to save.
-            rttm_lines (List[str]):
-                The lines of the RTTM file to save.
             output_dir (Path):
                 The output directory where to save the results.
         """
@@ -230,6 +362,21 @@ class ASRProvider(ABC):
                 json.dumps(asr_output.model_dump(), indent=4, ensure_ascii=False)
             )
 
+    async def _save_rttm_files(
+        self, audio_file_name: str, rttm_lines: List[str], output_dir: Path,
+    ) -> None:
+        """
+        Save the RTTM files to disk.
+
+        Args:
+            audio_file_name (str):
+                The name of the audio file.
+            rttm_lines (List[str]):
+                The RTTM lines to save.
+            output_dir (Path):
+                The output directory where to save the results.
+        """
+        _file_name = audio_file_name.split(".")[0]
         rttm_file_path = (
             output_dir
             / f"{self.__class__.__name__.lower()}"
@@ -275,6 +422,11 @@ class AssemblyAI(ASRProvider):
     ) -> None:
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = AssemblyAIOptions(**options)
+
+    @property
+    def output_schema(self) -> AssemblyAIOutput:
+        """The output format of the AssemblyAI ASR provider."""
+        return AssemblyAIOutput
 
     async def _launch(
         self,
@@ -361,6 +513,11 @@ class Aws(ASRProvider):
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = AwsOptions(**options)
 
+    @property
+    def output_schema(self) -> AwsOutput:
+        """The output format of the AWS ASR provider."""
+        return AwsOutput
+
     async def _launch(
         self,
         audio_file: Path,
@@ -392,6 +549,11 @@ class Azure(ASRProvider):
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = AzureOptions(**options)
 
+    @property
+    def output_schema(self) -> AzureOutput:
+        """The output format of the Azure ASR provider."""
+        return AzureOutput
+
     async def _launch(
         self,
         audio_file: Path,
@@ -419,6 +581,11 @@ class Deepgram(ASRProvider):
         """Initialize the Deepgram ASR provider."""
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = DeepgramOptions(**options)
+
+    @property
+    def output_schema(self) -> DeepgramOutput:
+        """The output format of the Deepgram ASR provider."""
+        return DeepgramOutput
 
     async def _launch(
         self,
@@ -484,6 +651,11 @@ class Google(ASRProvider):
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = GoogleOptions(**options)
 
+    @property
+    def output_schema(self) -> GoogleOutput:
+        """The output format of the Google ASR provider."""
+        return GoogleOutput
+
     async def _launch(
         self,
         audio_file: Path,
@@ -510,6 +682,11 @@ class RevAI(ASRProvider):
     ) -> None:
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = RevAIOptions(**options)
+
+    @property
+    def output_schema(self) -> RevAIOutput:
+        """The output format of the RevAI ASR provider."""
+        return RevAIOutput
 
     async def _launch(
         self,
@@ -616,6 +793,11 @@ class Speechmatics(ASRProvider):
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = SpeechmaticsOptions(**options)
 
+    @property
+    def output_schema(self) -> SpeechmaticsOutput:
+        """The output format of the Speechmatics ASR provider."""
+        return SpeechmaticsOutput
+
     async def _launch(
         self,
         audio_file: Path,
@@ -703,6 +885,11 @@ class Wordcab(ASRProvider):
         """Initialize the Wordcab ASR provider."""
         super().__init__(api_url, api_key, concurrency_limit)
         self.options = WordcabOptions(**options)
+
+    @property
+    def output_schema(self) -> WordcabOutput:
+        """The output format of the Wordcab ASR provider."""
+        return WordcabOutput
 
     async def _launch(
         self,

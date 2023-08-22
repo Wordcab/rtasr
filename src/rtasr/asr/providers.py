@@ -188,7 +188,9 @@ class ASRProvider(ABC):
                             )
                         )
                     else:
-                        task_tracking[audio_file.name]["status"] = TranscriptionStatus.CACHED
+                        task_tracking[audio_file.name][
+                            "status"
+                        ] = TranscriptionStatus.CACHED
                         task_tracking[audio_file.name]["rttm_cache"] = True
 
                 else:

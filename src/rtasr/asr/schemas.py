@@ -83,10 +83,7 @@ class DeepgramMetadata(BaseModel):
     request_id: str
     sha256: str
 
-    model_config = ConfigDict(
-            protected_namespaces=()
-        )
-
+    model_config = ConfigDict(protected_namespaces=())
 
 
 class DeepgramAlternative(BaseModel):

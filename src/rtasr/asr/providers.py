@@ -184,7 +184,8 @@ class ASRProvider(ABC):
                 finally:
                     step_progress.advance(step_progress_task_id)
 
-            split_progress.advance(split_progress_task_id)
+        step_progress.update(step_progress_task_id, advance=len(audio_files))
+        split_progress.advance(split_progress_task_id)
 
         status_counts = Counter(task["status"] for task in task_tracking.values())
 

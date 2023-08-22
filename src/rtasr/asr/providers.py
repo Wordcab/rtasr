@@ -158,7 +158,8 @@ class ASRProvider(ABC):
                     "split": split_name,
                 }
                 _check_cache_task = await self._check_cache(
-                    audio_file=audio_file, output_dir=output_dir / split_name,
+                    audio_file=audio_file,
+                    output_dir=output_dir / split_name,
                 )
                 asr_output_exists, rttm_file_exists = _check_cache_task
 
@@ -240,10 +241,12 @@ class ASRProvider(ABC):
             provider_name=self.__class__.__name__,
             completed=status_counts[TranscriptionStatus.COMPLETED],
             failed=status_counts[TranscriptionStatus.FAILED],
-            cached=status_counts[TranscriptionStatus.CACHED]
+            cached=status_counts[TranscriptionStatus.CACHED],
         )
 
-    async def _check_cache(self, audio_file: Path, output_dir: Path) -> Tuple[bool, bool]:
+    async def _check_cache(
+        self, audio_file: Path, output_dir: Path
+    ) -> Tuple[bool, bool]:
         """Check the cache for the audio file.
 
         This method check if the audio file has already been transcribed and is
@@ -334,7 +337,10 @@ class ASRProvider(ABC):
         return raw_data
 
     async def _save_asr_outputs(
-        self, audio_file_name: str, asr_output: ASROutput, output_dir: Path,
+        self,
+        audio_file_name: str,
+        asr_output: ASROutput,
+        output_dir: Path,
     ) -> None:
         """
         Save the asr outputs to disk.
@@ -363,7 +369,10 @@ class ASRProvider(ABC):
             )
 
     async def _save_rttm_files(
-        self, audio_file_name: str, rttm_lines: List[str], output_dir: Path,
+        self,
+        audio_file_name: str,
+        rttm_lines: List[str],
+        output_dir: Path,
     ) -> None:
         """
         Save the RTTM files to disk.

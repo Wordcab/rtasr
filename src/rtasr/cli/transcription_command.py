@@ -272,7 +272,10 @@ class TranscriptionASRCommand:
                 )
 
             print(f"Find the transcription results in {transcription_dir.resolve()}")
-            print("Results by provider: [green]completed[/green]|[red]failed[/red]|[cyan]cached[/cyan]]")
+            print(
+                "Results by provider:"
+                " [green]completed[/green]|[red]failed[/red]|[cyan]cached[/cyan]]"
+            )
 
             for result in results:
                 if not isinstance(result, Exception):

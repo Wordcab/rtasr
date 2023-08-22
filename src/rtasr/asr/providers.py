@@ -10,6 +10,7 @@ from typing import Any, Callable, Dict, List, Tuple, Union
 
 import aiofiles
 import aiohttp
+from aiopath import AsyncPath
 from pydantic import BaseModel, HttpUrl, SecretStr
 from rich import print
 from rich.progress import Progress, TaskID
@@ -106,6 +107,7 @@ class ASRProvider(ABC):
         split_progress_task_id: TaskID,
         step_progress: Progress,
         use_cache: bool,
+        debug: bool,
     ) -> ProviderResult:
         """
         Call the API of the ASR provider.
@@ -134,6 +136,10 @@ class ASRProvider(ABC):
                 not transcribe the audio files that are already in the cache.
                 The RTTM files will be generated from the cache if not already
                 present.
+            debug (bool):
+                Whether to run in debug mode or not. If `True`, the ASR provider
+                will only transcribe the first audio file of each split.
+                This is useful for debugging or testing the full process.
 
         Returns:
             ProviderResult:
@@ -141,6 +147,12 @@ class ASRProvider(ABC):
                 the number of files that were successfully transcribed and the number
                 of files that failed to be transcribed.
         """
+        if debug:
+            audio_files = {
+                split_name: [audio_files[split_name][0]]
+                for split_name in audio_files.keys()
+            }
+
         step_progress_task_id = step_progress.add_task(
             "",
             action=f"[bold green]{self.__class__.__name__}[/bold green]",
@@ -158,8 +170,8 @@ class ASRProvider(ABC):
                     "split": split_name,
                 }
                 _check_cache_task = await self._check_cache(
-                    audio_file=audio_file,
-                    output_dir=output_dir / split_name,
+                    audio_file=AsyncPath(audio_file),
+                    output_dir=AsyncPath(output_dir / split_name),
                 )
                 asr_output_exists, rttm_file_exists = _check_cache_task
 
@@ -245,7 +257,7 @@ class ASRProvider(ABC):
         )
 
     async def _check_cache(
-        self, audio_file: Path, output_dir: Path
+        self, audio_file: AsyncPath, output_dir: AsyncPath
     ) -> Tuple[bool, bool]:
         """Check the cache for the audio file.
 
@@ -276,8 +288,8 @@ class ASRProvider(ABC):
             / f"{_file_name}.txt"
         )
 
-        asr_output_exists = await aiofiles.os.path.exists(asr_output_file_path)
-        rttm_exists = await aiofiles.os.path.exists(rttm_file_path)
+        asr_output_exists = await asr_output_file_path.exists()
+        rttm_exists = await rttm_file_path.exists()
 
         return asr_output_exists, rttm_exists
 

@@ -14,7 +14,6 @@ from pydantic import BaseModel, HttpUrl, SecretStr
 from rich import print
 from rich.progress import Progress, TaskID
 
-from rtasr.asr.concurrency import ConcurrencyHandler, ConcurrencyToken
 from rtasr.asr.options import (
     AssemblyAIOptions,
     AwsOptions,
@@ -37,6 +36,7 @@ from rtasr.asr.schemas import (
     WordcabOutput,
     WordcabTranscript,
 )
+from rtasr.concurrency import ConcurrencyHandler, ConcurrencyToken
 from rtasr.utils import build_query_string
 
 
@@ -312,7 +312,7 @@ class AssemblyAI(ASRProvider):
                 _status = TranscriptionStatus.COMPLETED
                 break
             elif body.get("status") == "error":
-                asr_output = None
+                asr_output = body.get("error")
                 _status = TranscriptionStatus.FAILED
                 break
             else:

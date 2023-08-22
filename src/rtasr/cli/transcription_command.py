@@ -36,14 +36,15 @@ class TranscriptionASRCommand:
     def register_subcommand(parser: argparse.ArgumentParser) -> None:
         subparser = parser.add_parser(
             "transcription",
-            help="Launch transcription for one or multiple ASR providers against a dataset.",
+            help=(
+                "Launch transcription for one or multiple ASR providers against a"
+                " dataset."
+            ),
         )
         subparser.add_argument(
             "-p",
             "--providers",
-            help=(
-                "The ASR provider(s) to call. You can specify multiple providers."
-            ),
+            help="The ASR provider(s) to call. You can specify multiple providers.",
             required=True,
             type=str,
             nargs="+",

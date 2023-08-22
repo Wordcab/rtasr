@@ -169,7 +169,8 @@ class ASRProvider(ABC):
                     elif status == TranscriptionStatus.FAILED:
                         task_tracking[audio_file_name]["status"] = status
                         print(
-                            rf"[bold red]\[{self.__class__.__name__}] -> {asr_output}[/bold"
+                            rf"[bold red]\[{self.__class__.__name__}] ->"
+                            rf" {asr_output}[/bold"
                             " red]"
                         )
                 except Exception as e:
@@ -218,7 +219,9 @@ class ASRProvider(ABC):
             asr_output_file_path.parent.mkdir(parents=True, exist_ok=True)
 
         async with aiofiles.open(asr_output_file_path, mode="w") as f:
-            await f.write(json.dumps(asr_output.model_dump(), indent=4, ensure_ascii=False))
+            await f.write(
+                json.dumps(asr_output.model_dump(), indent=4, ensure_ascii=False)
+            )
 
         rttm_file_path = (
             output_dir

@@ -57,9 +57,10 @@ class ProviderConfig(BaseModel):
 class ProviderResult(BaseModel):
     """The base class for all ASR provider results."""
 
-    provider_name: str
+    cached: int
     completed: int
     failed: int
+    provider_name: str
 
 
 class TranscriptionStatus(str, Enum):
@@ -223,10 +224,9 @@ class ASRProvider(ABC):
                             )
 
                         if not task_tracking[audio_file_name]["asr_output_cache"]:
-                            await self._save_results(
+                            await self._save_asr_outputs(
                                 audio_file_name=audio_file_name,
                                 asr_output=asr_output,
-                                rttm_lines=rttm_lines,
                                 output_dir=output_dir / _split,
                             )
 
@@ -234,8 +234,7 @@ class ASRProvider(ABC):
                         task_tracking[audio_file_name]["status"] = status
                         print(
                             rf"[bold red]\[{self.__class__.__name__}] ->"
-                            rf" {asr_output}[/bold"
-                            " red]"
+                            rf" {asr_output}[/bold red]"
                         )
 
                 except Exception as e:

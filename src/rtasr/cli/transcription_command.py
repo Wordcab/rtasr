@@ -26,6 +26,7 @@ def transcription_asr_command_factory(args: argparse.Namespace):
         args.dataset_dir,
         args.output_dir,
         args.no_cache,
+        args.debug,
     )
 
 
@@ -87,6 +88,12 @@ class TranscriptionASRCommand:
             required=False,
             action="store_false",
         )
+        subparser.add_argument(
+            "--debug",
+            help="Whether to run in debug mode or not.",
+            required=False,
+            action="store_true",
+        )
         subparser.set_defaults(func=transcription_asr_command_factory)
 
     def __init__(
@@ -97,6 +104,7 @@ class TranscriptionASRCommand:
         dataset_dir: Union[str, None] = None,
         output_dir: Union[str, None] = None,
         use_cache: bool = True,
+        debug: bool = False,
     ) -> None:
         """Initialize the command."""
         self.providers = providers
@@ -105,6 +113,7 @@ class TranscriptionASRCommand:
         self.dataset_dir = dataset_dir
         self.output_dir = output_dir
         self.use_cache = use_cache
+        self.debug = debug
 
     def run(self) -> None:
         """Run the command.
@@ -261,6 +270,8 @@ class TranscriptionASRCommand:
                         transcription_dir,
                         splits_progress,
                         step_progress,
+                        self.use_cache,
+                        self.debug,
                     )
                 )
 
@@ -271,13 +282,16 @@ class TranscriptionASRCommand:
                 )
 
             print(f"Find the transcription results in {transcription_dir.resolve()}")
-            print("Results by provider: [green]completed[/green]|[red]failed[/red]")
+            print(
+                "Results by provider:"
+                " [green]completed[/green]/[cyan]cached[/cyan]/[red]failed[/red]"
+            )
 
             for result in results:
                 if not isinstance(result, Exception):
                     print(
                         f"- {result.provider_name}:"
-                        f" [green]{result.completed}[/green]|[red]{result.failed}[/red]"
+                        f" [green]{result.completed}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.failed}[/red]"
                     )
                 else:
                     print(f"[red]Error: {result}[/red]")
@@ -295,6 +309,8 @@ class TranscriptionASRCommand:
         output_dir: Path,
         splits_progress: Progress,
         step_progress: Progress,
+        use_cache: bool,
+        debug: bool,
     ) -> List[ProviderResult]:
         splits_progress_task_id = splits_progress.add_task("", total=len(engines))
 
@@ -308,6 +324,8 @@ class TranscriptionASRCommand:
                     split_progress=splits_progress,
                     split_progress_task_id=splits_progress_task_id,
                     step_progress=step_progress,
+                    use_cache=use_cache,
+                    debug=debug,
                 )
                 for engine in engines
             ]

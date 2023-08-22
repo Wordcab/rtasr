@@ -1,12 +1,14 @@
 """ASR providers schemas for handling request and response data."""
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ASROutput(BaseModel):
     """ASR output schema."""
+
+    model_config = ConfigDict(extra="ignore")
 
     @classmethod
     def from_json(cls, data: Dict[str, Any]) -> "ASROutput":
@@ -14,8 +16,40 @@ class ASROutput(BaseModel):
         return cls(**data)
 
 
+class AssemblyAIWord(BaseModel):
+    """AssemblyAI word schema."""
+
+    text: str
+    start: float
+    end: float
+    confidence: float
+    speaker: Union[str, None]
+
+
+class AssemblyAIUtterance(BaseModel):
+    """AssemblyAI utterance schema."""
+
+    speaker: str
+    start: float
+    end: float
+    text: str
+    confidence: float
+    words: List[AssemblyAIWord]
+
+
 class AssemblyAIOutput(ASROutput):
     """AssemblyAI output schema."""
+
+    id: str
+    language_model: str
+    acoustic_model: str
+    language_code: str
+    status: str
+    audio_url: str
+    text: str
+    words: List[AssemblyAIWord]
+    utterances: Union[List[AssemblyAIUtterance], None] = None
+    audio_duration: int
 
 
 class AwsOutput(ASROutput):

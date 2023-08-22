@@ -25,6 +25,18 @@ from rtasr.asr.options import (
     SpeechmaticsOptions,
     WordcabOptions,
 )
+from rtasr.asr.schemas import (
+    ASROutput,
+    AssemblyAIOutput,
+    AwsOutput,
+    AzureOutput,
+    DeepgramOutput,
+    GoogleOutput,
+    RevAIOutput,
+    SpeechmaticsOutput,
+    WordcabOutput,
+    WordcabTranscript,
+)
 from rtasr.utils import build_query_string
 
 
@@ -140,19 +152,24 @@ class ASRProvider(ABC):
             for future in asyncio.as_completed(tasks):
                 try:
                     task_result = await future
-                    audio_file_name, status, body = task_result
+                    audio_file_name, status, asr_output = task_result
+
                     if status == TranscriptionStatus.COMPLETED:
                         task_tracking[audio_file_name]["status"] = status
                         _split = task_tracking[audio_file_name]["split"]
-                        await self._save_result(
+
+                        rttm_lines = await self.result_to_rttm(asr_output=asr_output)
+                        await self._save_results(
                             audio_file_name=audio_file_name,
-                            asr_output=body,
+                            asr_output=asr_output,
+                            rttm_lines=rttm_lines,
                             output_dir=output_dir / _split,
                         )
+
                     elif status == TranscriptionStatus.FAILED:
                         task_tracking[audio_file_name]["status"] = status
                         print(
-                            rf"[bold red]\[{self.__class__.__name__}] -> {body}[/bold"
+                            rf"[bold red]\[{self.__class__.__name__}] -> {asr_output}[/bold"
                             " red]"
                         )
                 except Exception as e:
@@ -170,32 +187,50 @@ class ASRProvider(ABC):
             failed=status_counts[TranscriptionStatus.FAILED],
         )
 
-    async def _save_result(
-        self, audio_file_name: str, asr_output: dict, output_dir: Path
+    async def _save_results(
+        self,
+        audio_file_name: str,
+        asr_output: ASROutput,
+        rttm_lines: List[str],
+        output_dir: Path,
     ) -> None:
         """
-        Save the result of an ASR provider to a file.
+        Save the asr outputs and the RTTM files to disk.
 
         Args:
             audio_file_name (str):
                 The name of the audio file.
-            asr_output (dict):
-                The output of the ASR provider.
+            asr_output (ASROutput):
+                The output of the ASR provider to save.
+            rttm_lines (List[str]):
+                The lines of the RTTM file to save.
             output_dir (Path):
                 The output directory where to save the results.
         """
         _file_name = audio_file_name.split(".")[0]
-        file_path = (
+        asr_output_file_path = (
             output_dir
             / f"{self.__class__.__name__.lower()}"
             / "original"
             / f"{_file_name}.json"
         )
-        if not file_path.parent.exists():
-            file_path.parent.mkdir(parents=True, exist_ok=True)
+        if not asr_output_file_path.parent.exists():
+            asr_output_file_path.parent.mkdir(parents=True, exist_ok=True)
 
-        async with aiofiles.open(file_path, mode="w") as f:
-            await f.write(json.dumps(asr_output, indent=4, ensure_ascii=False))
+        async with aiofiles.open(asr_output_file_path, mode="w") as f:
+            await f.write(json.dumps(asr_output.model_dump(), indent=4, ensure_ascii=False))
+
+        rttm_file_path = (
+            output_dir
+            / f"{self.__class__.__name__.lower()}"
+            / "rttm"
+            / f"{_file_name}.txt"
+        )
+        if not rttm_file_path.parent.exists():
+            rttm_file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        async with aiofiles.open(rttm_file_path, mode="w") as f:
+            await f.write("\n".join(rttm_lines))
 
     @abstractmethod
     async def _launch(
@@ -204,7 +239,7 @@ class ASRProvider(ABC):
         url: HttpUrl,
         headers: dict,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, dict]:
+    ) -> Tuple[str, TranscriptionStatus, ASROutput]:
         """Run the ASR provider."""
         raise NotImplementedError(
             "The ASR provider must implement the `_launch` method."
@@ -236,7 +271,7 @@ class AssemblyAI(ASRProvider):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, dict]:
+    ) -> Tuple[str, TranscriptionStatus, AssemblyAIOutput]:
         """Call the API of the AssemblyAI ASR provider."""
         headers = {
             "Authorization": f"{self.config.api_key.get_secret_value()}",
@@ -270,9 +305,11 @@ class AssemblyAI(ASRProvider):
 
             body = json.loads(content)
             if body.get("status") == "completed":
+                asr_output = AssemblyAIOutput.from_json(body)
                 _status = TranscriptionStatus.COMPLETED
                 break
             elif body.get("status") == "error":
+                asr_output = None
                 _status = TranscriptionStatus.FAILED
                 break
             else:
@@ -280,9 +317,9 @@ class AssemblyAI(ASRProvider):
 
         self.concurrency_handler.put(concurr_token)
 
-        return audio_file.name, _status, body
+        return audio_file.name, _status, asr_output
 
-    def result_to_rttm(self) -> None:
+    def result_to_rttm(self, asr_output: AssemblyAIOutput) -> None:
         """Convert the result to RTTM format."""
         pass
 
@@ -305,7 +342,7 @@ class Aws(ASRProvider):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, dict]:
+    ) -> Tuple[str, TranscriptionStatus, AwsOutput]:
         """Call the API of the AWS ASR provider."""
         concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
 
@@ -313,7 +350,7 @@ class Aws(ASRProvider):
 
         return None
 
-    def result_to_rttm(self) -> None:
+    def result_to_rttm(self, asr_output: AwsOutput) -> None:
         """Convert the result to RTTM format."""
         pass
 
@@ -336,11 +373,11 @@ class Azure(ASRProvider):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, dict]:
+    ) -> Tuple[str, TranscriptionStatus, AzureOutput]:
         """Call the API of the Azure ASR provider."""
         pass
 
-    def result_to_rttm(self) -> None:
+    def result_to_rttm(self, asr_output: AzureOutput) -> None:
         """Convert the result to RTTM format."""
         pass
 
@@ -364,7 +401,7 @@ class Deepgram(ASRProvider):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, dict]:
+    ) -> Tuple[str, TranscriptionStatus, DeepgramOutput]:
         """Run the Deepgram ASR provider."""
         headers = {
             "Authorization": f"Token {self.config.api_key.get_secret_value()}",
@@ -380,20 +417,22 @@ class Deepgram(ASRProvider):
 
         if not content:
             _status = TranscriptionStatus.FAILED
-            body = None
+            asr_output = None
         else:
             body = json.loads(content)
 
             if body.get("error"):
+                asr_output = None
                 _status = TranscriptionStatus.FAILED
             else:
+                asr_output = DeepgramOutput.from_json(body)
                 _status = TranscriptionStatus.COMPLETED
 
         self.concurrency_handler.put(concurr_token)
 
-        return audio_file.name, _status, body
+        return audio_file.name, _status, asr_output
 
-    def result_to_rttm(self) -> None:
+    def result_to_rttm(self, asr_output: DeepgramOutput) -> None:
         """Convert the result to RTTM format."""
         pass
 
@@ -416,11 +455,11 @@ class Google(ASRProvider):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, dict]:
+    ) -> Tuple[str, TranscriptionStatus, GoogleOutput]:
         """Run the ASR provider."""
         pass
 
-    def result_to_rttm(self) -> None:
+    def result_to_rttm(self, asr_output: GoogleOutput) -> None:
         """Convert the result to RTTM format."""
         pass
 
@@ -443,7 +482,7 @@ class RevAI(ASRProvider):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, dict]:
+    ) -> Tuple[str, TranscriptionStatus, RevAIOutput]:
         """Call the API of the RevAI ASR provider."""
         headers = {
             "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
@@ -487,15 +526,16 @@ class RevAI(ASRProvider):
                 content = (await response.text()).strip()
 
             body = json.loads(content)
+            asr_output = RevAIOutput.from_json(body)
 
         else:
-            body = None
+            asr_output = None
 
         self.concurrency_handler.put(concurr_token)
 
-        return audio_file.name, _status, body
+        return audio_file.name, _status, asr_output
 
-    def result_to_rttm(self) -> None:
+    def result_to_rttm(self, asr_output: RevAIOutput) -> None:
         """Convert the result to RTTM format."""
         pass
 
@@ -518,7 +558,7 @@ class Speechmatics(ASRProvider):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, dict]:
+    ) -> Tuple[str, TranscriptionStatus, SpeechmaticsOutput]:
         """Call the API of the Speechmatics ASR provider."""
         headers = {
             "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
@@ -561,15 +601,16 @@ class Speechmatics(ASRProvider):
                 content = (await response.text()).strip()
 
             body = json.loads(content)
+            asr_output = SpeechmaticsOutput.from_json(body)
 
         else:
-            body = None
+            asr_output = None
 
         self.concurrency_handler.put(concurr_token)
 
-        return audio_file.name, _status, body
+        return audio_file.name, _status, asr_output
 
-    def result_to_rttm(self) -> None:
+    def result_to_rttm(self, asr_output: SpeechmaticsOutput) -> None:
         """Convert the result to RTTM format."""
         pass
 
@@ -593,7 +634,7 @@ class Wordcab(ASRProvider):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, dict]:
+    ) -> Tuple[str, TranscriptionStatus, WordcabOutput]:
         """Run the Wordcab ASR provider."""
         headers = {
             "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
@@ -637,14 +678,25 @@ class Wordcab(ASRProvider):
                 content = (await response.text()).strip()
 
             body = json.loads(content)
+            asr_output = WordcabOutput.from_json(body)
 
         else:
-            body = None
+            asr_output = None
 
         self.concurrency_handler.put(concurr_token)
 
-        return audio_file.name, _status, body
+        return audio_file.name, _status, asr_output
 
-    def result_to_rttm(self) -> None:
+    async def result_to_rttm(self, asr_output: WordcabOutput) -> List[str]:
         """Convert the result to RTTM format."""
-        pass
+        all_transcripts: List[WordcabTranscript] = asr_output.transcript
+
+        rttm_lines: List[str] = []
+        for transcript in all_transcripts:
+            start_seconds = transcript.timestamp_start / 1000
+            end_seconds = transcript.timestamp_end / 1000
+            speaker = transcript.speaker
+
+            rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+
+        return rttm_lines

@@ -14,7 +14,6 @@ from pydantic import BaseModel, HttpUrl, SecretStr
 from rich import print
 from rich.progress import Progress, TaskID
 
-from rtasr.asr.concurrency import ConcurrencyHandler, ConcurrencyToken
 from rtasr.asr.options import (
     AssemblyAIOptions,
     AwsOptions,
@@ -37,6 +36,7 @@ from rtasr.asr.schemas import (
     WordcabOutput,
     WordcabTranscript,
 )
+from rtasr.concurrency import ConcurrencyHandler, ConcurrencyToken
 from rtasr.utils import build_query_string
 
 
@@ -312,7 +312,7 @@ class AssemblyAI(ASRProvider):
                 _status = TranscriptionStatus.COMPLETED
                 break
             elif body.get("status") == "error":
-                asr_output = None
+                asr_output = body.get("error")
                 _status = TranscriptionStatus.FAILED
                 break
             else:
@@ -424,8 +424,8 @@ class Deepgram(ASRProvider):
         else:
             body = json.loads(content)
 
-            if body.get("error"):
-                asr_output = None
+            if body.get("err_code"):
+                asr_output = body.get("err_msg")
                 _status = TranscriptionStatus.FAILED
             else:
                 asr_output = DeepgramOutput.from_json(body)
@@ -532,7 +532,7 @@ class RevAI(ASRProvider):
             asr_output = RevAIOutput.from_json(body)
 
         else:
-            asr_output = None
+            asr_output = body.get("failure_detail")
 
         self.concurrency_handler.put(concurr_token)
 
@@ -607,7 +607,8 @@ class Speechmatics(ASRProvider):
             asr_output = SpeechmaticsOutput.from_json(body)
 
         else:
-            asr_output = None
+            _errors = body.get("errors")
+            asr_output = "\n".join([error.get("message") for error in _errors])
 
         self.concurrency_handler.put(concurr_token)
 

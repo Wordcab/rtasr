@@ -1,0 +1,1416 @@
+{
+    "id": "6tn2ww4gkw-5b1d-45e3-905a-2916f43b896a",
+    "language_model": "assemblyai_default",
+    "acoustic_model": "assemblyai_default",
+    "language_code": "en_us",
+    "status": "completed",
+    "audio_url": "https://cdn.assemblyai.com/upload/c73eb1ff-a700-4976-8ce3-00b84a9b01e9",
+    "text": "CNN has decided not to run a Donald Trump endorsed campaign ad after the network decided it does not meet their standards. The 32nd advertisement paid for by Trump's campaign targeted Joe Biden's conduct toward Ukraine while he served as vice president, while also referring to CNN personalities Don Lemon, Chris Cuomo and Jim Acosta as media lapdogs. A CNN spokesperson spoke to THR, saying the ad does not meet the network's advertising standards, adding, in addition to disparaging CNN and its journalists, the ad makes assertions that have been proven demonstrably false by various news outlets, including CNN. However, despite CNN's rejection, the president posted the advertisement onto his Twitter page last week, along with the caption, I am draining the swamp now. This is not the first time CNN has rejected a Trump campaign ad. Back in 2017, the Net refused to run a Trump approved ad called Let President Trump Do His Job, which criticized the media and specifically called out Lemon as well as Anderson Cooper. To stay up to date on this story, head to THR.com and until next time for The Hollywood Reporter News, I'm a hajoy.",
+    "words": [
+        {
+            "text": "CNN",
+            "start": 410,
+            "end": 794,
+            "confidence": 0.94134,
+            "speaker": null
+        },
+        {
+            "text": "has",
+            "start": 842,
+            "end": 1054,
+            "confidence": 0.99993,
+            "speaker": null
+        },
+        {
+            "text": "decided",
+            "start": 1092,
+            "end": 1402,
+            "confidence": 0.99952,
+            "speaker": null
+        },
+        {
+            "text": "not",
+            "start": 1466,
+            "end": 1646,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "to",
+            "start": 1668,
+            "end": 1806,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "run",
+            "start": 1828,
+            "end": 2014,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "a",
+            "start": 2052,
+            "end": 2206,
+            "confidence": 0.8,
+            "speaker": null
+        },
+        {
+            "text": "Donald",
+            "start": 2228,
+            "end": 2506,
+            "confidence": 0.99824,
+            "speaker": null
+        },
+        {
+            "text": "Trump",
+            "start": 2538,
+            "end": 2782,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "endorsed",
+            "start": 2836,
+            "end": 3258,
+            "confidence": 0.89729,
+            "speaker": null
+        },
+        {
+            "text": "campaign",
+            "start": 3274,
+            "end": 3674,
+            "confidence": 0.99971,
+            "speaker": null
+        },
+        {
+            "text": "ad",
+            "start": 3722,
+            "end": 4030,
+            "confidence": 0.60757,
+            "speaker": null
+        },
+        {
+            "text": "after",
+            "start": 4100,
+            "end": 4334,
+            "confidence": 0.99999,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 4372,
+            "end": 4526,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "network",
+            "start": 4548,
+            "end": 4826,
+            "confidence": 0.99997,
+            "speaker": null
+        },
+        {
+            "text": "decided",
+            "start": 4858,
+            "end": 5242,
+            "confidence": 0.35674,
+            "speaker": null
+        },
+        {
+            "text": "it",
+            "start": 5306,
+            "end": 5534,
+            "confidence": 0.97365,
+            "speaker": null
+        },
+        {
+            "text": "does",
+            "start": 5572,
+            "end": 5726,
+            "confidence": 0.99994,
+            "speaker": null
+        },
+        {
+            "text": "not",
+            "start": 5748,
+            "end": 5886,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "meet",
+            "start": 5908,
+            "end": 6094,
+            "confidence": 0.99994,
+            "speaker": null
+        },
+        {
+            "text": "their",
+            "start": 6132,
+            "end": 6334,
+            "confidence": 0.99999,
+            "speaker": null
+        },
+        {
+            "text": "standards.",
+            "start": 6372,
+            "end": 7230,
+            "confidence": 0.99911,
+            "speaker": null
+        },
+        {
+            "text": "The",
+            "start": 8450,
+            "end": 8814,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "32nd",
+            "start": 8852,
+            "end": 9342,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "advertisement",
+            "start": 9396,
+            "end": 10074,
+            "confidence": 0.99913,
+            "speaker": null
+        },
+        {
+            "text": "paid",
+            "start": 10122,
+            "end": 10334,
+            "confidence": 0.9999,
+            "speaker": null
+        },
+        {
+            "text": "for",
+            "start": 10372,
+            "end": 10574,
+            "confidence": 0.89475,
+            "speaker": null
+        },
+        {
+            "text": "by",
+            "start": 10612,
+            "end": 10766,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "Trump's",
+            "start": 10788,
+            "end": 11146,
+            "confidence": 0.96258,
+            "speaker": null
+        },
+        {
+            "text": "campaign",
+            "start": 11178,
+            "end": 11690,
+            "confidence": 0.99999,
+            "speaker": null
+        },
+        {
+            "text": "targeted",
+            "start": 11770,
+            "end": 12266,
+            "confidence": 0.98922,
+            "speaker": null
+        },
+        {
+            "text": "Joe",
+            "start": 12298,
+            "end": 12506,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "Biden's",
+            "start": 12538,
+            "end": 12986,
+            "confidence": 0.99654,
+            "speaker": null
+        },
+        {
+            "text": "conduct",
+            "start": 13018,
+            "end": 13386,
+            "confidence": 0.87572,
+            "speaker": null
+        },
+        {
+            "text": "toward",
+            "start": 13418,
+            "end": 13674,
+            "confidence": 0.8416,
+            "speaker": null
+        },
+        {
+            "text": "Ukraine",
+            "start": 13722,
+            "end": 14250,
+            "confidence": 0.99414,
+            "speaker": null
+        },
+        {
+            "text": "while",
+            "start": 14330,
+            "end": 14526,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "he",
+            "start": 14548,
+            "end": 14686,
+            "confidence": 0.99996,
+            "speaker": null
+        },
+        {
+            "text": "served",
+            "start": 14708,
+            "end": 14986,
+            "confidence": 0.60004,
+            "speaker": null
+        },
+        {
+            "text": "as",
+            "start": 15018,
+            "end": 15214,
+            "confidence": 0.99999,
+            "speaker": null
+        },
+        {
+            "text": "vice",
+            "start": 15252,
+            "end": 15466,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "president,",
+            "start": 15498,
+            "end": 15934,
+            "confidence": 0.99999,
+            "speaker": null
+        },
+        {
+            "text": "while",
+            "start": 16052,
+            "end": 16334,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "also",
+            "start": 16372,
+            "end": 16574,
+            "confidence": 0.99999,
+            "speaker": null
+        },
+        {
+            "text": "referring",
+            "start": 16612,
+            "end": 17018,
+            "confidence": 0.59055,
+            "speaker": null
+        },
+        {
+            "text": "to",
+            "start": 17034,
+            "end": 17166,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "CNN",
+            "start": 17188,
+            "end": 17594,
+            "confidence": 0.94722,
+            "speaker": null
+        },
+        {
+            "text": "personalities",
+            "start": 17642,
+            "end": 18282,
+            "confidence": 0.99989,
+            "speaker": null
+        },
+        {
+            "text": "Don",
+            "start": 18346,
+            "end": 18574,
+            "confidence": 0.99971,
+            "speaker": null
+        },
+        {
+            "text": "Lemon,",
+            "start": 18612,
+            "end": 19130,
+            "confidence": 0.91661,
+            "speaker": null
+        },
+        {
+            "text": "Chris",
+            "start": 19210,
+            "end": 19466,
+            "confidence": 0.99962,
+            "speaker": null
+        },
+        {
+            "text": "Cuomo",
+            "start": 19498,
+            "end": 20074,
+            "confidence": 0.99788,
+            "speaker": null
+        },
+        {
+            "text": "and",
+            "start": 20122,
+            "end": 20382,
+            "confidence": 0.68,
+            "speaker": null
+        },
+        {
+            "text": "Jim",
+            "start": 20436,
+            "end": 20666,
+            "confidence": 0.99925,
+            "speaker": null
+        },
+        {
+            "text": "Acosta",
+            "start": 20698,
+            "end": 21194,
+            "confidence": 0.99674,
+            "speaker": null
+        },
+        {
+            "text": "as",
+            "start": 21242,
+            "end": 21406,
+            "confidence": 0.99999,
+            "speaker": null
+        },
+        {
+            "text": "media",
+            "start": 21428,
+            "end": 21710,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "lapdogs.",
+            "start": 21780,
+            "end": 22698,
+            "confidence": 0.7045,
+            "speaker": null
+        },
+        {
+            "text": "A",
+            "start": 22794,
+            "end": 22958,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "CNN",
+            "start": 22964,
+            "end": 23354,
+            "confidence": 0.92053,
+            "speaker": null
+        },
+        {
+            "text": "spokesperson",
+            "start": 23402,
+            "end": 24026,
+            "confidence": 0.9998,
+            "speaker": null
+        },
+        {
+            "text": "spoke",
+            "start": 24058,
+            "end": 24298,
+            "confidence": 0.99991,
+            "speaker": null
+        },
+        {
+            "text": "to",
+            "start": 24314,
+            "end": 24446,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "THR,",
+            "start": 24468,
+            "end": 24918,
+            "confidence": 0.99,
+            "speaker": null
+        },
+        {
+            "text": "saying",
+            "start": 25044,
+            "end": 25334,
+            "confidence": 0.99703,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 25372,
+            "end": 25526,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "ad",
+            "start": 25548,
+            "end": 25782,
+            "confidence": 0.99958,
+            "speaker": null
+        },
+        {
+            "text": "does",
+            "start": 25836,
+            "end": 26006,
+            "confidence": 0.99927,
+            "speaker": null
+        },
+        {
+            "text": "not",
+            "start": 26028,
+            "end": 26166,
+            "confidence": 0.99997,
+            "speaker": null
+        },
+        {
+            "text": "meet",
+            "start": 26188,
+            "end": 26374,
+            "confidence": 0.99986,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 26412,
+            "end": 26518,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "network's",
+            "start": 26524,
+            "end": 26946,
+            "confidence": 0.99745,
+            "speaker": null
+        },
+        {
+            "text": "advertising",
+            "start": 26978,
+            "end": 27554,
+            "confidence": 0.99862,
+            "speaker": null
+        },
+        {
+            "text": "standards,",
+            "start": 27602,
+            "end": 28114,
+            "confidence": 0.9991,
+            "speaker": null
+        },
+        {
+            "text": "adding,",
+            "start": 28162,
+            "end": 28690,
+            "confidence": 0.99828,
+            "speaker": null
+        },
+        {
+            "text": "in",
+            "start": 28770,
+            "end": 28966,
+            "confidence": 0.99997,
+            "speaker": null
+        },
+        {
+            "text": "addition",
+            "start": 28988,
+            "end": 29186,
+            "confidence": 0.94325,
+            "speaker": null
+        },
+        {
+            "text": "to",
+            "start": 29218,
+            "end": 29414,
+            "confidence": 0.92,
+            "speaker": null
+        },
+        {
+            "text": "disparaging",
+            "start": 29452,
+            "end": 29986,
+            "confidence": 0.99942,
+            "speaker": null
+        },
+        {
+            "text": "CNN",
+            "start": 30018,
+            "end": 30514,
+            "confidence": 0.98442,
+            "speaker": null
+        },
+        {
+            "text": "and",
+            "start": 30562,
+            "end": 30726,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "its",
+            "start": 30748,
+            "end": 30886,
+            "confidence": 0.99995,
+            "speaker": null
+        },
+        {
+            "text": "journalists,",
+            "start": 30908,
+            "end": 31490,
+            "confidence": 0.5385,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 31570,
+            "end": 31766,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "ad",
+            "start": 31788,
+            "end": 31926,
+            "confidence": 0.99973,
+            "speaker": null
+        },
+        {
+            "text": "makes",
+            "start": 31948,
+            "end": 32182,
+            "confidence": 0.99997,
+            "speaker": null
+        },
+        {
+            "text": "assertions",
+            "start": 32236,
+            "end": 32626,
+            "confidence": 0.99814,
+            "speaker": null
+        },
+        {
+            "text": "that",
+            "start": 32658,
+            "end": 32806,
+            "confidence": 0.99972,
+            "speaker": null
+        },
+        {
+            "text": "have",
+            "start": 32828,
+            "end": 32966,
+            "confidence": 0.99995,
+            "speaker": null
+        },
+        {
+            "text": "been",
+            "start": 32988,
+            "end": 33078,
+            "confidence": 0.99997,
+            "speaker": null
+        },
+        {
+            "text": "proven",
+            "start": 33084,
+            "end": 33426,
+            "confidence": 0.99996,
+            "speaker": null
+        },
+        {
+            "text": "demonstrably",
+            "start": 33458,
+            "end": 34146,
+            "confidence": 0.49829,
+            "speaker": null
+        },
+        {
+            "text": "false",
+            "start": 34178,
+            "end": 34546,
+            "confidence": 0.99967,
+            "speaker": null
+        },
+        {
+            "text": "by",
+            "start": 34578,
+            "end": 34726,
+            "confidence": 0.99994,
+            "speaker": null
+        },
+        {
+            "text": "various",
+            "start": 34748,
+            "end": 35074,
+            "confidence": 0.99983,
+            "speaker": null
+        },
+        {
+            "text": "news",
+            "start": 35122,
+            "end": 35382,
+            "confidence": 0.99989,
+            "speaker": null
+        },
+        {
+            "text": "outlets,",
+            "start": 35436,
+            "end": 35922,
+            "confidence": 0.99623,
+            "speaker": null
+        },
+        {
+            "text": "including",
+            "start": 35986,
+            "end": 36386,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "CNN.",
+            "start": 36418,
+            "end": 37010,
+            "confidence": 0.92512,
+            "speaker": null
+        },
+        {
+            "text": "However,",
+            "start": 37090,
+            "end": 37382,
+            "confidence": 0.99995,
+            "speaker": null
+        },
+        {
+            "text": "despite",
+            "start": 37436,
+            "end": 37826,
+            "confidence": 0.99945,
+            "speaker": null
+        },
+        {
+            "text": "CNN's",
+            "start": 37858,
+            "end": 38338,
+            "confidence": 0.99936,
+            "speaker": null
+        },
+        {
+            "text": "rejection,",
+            "start": 38354,
+            "end": 38786,
+            "confidence": 0.90986,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 38818,
+            "end": 38966,
+            "confidence": 0.75,
+            "speaker": null
+        },
+        {
+            "text": "president",
+            "start": 38988,
+            "end": 39318,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "posted",
+            "start": 39404,
+            "end": 39746,
+            "confidence": 0.99926,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 39778,
+            "end": 39926,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "advertisement",
+            "start": 39948,
+            "end": 40466,
+            "confidence": 0.97861,
+            "speaker": null
+        },
+        {
+            "text": "onto",
+            "start": 40498,
+            "end": 40738,
+            "confidence": 0.99959,
+            "speaker": null
+        },
+        {
+            "text": "his",
+            "start": 40754,
+            "end": 40886,
+            "confidence": 0.98748,
+            "speaker": null
+        },
+        {
+            "text": "Twitter",
+            "start": 40908,
+            "end": 41266,
+            "confidence": 0.99997,
+            "speaker": null
+        },
+        {
+            "text": "page",
+            "start": 41298,
+            "end": 41542,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "last",
+            "start": 41596,
+            "end": 41862,
+            "confidence": 0.99995,
+            "speaker": null
+        },
+        {
+            "text": "week,",
+            "start": 41916,
+            "end": 42278,
+            "confidence": 0.99996,
+            "speaker": null
+        },
+        {
+            "text": "along",
+            "start": 42364,
+            "end": 42566,
+            "confidence": 0.99994,
+            "speaker": null
+        },
+        {
+            "text": "with",
+            "start": 42588,
+            "end": 42726,
+            "confidence": 0.99502,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 42748,
+            "end": 42886,
+            "confidence": 0.98,
+            "speaker": null
+        },
+        {
+            "text": "caption,",
+            "start": 42908,
+            "end": 43314,
+            "confidence": 0.9998,
+            "speaker": null
+        },
+        {
+            "text": "I",
+            "start": 43362,
+            "end": 43478,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "am",
+            "start": 43484,
+            "end": 43606,
+            "confidence": 0.93,
+            "speaker": null
+        },
+        {
+            "text": "draining",
+            "start": 43628,
+            "end": 43986,
+            "confidence": 0.99967,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 44018,
+            "end": 44166,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "swamp",
+            "start": 44188,
+            "end": 44658,
+            "confidence": 0.99943,
+            "speaker": null
+        },
+        {
+            "text": "now.",
+            "start": 44754,
+            "end": 44966,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "This",
+            "start": 44988,
+            "end": 45126,
+            "confidence": 0.99997,
+            "speaker": null
+        },
+        {
+            "text": "is",
+            "start": 45148,
+            "end": 45286,
+            "confidence": 0.99978,
+            "speaker": null
+        },
+        {
+            "text": "not",
+            "start": 45308,
+            "end": 45494,
+            "confidence": 0.99991,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 45532,
+            "end": 45686,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "first",
+            "start": 45708,
+            "end": 45846,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "time",
+            "start": 45868,
+            "end": 46054,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "CNN",
+            "start": 46092,
+            "end": 46514,
+            "confidence": 0.99518,
+            "speaker": null
+        },
+        {
+            "text": "has",
+            "start": 46562,
+            "end": 46726,
+            "confidence": 0.99979,
+            "speaker": null
+        },
+        {
+            "text": "rejected",
+            "start": 46748,
+            "end": 47186,
+            "confidence": 0.99861,
+            "speaker": null
+        },
+        {
+            "text": "a",
+            "start": 47218,
+            "end": 47366,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "Trump",
+            "start": 47388,
+            "end": 47622,
+            "confidence": 0.99996,
+            "speaker": null
+        },
+        {
+            "text": "campaign",
+            "start": 47676,
+            "end": 48114,
+            "confidence": 0.99982,
+            "speaker": null
+        },
+        {
+            "text": "ad.",
+            "start": 48162,
+            "end": 48518,
+            "confidence": 0.99798,
+            "speaker": null
+        },
+        {
+            "text": "Back",
+            "start": 48604,
+            "end": 48854,
+            "confidence": 0.99993,
+            "speaker": null
+        },
+        {
+            "text": "in",
+            "start": 48892,
+            "end": 48998,
+            "confidence": 0.99581,
+            "speaker": null
+        },
+        {
+            "text": "2017,",
+            "start": 49004,
+            "end": 49634,
+            "confidence": 0.94,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 49682,
+            "end": 49798,
+            "confidence": 0.99,
+            "speaker": null
+        },
+        {
+            "text": "Net",
+            "start": 49804,
+            "end": 50094,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "refused",
+            "start": 50172,
+            "end": 50538,
+            "confidence": 0.9734,
+            "speaker": null
+        },
+        {
+            "text": "to",
+            "start": 50554,
+            "end": 50686,
+            "confidence": 0.96,
+            "speaker": null
+        },
+        {
+            "text": "run",
+            "start": 50708,
+            "end": 50846,
+            "confidence": 0.9999,
+            "speaker": null
+        },
+        {
+            "text": "a",
+            "start": 50868,
+            "end": 51006,
+            "confidence": 0.87,
+            "speaker": null
+        },
+        {
+            "text": "Trump",
+            "start": 51028,
+            "end": 51262,
+            "confidence": 0.99779,
+            "speaker": null
+        },
+        {
+            "text": "approved",
+            "start": 51316,
+            "end": 51674,
+            "confidence": 0.99983,
+            "speaker": null
+        },
+        {
+            "text": "ad",
+            "start": 51722,
+            "end": 51982,
+            "confidence": 0.99931,
+            "speaker": null
+        },
+        {
+            "text": "called",
+            "start": 52036,
+            "end": 52398,
+            "confidence": 0.99997,
+            "speaker": null
+        },
+        {
+            "text": "Let",
+            "start": 52484,
+            "end": 52734,
+            "confidence": 0.99515,
+            "speaker": null
+        },
+        {
+            "text": "President",
+            "start": 52772,
+            "end": 53070,
+            "confidence": 0.85775,
+            "speaker": null
+        },
+        {
+            "text": "Trump",
+            "start": 53140,
+            "end": 53422,
+            "confidence": 0.99957,
+            "speaker": null
+        },
+        {
+            "text": "Do",
+            "start": 53476,
+            "end": 53694,
+            "confidence": 0.99975,
+            "speaker": null
+        },
+        {
+            "text": "His",
+            "start": 53732,
+            "end": 53886,
+            "confidence": 0.99982,
+            "speaker": null
+        },
+        {
+            "text": "Job,",
+            "start": 53908,
+            "end": 54238,
+            "confidence": 0.99982,
+            "speaker": null
+        },
+        {
+            "text": "which",
+            "start": 54324,
+            "end": 54574,
+            "confidence": 0.99963,
+            "speaker": null
+        },
+        {
+            "text": "criticized",
+            "start": 54612,
+            "end": 55066,
+            "confidence": 0.99678,
+            "speaker": null
+        },
+        {
+            "text": "the",
+            "start": 55098,
+            "end": 55246,
+            "confidence": 0.81,
+            "speaker": null
+        },
+        {
+            "text": "media",
+            "start": 55268,
+            "end": 55550,
+            "confidence": 0.99996,
+            "speaker": null
+        },
+        {
+            "text": "and",
+            "start": 55620,
+            "end": 55854,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "specifically",
+            "start": 55892,
+            "end": 56426,
+            "confidence": 0.99991,
+            "speaker": null
+        },
+        {
+            "text": "called",
+            "start": 56458,
+            "end": 56702,
+            "confidence": 0.9999,
+            "speaker": null
+        },
+        {
+            "text": "out",
+            "start": 56756,
+            "end": 56926,
+            "confidence": 0.99973,
+            "speaker": null
+        },
+        {
+            "text": "Lemon",
+            "start": 56948,
+            "end": 57306,
+            "confidence": 0.84393,
+            "speaker": null
+        },
+        {
+            "text": "as",
+            "start": 57338,
+            "end": 57486,
+            "confidence": 0.99987,
+            "speaker": null
+        },
+        {
+            "text": "well",
+            "start": 57508,
+            "end": 57646,
+            "confidence": 0.99997,
+            "speaker": null
+        },
+        {
+            "text": "as",
+            "start": 57668,
+            "end": 57806,
+            "confidence": 0.99964,
+            "speaker": null
+        },
+        {
+            "text": "Anderson",
+            "start": 57828,
+            "end": 58186,
+            "confidence": 0.95688,
+            "speaker": null
+        },
+        {
+            "text": "Cooper.",
+            "start": 58218,
+            "end": 58778,
+            "confidence": 0.77136,
+            "speaker": null
+        },
+        {
+            "text": "To",
+            "start": 58874,
+            "end": 59086,
+            "confidence": 0.93,
+            "speaker": null
+        },
+        {
+            "text": "stay",
+            "start": 59108,
+            "end": 59294,
+            "confidence": 0.99914,
+            "speaker": null
+        },
+        {
+            "text": "up",
+            "start": 59332,
+            "end": 59438,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "to",
+            "start": 59444,
+            "end": 59566,
+            "confidence": 0.99,
+            "speaker": null
+        },
+        {
+            "text": "date",
+            "start": 59588,
+            "end": 59726,
+            "confidence": 0.99999,
+            "speaker": null
+        },
+        {
+            "text": "on",
+            "start": 59748,
+            "end": 59838,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "this",
+            "start": 59844,
+            "end": 59966,
+            "confidence": 0.96669,
+            "speaker": null
+        },
+        {
+            "text": "story,",
+            "start": 59988,
+            "end": 60222,
+            "confidence": 0.9997,
+            "speaker": null
+        },
+        {
+            "text": "head",
+            "start": 60276,
+            "end": 60398,
+            "confidence": 0.83299,
+            "speaker": null
+        },
+        {
+            "text": "to",
+            "start": 60404,
+            "end": 60526,
+            "confidence": 0.72,
+            "speaker": null
+        },
+        {
+            "text": "THR.com",
+            "start": 60548,
+            "end": 61662,
+            "confidence": 0.97,
+            "speaker": null
+        },
+        {
+            "text": "and",
+            "start": 61716,
+            "end": 61886,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "until",
+            "start": 61908,
+            "end": 62142,
+            "confidence": 0.99986,
+            "speaker": null
+        },
+        {
+            "text": "next",
+            "start": 62196,
+            "end": 62366,
+            "confidence": 0.99998,
+            "speaker": null
+        },
+        {
+            "text": "time",
+            "start": 62388,
+            "end": 62526,
+            "confidence": 0.99958,
+            "speaker": null
+        },
+        {
+            "text": "for",
+            "start": 62548,
+            "end": 62638,
+            "confidence": 0.99715,
+            "speaker": null
+        },
+        {
+            "text": "The",
+            "start": 62644,
+            "end": 62718,
+            "confidence": 1.0,
+            "speaker": null
+        },
+        {
+            "text": "Hollywood",
+            "start": 62724,
+            "end": 63066,
+            "confidence": 0.95332,
+            "speaker": null
+        },
+        {
+            "text": "Reporter",
+            "start": 63098,
+            "end": 63418,
+            "confidence": 0.99863,
+            "speaker": null
+        },
+        {
+            "text": "News,",
+            "start": 63434,
+            "end": 63614,
+            "confidence": 0.97517,
+            "speaker": null
+        },
+        {
+            "text": "I'm",
+            "start": 63652,
+            "end": 63866,
+            "confidence": 0.56933,
+            "speaker": null
+        },
+        {
+            "text": "a",
+            "start": 63898,
+            "end": 63998,
+            "confidence": 0.49,
+            "speaker": null
+        },
+        {
+            "text": "hajoy.",
+            "start": 64004,
+            "end": 64250,
+            "confidence": 0.3907,
+            "speaker": null
+        }
+    ],
+    "utterances": null,
+    "confidence": 0.9560385492227982,
+    "audio_duration": 68,
+    "punctuate": true,
+    "format_text": true,
+    "dual_channel": null,
+    "webhook_url": null,
+    "webhook_status_code": null,
+    "webhook_auth": false,
+    "webhook_auth_header_name": null,
+    "speed_boost": false,
+    "auto_highlights_result": null,
+    "auto_highlights": false,
+    "audio_start_from": null,
+    "audio_end_at": null,
+    "word_boost": [],
+    "boost_param": null,
+    "filter_profanity": false,
+    "redact_pii": false,
+    "redact_pii_audio": false,
+    "redact_pii_audio_quality": null,
+    "redact_pii_policies": null,
+    "redact_pii_sub": null,
+    "speaker_labels": false,
+    "content_safety": false,
+    "iab_categories": false,
+    "content_safety_labels": {
+        "status": "unavailable",
+        "results": [],
+        "summary": {}
+    },
+    "iab_categories_result": {
+        "status": "unavailable",
+        "results": [],
+        "summary": {}
+    },
+    "language_detection": false,
+    "custom_spelling": null,
+    "throttled": null,
+    "auto_chapters": false,
+    "summarization": false,
+    "summary_type": null,
+    "summary_model": null,
+    "custom_topics": false,
+    "topics": [],
+    "speech_threshold": null,
+    "disfluencies": false,
+    "sentiment_analysis": false,
+    "chapters": null,
+    "sentiment_analysis_results": null,
+    "entity_detection": false,
+    "entities": null,
+    "summary": null,
+    "speakers_expected": null
+}

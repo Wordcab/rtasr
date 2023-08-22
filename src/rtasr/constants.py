@@ -60,6 +60,7 @@ PROVIDERS = OrderedDict(
             {
                 "url": "https://api.assemblyai.com/v2",
                 "engine": "AssemblyAI",
+                "output": "AssemblyAIOutput",
                 "concurrency_limit": 5,
                 "options": {
                     "speaker_labels": True,
@@ -72,6 +73,7 @@ PROVIDERS = OrderedDict(
             {
                 "url": "",
                 "engine": "Aws",
+                "output": "AwsOutput",
             },
         ),
         (
@@ -79,6 +81,7 @@ PROVIDERS = OrderedDict(
             {
                 "url": "",
                 "engine": "Azure",
+                "output": "AzureOutput",
             },
         ),
         (
@@ -86,6 +89,7 @@ PROVIDERS = OrderedDict(
             {
                 "url": "https://api.deepgram.com/v1/listen",
                 "engine": "Deepgram",
+                "output": "DeepgramOutput",
                 "options": {
                     "diarize": True,
                     "model": "nova",
@@ -99,6 +103,7 @@ PROVIDERS = OrderedDict(
             {
                 "url": "",
                 "engine": "Google",
+                "output": "GoogleOutput",
             },
         ),
         (
@@ -106,6 +111,7 @@ PROVIDERS = OrderedDict(
             {
                 "url": "https://api.rev.ai/speechtotext/v1",
                 "engine": "RevAI",
+                "output": "RevAIOutput",
                 "concurrency_limit": 5,
                 "options": {
                     "remove_disfluencies": False,
@@ -121,6 +127,7 @@ PROVIDERS = OrderedDict(
             {
                 "url": "https://asr.api.speechmatics.com/v2",
                 "engine": "Speechmatics",
+                "output": "SpeechmaticsOutput",
                 "options": {
                     "type": "transcription",
                     "transcription_config": {
@@ -136,6 +143,7 @@ PROVIDERS = OrderedDict(
             {
                 "url": "https://wordcab.com/api/v1",
                 "engine": "Wordcab",
+                "output": "WordcabOutput",
                 "options": {
                     "alignment": False,
                     "diarize": True,

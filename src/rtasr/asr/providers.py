@@ -34,8 +34,11 @@ from rtasr.asr.schemas import (
     DeepgramOutput,
     DeepgramUtterance,
     GoogleOutput,
+    RevAIElement,
+    RevAIMonologue,
     RevAIOutput,
     SpeechmaticsOutput,
+    SpeechmaticsResult,
     WordcabOutput,
     WordcabTranscript,
 )
@@ -370,7 +373,7 @@ class Aws(ASRProvider):
 
         return None
 
-    def result_to_rttm(self, asr_output: AwsOutput) -> None:
+    async def result_to_rttm(self, asr_output: AwsOutput) -> List[str]:
         """Convert the result to RTTM format."""
         pass
 
@@ -489,7 +492,7 @@ class Google(ASRProvider):
         """Run the ASR provider."""
         pass
 
-    def result_to_rttm(self, asr_output: GoogleOutput) -> None:
+    async def result_to_rttm(self, asr_output: GoogleOutput) -> List[str]:
         """Convert the result to RTTM format."""
         pass
 
@@ -565,9 +568,38 @@ class RevAI(ASRProvider):
 
         return audio_file.name, _status, asr_output
 
-    def result_to_rttm(self, asr_output: RevAIOutput) -> None:
+    async def result_to_rttm(self, asr_output: RevAIOutput) -> List[str]:
         """Convert the result to RTTM format."""
-        pass
+        monologues: List[RevAIMonologue] = asr_output.monologues
+
+        rttm_lines: List[str] = []
+        for monologue in monologues:
+            start_seconds, end_seconds = self._get_timestamps(
+                elements=monologue.elements
+            )
+            speaker: int = monologue.speaker
+
+            rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+
+        return rttm_lines
+
+    @staticmethod
+    def _get_timestamps(elements: List[RevAIElement]) -> Tuple[float, float]:
+        """Retrieve the start and end timestamps of a monologue."""
+        start_ts = 0
+        end_ts = 0
+
+        for i in range(len(elements)):
+            if elements[i].type == "text":
+                start_ts = elements[i].ts
+                break
+
+        for i in range(len(elements) - 1, -1, -1):
+            if elements[i].type == "text":
+                end_ts = elements[i].end_ts
+                break
+
+        return start_ts, end_ts
 
 
 class Speechmatics(ASRProvider):
@@ -641,9 +673,20 @@ class Speechmatics(ASRProvider):
 
         return audio_file.name, _status, asr_output
 
-    def result_to_rttm(self, asr_output: SpeechmaticsOutput) -> None:
+    async def result_to_rttm(self, asr_output: SpeechmaticsOutput) -> List[str]:
         """Convert the result to RTTM format."""
-        pass
+        results: List[SpeechmaticsResult] = asr_output.results
+
+        rttm_lines: List[str] = []
+        for result in results:
+            if result.type == "word":
+                start_seconds: float = result.start_time
+                end_seconds: float = result.end_time
+                speaker: str = result.alternatives[0].speaker
+
+                rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+
+        return rttm_lines
 
 
 class Wordcab(ASRProvider):

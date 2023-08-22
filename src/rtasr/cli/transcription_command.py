@@ -1,4 +1,4 @@
-"""The benchmark command."""
+"""The transcription command to run ASR providers against a dataset."""
 
 import argparse
 import asyncio
@@ -18,8 +18,8 @@ from rtasr.constants import DATASETS, PROVIDERS
 from rtasr.utils import create_live_panel, get_api_key, resolve_cache_dir
 
 
-def benchmark_asr_command_factory(args: argparse.Namespace):
-    return BenchmarkASRCommand(
+def transcription_asr_command_factory(args: argparse.Namespace):
+    return TranscriptionASRCommand(
         args.providers,
         args.dataset,
         args.split,
@@ -29,20 +29,20 @@ def benchmark_asr_command_factory(args: argparse.Namespace):
     )
 
 
-class BenchmarkASRCommand:
-    """Benchmark an ASR provider against a dataset."""
+class TranscriptionASRCommand:
+    """Launc transcription for one or multiple ASR providers against a dataset."""
 
     @staticmethod
     def register_subcommand(parser: argparse.ArgumentParser) -> None:
         subparser = parser.add_parser(
-            "benchmark",
-            help="Benchmark one or multiple ASR providers against a dataset.",
+            "transcription",
+            help="Launch transcription for one or multiple ASR providers against a dataset.",
         )
         subparser.add_argument(
             "-p",
             "--providers",
             help=(
-                "The ASR provider(s) to benchmark. You can specify multiple providers."
+                "The ASR provider(s) to call. You can specify multiple providers."
             ),
             required=True,
             type=str,
@@ -73,8 +73,8 @@ class BenchmarkASRCommand:
             "-o",
             "--output_dir",
             help=(
-                "Path where store the benchmark outputs. Defaults to"
-                " `~/.cache/rtasr/benchmark`."
+                "Path where store the transcription outputs. Defaults to"
+                " `~/.cache/rtasr/transcription`."
             ),
             required=False,
             default=None,
@@ -86,7 +86,7 @@ class BenchmarkASRCommand:
             required=False,
             action="store_false",
         )
-        subparser.set_defaults(func=benchmark_asr_command_factory)
+        subparser.set_defaults(func=transcription_asr_command_factory)
 
     def __init__(
         self,
@@ -214,13 +214,13 @@ class BenchmarkASRCommand:
                 )
 
             if self.output_dir is None:
-                output_dir = resolve_cache_dir() / "benchmark"
+                output_dir = resolve_cache_dir() / "transcription"
             else:
-                output_dir = Path(self.output_dir) / "benchmark"
+                output_dir = Path(self.output_dir) / "transcription"
 
-            benchmark_dir = output_dir / _dataset
-            if not benchmark_dir.exists():
-                benchmark_dir.mkdir(parents=True, exist_ok=True)
+            transcription_dir = output_dir / _dataset
+            if not transcription_dir.exists():
+                transcription_dir.mkdir(parents=True, exist_ok=True)
 
             engines: List[ASRProvider] = []
             for _provider in _providers:
@@ -251,13 +251,13 @@ class BenchmarkASRCommand:
 
             with Live(progress_group):
                 current_progress_task_id = current_progress.add_task(
-                    f"Benchmarking on the `{_dataset}` dataset"
+                    f"Running transcription over the `{_dataset}` dataset"
                 )
                 results = asyncio.run(
                     self._run(
                         engines,
                         verified_audio_filepaths,
-                        benchmark_dir,
+                        transcription_dir,
                         splits_progress,
                         step_progress,
                     )
@@ -266,10 +266,10 @@ class BenchmarkASRCommand:
                 current_progress.stop_task(current_progress_task_id)
                 current_progress.update(
                     current_progress_task_id,
-                    description="[bold green]Benchmarking finished.",
+                    description="[bold green]Transcriptions finished.",
                 )
 
-            print(f"Find the benchmark results in {benchmark_dir.resolve()}")
+            print(f"Find the transcription results in {transcription_dir.resolve()}")
             print("Results by provider: [green]completed[/green]|[red]failed[/red]")
 
             for result in results:

@@ -7,9 +7,9 @@ from rich.traceback import install
 from rich_argparse import RichHelpFormatter
 
 from rtasr.cli import (
-    BenchmarkASRCommand,
     DownloadDatasetCommand,
     ListItemsCommand,
+    TranscriptionASRCommand,
 )
 from rtasr.cli_messages import ascii_art
 
@@ -27,9 +27,9 @@ def main() -> None:
     commands_parser = parser.add_subparsers(dest="command")
 
     # Register subcommands
-    BenchmarkASRCommand.register_subcommand(commands_parser)
     DownloadDatasetCommand.register_subcommand(commands_parser)
     ListItemsCommand.register_subcommand(commands_parser)
+    TranscriptionASRCommand.register_subcommand(commands_parser)
 
     args = parser.parse_args()
 

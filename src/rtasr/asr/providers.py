@@ -32,6 +32,7 @@ from rtasr.asr.schemas import (
     AwsOutput,
     AzureOutput,
     DeepgramOutput,
+    DeepgramUtterance,
     GoogleOutput,
     RevAIOutput,
     SpeechmaticsOutput,
@@ -334,9 +335,9 @@ class AssemblyAI(ASRProvider):
             rttm_lines.append(f"{words[0].start / 1000} {words[-1].end / 1000} A")
         else:
             for utterance in utterances:
-                start_seconds = utterance.start / 1000
-                end_seconds = utterance.end / 1000
-                speaker = utterance.speaker
+                start_seconds: float = utterance.start / 1000
+                end_seconds: float = utterance.end / 1000
+                speaker: str = utterance.speaker
 
                 rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
 
@@ -396,7 +397,7 @@ class Azure(ASRProvider):
         """Call the API of the Azure ASR provider."""
         pass
 
-    def result_to_rttm(self, asr_output: AzureOutput) -> None:
+    async def result_to_rttm(self, asr_output: AzureOutput) -> List[str]:
         """Convert the result to RTTM format."""
         pass
 
@@ -451,9 +452,19 @@ class Deepgram(ASRProvider):
 
         return audio_file.name, _status, asr_output
 
-    def result_to_rttm(self, asr_output: DeepgramOutput) -> None:
+    async def result_to_rttm(self, asr_output: DeepgramOutput) -> List[str]:
         """Convert the result to RTTM format."""
-        pass
+        utterances: List[DeepgramUtterance] = asr_output.results.utterances
+
+        rttm_lines: List[str] = []
+        for utterance in utterances:
+            start_seconds: float = utterance.start
+            end_seconds: float = utterance.end
+            speaker: int = utterance.speaker
+
+            rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+
+        return rttm_lines
 
 
 class Google(ASRProvider):
@@ -713,9 +724,9 @@ class Wordcab(ASRProvider):
 
         rttm_lines: List[str] = []
         for transcript in all_transcripts:
-            start_seconds = transcript.timestamp_start / 1000
-            end_seconds = transcript.timestamp_end / 1000
-            speaker = transcript.speaker
+            start_seconds: float = transcript.timestamp_start / 1000
+            end_seconds: float = transcript.timestamp_end / 1000
+            speaker: str = transcript.speaker
 
             rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
 

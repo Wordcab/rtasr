@@ -27,6 +27,8 @@ from rtasr.asr.options import (
 from rtasr.asr.schemas import (
     ASROutput,
     AssemblyAIOutput,
+    AssemblyAIUtterance,
+    AssemblyAIWord,
     AwsOutput,
     AzureOutput,
     DeepgramOutput,
@@ -249,7 +251,7 @@ class ASRProvider(ABC):
         )
 
     @abstractmethod
-    def result_to_rttm(self) -> None:
+    async def result_to_rttm(self, asr_output: ASROutput) -> List[str]:
         """Convert the result to RTTM format."""
         raise NotImplementedError(
             "The ASR provider must implement the `result_to_rttm` method."
@@ -322,9 +324,23 @@ class AssemblyAI(ASRProvider):
 
         return audio_file.name, _status, asr_output
 
-    def result_to_rttm(self, asr_output: AssemblyAIOutput) -> None:
+    async def result_to_rttm(self, asr_output: AssemblyAIOutput) -> List[str]:
         """Convert the result to RTTM format."""
-        pass
+        utterances: List[AssemblyAIUtterance] = asr_output.utterances
+
+        rttm_lines: List[str] = []
+        if not utterances:  # This means there is only one speaker
+            words: List[AssemblyAIWord] = asr_output.words
+            rttm_lines.append(f"{words[0].start / 1000} {words[-1].end / 1000} A")
+        else:
+            for utterance in utterances:
+                start_seconds = utterance.start / 1000
+                end_seconds = utterance.end / 1000
+                speaker = utterance.speaker
+
+                rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+
+        return rttm_lines
 
 
 class Aws(ASRProvider):

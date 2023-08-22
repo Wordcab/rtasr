@@ -33,7 +33,12 @@ class ConcurrencyHandler:
         if self.limit is None:
             return None
 
-        return await self.queue.get()
+        while True:
+            try:
+                token = self.queue.get_nowait()
+                return token
+            except asyncio.QueueEmpty:
+                await asyncio.sleep(1.0)
 
     def put(self, token: ConcurrencyToken):
         """Put a concurrency token back in the queue."""

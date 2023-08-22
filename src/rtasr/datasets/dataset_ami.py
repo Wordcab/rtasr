@@ -20,8 +20,11 @@ from rich import print
 from rich.live import Live
 from rich.progress import Progress, TaskID
 
+from rtasr.concurrency import ConcurrencyHandler, ConcurrencyToken
 from rtasr.constants import DATASETS
 from rtasr.utils import create_live_panel, download_file, get_files, resolve_cache_dir
+
+concurrency_handler = ConcurrencyHandler(limit=DATASETS["ami"]["concurrency_limit"])
 
 
 async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) -> None:
@@ -179,7 +182,7 @@ async def _download_ami_split(
     for file_id in filtered_file_ids:
         for audio_type in audio_types:
             file_download_results.append(
-                download_file(
+                _download_file(
                     url=f"https://groups.inf.ed.ac.uk/ami/AMICorpusMirror//amicorpus/{file_id}/audio/{file_id}.{audio_type}.wav",
                     output_dir=split_dir / "audio" / audio_type,
                     session=session,
@@ -187,7 +190,7 @@ async def _download_ami_split(
                 )
             )
         file_download_results.append(
-            download_file(
+            _download_file(
                 url=dataset_metadata["urls"]["rttm"].format(split, file_id),
                 output_dir=split_dir / "rttm",
                 session=session,
@@ -195,7 +198,7 @@ async def _download_ami_split(
             )
         )
         file_download_results.append(
-            download_file(
+            _download_file(
                 url=dataset_metadata["urls"]["uem"].format(split, file_id),
                 output_dir=split_dir / "uem",
                 session=session,
@@ -217,6 +220,22 @@ async def _download_ami_split(
             step_progress.advance(step_task_id)
 
     return step_task_id
+
+
+async def _download_file(
+    url: str,
+    output_dir: Path,
+    session: aiohttp.ClientSession,
+    use_cache: bool,
+) -> Path:
+    """Wrapper around the utils download_file function to add concurrency."""
+    concurr_token: ConcurrencyToken = await concurrency_handler.get()
+
+    file_path = await download_file(url, output_dir, session, use_cache)
+
+    concurrency_handler.put(concurr_token)
+
+    return file_path
 
 
 async def _prepare_ami_manifest_split(

@@ -186,7 +186,10 @@ class ASRProvider(ABC):
         """
         _file_name = audio_file_name.split(".")[0]
         file_path = (
-            output_dir / f"{self.__class__.__name__.lower()}" / "original" / f"{_file_name}.json"
+            output_dir
+            / f"{self.__class__.__name__.lower()}"
+            / "original"
+            / f"{_file_name}.json"
         )
         if not file_path.parent.exists():
             file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -203,7 +206,9 @@ class ASRProvider(ABC):
         session: aiohttp.ClientSession,
     ) -> Tuple[str, TranscriptionStatus, dict]:
         """Run the ASR provider."""
-        raise NotImplementedError("The ASR provider must implement the `_launch` method.")
+        raise NotImplementedError(
+            "The ASR provider must implement the `_launch` method."
+        )
 
     @abstractmethod
     def result_to_rttm(self) -> None:

@@ -1,0 +1,2354 @@
+{
+    "monologues": [
+        {
+            "speaker": 0,
+            "elements": [
+                {
+                    "type": "text",
+                    "value": "C",
+                    "ts": 0.4,
+                    "end_ts": 0.52,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "n",
+                    "ts": 0.52,
+                    "end_ts": 0.64,
+                    "confidence": 0.89
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "n",
+                    "ts": 0.64,
+                    "end_ts": 0.76,
+                    "confidence": 0.82
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "has",
+                    "ts": 0.76,
+                    "end_ts": 0.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "decided",
+                    "ts": 0.96,
+                    "end_ts": 1.32,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "not",
+                    "ts": 1.42,
+                    "end_ts": 1.64,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "to",
+                    "ts": 1.64,
+                    "end_ts": 1.76,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "run",
+                    "ts": 1.76,
+                    "end_ts": 1.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "a",
+                    "ts": 2.08,
+                    "end_ts": 2.2,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Donald Trump",
+                    "ts": 2.2,
+                    "end_ts": 2.68,
+                    "confidence": 0.86
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "endorsed",
+                    "ts": 2.68,
+                    "end_ts": 3.2,
+                    "confidence": 0.85
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "campaign",
+                    "ts": 3.44,
+                    "end_ts": 3.64,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "ad",
+                    "ts": 3.78,
+                    "end_ts": 4.0,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "after",
+                    "ts": 4.0,
+                    "end_ts": 4.24,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 4.26,
+                    "end_ts": 4.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "network",
+                    "ts": 4.48,
+                    "end_ts": 4.64,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "decided",
+                    "ts": 4.67,
+                    "end_ts": 5.16,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "it",
+                    "ts": 5.26,
+                    "end_ts": 5.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "does",
+                    "ts": 5.48,
+                    "end_ts": 5.68,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "not",
+                    "ts": 5.68,
+                    "end_ts": 5.84,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "meet",
+                    "ts": 5.84,
+                    "end_ts": 6.08,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "their",
+                    "ts": 6.08,
+                    "end_ts": 6.28,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "standards",
+                    "ts": 6.44,
+                    "end_ts": 6.76,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": "."
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                }
+            ]
+        },
+        {
+            "speaker": 0,
+            "elements": [
+                {
+                    "type": "text",
+                    "value": "The",
+                    "ts": 8.5,
+                    "end_ts": 8.72,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "32nd",
+                    "ts": 8.72,
+                    "end_ts": 9.2,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "advertisement",
+                    "ts": 9.2,
+                    "end_ts": 10.04,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "paid",
+                    "ts": 10.04,
+                    "end_ts": 10.32,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "for",
+                    "ts": 10.32,
+                    "end_ts": 10.52,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "by",
+                    "ts": 10.54,
+                    "end_ts": 10.76,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Trump's",
+                    "ts": 10.76,
+                    "end_ts": 11.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "campaign",
+                    "ts": 11.32,
+                    "end_ts": 11.52,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "targeted",
+                    "ts": 12.04,
+                    "end_ts": 12.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Joe",
+                    "ts": 12.22,
+                    "end_ts": 12.44,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Biden's",
+                    "ts": 12.47,
+                    "end_ts": 12.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "conduct",
+                    "ts": 12.96,
+                    "end_ts": 13.2,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "toward",
+                    "ts": 13.2,
+                    "end_ts": 13.6,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Ukraine",
+                    "ts": 13.6,
+                    "end_ts": 14.0,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "while",
+                    "ts": 14.09,
+                    "end_ts": 14.44,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "he",
+                    "ts": 14.44,
+                    "end_ts": 14.6,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "served",
+                    "ts": 14.6,
+                    "end_ts": 14.8,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "as",
+                    "ts": 14.82,
+                    "end_ts": 15.04,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "vice",
+                    "ts": 15.04,
+                    "end_ts": 15.28,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "president",
+                    "ts": 15.28,
+                    "end_ts": 15.68,
+                    "confidence": 0.89
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "while",
+                    "ts": 15.73,
+                    "end_ts": 16.08,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "also",
+                    "ts": 16.08,
+                    "end_ts": 16.32,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "referring",
+                    "ts": 16.32,
+                    "end_ts": 16.76,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "to",
+                    "ts": 16.76,
+                    "end_ts": 16.84,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "C",
+                    "ts": 16.96,
+                    "end_ts": 17.08,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "N",
+                    "ts": 17.08,
+                    "end_ts": 17.2,
+                    "confidence": 0.88
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "N",
+                    "ts": 17.2,
+                    "end_ts": 17.28,
+                    "confidence": 0.86
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "personalities",
+                    "ts": 17.28,
+                    "end_ts": 17.88,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Don",
+                    "ts": 18.18,
+                    "end_ts": 18.4,
+                    "confidence": 0.92
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Lemon",
+                    "ts": 18.4,
+                    "end_ts": 18.64,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Chris",
+                    "ts": 18.93,
+                    "end_ts": 19.28,
+                    "confidence": 0.95
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Cuomo",
+                    "ts": 19.57,
+                    "end_ts": 19.92,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "and",
+                    "ts": 20.1,
+                    "end_ts": 20.32,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Jim",
+                    "ts": 20.38,
+                    "end_ts": 20.6,
+                    "confidence": 0.96
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Acosta",
+                    "ts": 20.74,
+                    "end_ts": 21.16,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "as",
+                    "ts": 21.16,
+                    "end_ts": 21.36,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "media",
+                    "ts": 21.36,
+                    "end_ts": 21.6,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Lapdog",
+                    "ts": 21.86,
+                    "end_ts": 22.28,
+                    "confidence": 0.91
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "A",
+                    "ts": 22.8,
+                    "end_ts": 22.92,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "C",
+                    "ts": 23.0,
+                    "end_ts": 23.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "N",
+                    "ts": 23.12,
+                    "end_ts": 23.24,
+                    "confidence": 0.85
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "N",
+                    "ts": 23.24,
+                    "end_ts": 23.36,
+                    "confidence": 0.79
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "spokesperson",
+                    "ts": 23.36,
+                    "end_ts": 23.88,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "spoke",
+                    "ts": 23.93,
+                    "end_ts": 24.28,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "to",
+                    "ts": 24.28,
+                    "end_ts": 24.4,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "T",
+                    "ts": 24.52,
+                    "end_ts": 24.6,
+                    "confidence": 0.82
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "H",
+                    "ts": 24.64,
+                    "end_ts": 24.76,
+                    "confidence": 0.93
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "R",
+                    "ts": 24.8,
+                    "end_ts": 24.92,
+                    "confidence": 0.91
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "saying",
+                    "ts": 24.92,
+                    "end_ts": 25.28,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 25.28,
+                    "end_ts": 25.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "ad",
+                    "ts": 25.5,
+                    "end_ts": 25.72,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "does",
+                    "ts": 25.72,
+                    "end_ts": 25.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "not",
+                    "ts": 25.96,
+                    "end_ts": 26.16,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "meet",
+                    "ts": 26.16,
+                    "end_ts": 26.36,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 26.36,
+                    "end_ts": 26.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "network's",
+                    "ts": 26.48,
+                    "end_ts": 26.92,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "advertising",
+                    "ts": 27.16,
+                    "end_ts": 27.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "standards",
+                    "ts": 27.68,
+                    "end_ts": 28.0,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "adding",
+                    "ts": 28.0,
+                    "end_ts": 28.36,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "in",
+                    "ts": 28.7,
+                    "end_ts": 28.92,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "addition",
+                    "ts": 29.12,
+                    "end_ts": 29.2,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "to",
+                    "ts": 29.2,
+                    "end_ts": 29.36,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "disparaging",
+                    "ts": 29.36,
+                    "end_ts": 29.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "C",
+                    "ts": 30.08,
+                    "end_ts": 30.2,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "N",
+                    "ts": 30.2,
+                    "end_ts": 30.32,
+                    "confidence": 0.77
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "N",
+                    "ts": 30.32,
+                    "end_ts": 30.44,
+                    "confidence": 0.78
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "and",
+                    "ts": 30.44,
+                    "end_ts": 30.64,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "its",
+                    "ts": 30.7,
+                    "end_ts": 30.92,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "journalists",
+                    "ts": 30.92,
+                    "end_ts": 31.28,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 31.46,
+                    "end_ts": 31.68,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "ad",
+                    "ts": 31.68,
+                    "end_ts": 31.88,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "makes",
+                    "ts": 31.88,
+                    "end_ts": 32.08,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "assertions",
+                    "ts": 32.08,
+                    "end_ts": 32.56,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "that",
+                    "ts": 32.56,
+                    "end_ts": 32.72,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "have",
+                    "ts": 32.72,
+                    "end_ts": 32.88,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "been",
+                    "ts": 32.88,
+                    "end_ts": 33.0,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "proven",
+                    "ts": 33.0,
+                    "end_ts": 33.16,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "demonstrably",
+                    "ts": 33.52,
+                    "end_ts": 33.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "false",
+                    "ts": 33.96,
+                    "end_ts": 34.2,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "by",
+                    "ts": 34.22,
+                    "end_ts": 34.44,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "various",
+                    "ts": 34.44,
+                    "end_ts": 34.72,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "news",
+                    "ts": 34.75,
+                    "end_ts": 35.04,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "outlets",
+                    "ts": 35.04,
+                    "end_ts": 35.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "including",
+                    "ts": 35.48,
+                    "end_ts": 36.04,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "C",
+                    "ts": 36.24,
+                    "end_ts": 36.36,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "N",
+                    "ts": 36.4,
+                    "end_ts": 36.52,
+                    "confidence": 0.81
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "N",
+                    "ts": 36.52,
+                    "end_ts": 36.64,
+                    "confidence": 0.71
+                },
+                {
+                    "type": "punct",
+                    "value": "."
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "However",
+                    "ts": 36.64,
+                    "end_ts": 37.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "despite",
+                    "ts": 37.15,
+                    "end_ts": 37.64,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "CNN's",
+                    "ts": 38.01,
+                    "end_ts": 38.36,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "rejection",
+                    "ts": 38.36,
+                    "end_ts": 38.72,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 38.74,
+                    "end_ts": 38.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "President",
+                    "ts": 38.96,
+                    "end_ts": 39.28,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "posted",
+                    "ts": 39.28,
+                    "end_ts": 39.56,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 39.62,
+                    "end_ts": 39.84,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "advertisement",
+                    "ts": 39.84,
+                    "end_ts": 40.44,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "onto",
+                    "ts": 40.44,
+                    "end_ts": 40.64,
+                    "confidence": 0.97
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "his",
+                    "ts": 40.66,
+                    "end_ts": 40.88,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Twitter",
+                    "ts": 40.88,
+                    "end_ts": 41.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "page",
+                    "ts": 41.19,
+                    "end_ts": 41.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "last",
+                    "ts": 41.51,
+                    "end_ts": 41.8,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "week",
+                    "ts": 41.8,
+                    "end_ts": 42.0,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "along",
+                    "ts": 42.21,
+                    "end_ts": 42.56,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "with",
+                    "ts": 42.56,
+                    "end_ts": 42.72,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 42.72,
+                    "end_ts": 42.88,
+                    "confidence": 0.86
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "caption",
+                    "ts": 42.88,
+                    "end_ts": 43.2,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "I'm",
+                    "ts": 43.34,
+                    "end_ts": 43.56,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "draining",
+                    "ts": 43.56,
+                    "end_ts": 43.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 43.96,
+                    "end_ts": 44.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "swamp",
+                    "ts": 44.12,
+                    "end_ts": 44.4,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": "."
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Now",
+                    "ts": 44.7,
+                    "end_ts": 44.92,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": "."
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "This",
+                    "ts": 44.92,
+                    "end_ts": 45.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "is",
+                    "ts": 45.12,
+                    "end_ts": 45.24,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "not",
+                    "ts": 45.26,
+                    "end_ts": 45.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 45.48,
+                    "end_ts": 45.64,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "first",
+                    "ts": 45.64,
+                    "end_ts": 45.8,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "time",
+                    "ts": 45.8,
+                    "end_ts": 46.0,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "c",
+                    "ts": 46.12,
+                    "end_ts": 46.24,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "n",
+                    "ts": 46.24,
+                    "end_ts": 46.36,
+                    "confidence": 0.81
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "n",
+                    "ts": 46.36,
+                    "end_ts": 46.48,
+                    "confidence": 0.84
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "has",
+                    "ts": 46.48,
+                    "end_ts": 46.64,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "rejected",
+                    "ts": 46.84,
+                    "end_ts": 47.0,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "a",
+                    "ts": 47.2,
+                    "end_ts": 47.32,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Trump",
+                    "ts": 47.32,
+                    "end_ts": 47.52,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "campaign",
+                    "ts": 47.84,
+                    "end_ts": 48.04,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "ad",
+                    "ts": 48.14,
+                    "end_ts": 48.36,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": "."
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Back",
+                    "ts": 48.51,
+                    "end_ts": 48.8,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "in",
+                    "ts": 48.8,
+                    "end_ts": 48.92,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "2017",
+                    "ts": 48.92,
+                    "end_ts": 49.52,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 49.54,
+                    "end_ts": 49.76,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "network",
+                    "ts": 49.76,
+                    "end_ts": 49.92,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "refused",
+                    "ts": 49.95,
+                    "end_ts": 50.44,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "to",
+                    "ts": 50.44,
+                    "end_ts": 50.6,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "run",
+                    "ts": 50.6,
+                    "end_ts": 50.76,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "a",
+                    "ts": 50.84,
+                    "end_ts": 50.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Trump",
+                    "ts": 50.96,
+                    "end_ts": 51.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "approved",
+                    "ts": 51.4,
+                    "end_ts": 51.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "ad",
+                    "ts": 51.62,
+                    "end_ts": 51.84,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "called",
+                    "ts": 51.84,
+                    "end_ts": 52.08,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Let",
+                    "ts": 52.34,
+                    "end_ts": 52.56,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "President",
+                    "ts": 52.56,
+                    "end_ts": 52.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Trump",
+                    "ts": 52.96,
+                    "end_ts": 53.16,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "do",
+                    "ts": 53.22,
+                    "end_ts": 53.44,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "his",
+                    "ts": 53.44,
+                    "end_ts": 53.56,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "job",
+                    "ts": 53.58,
+                    "end_ts": 53.8,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "which",
+                    "ts": 54.05,
+                    "end_ts": 54.4,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "criticized",
+                    "ts": 54.4,
+                    "end_ts": 54.96,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 54.96,
+                    "end_ts": 55.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "media",
+                    "ts": 55.12,
+                    "end_ts": 55.28,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "and",
+                    "ts": 55.46,
+                    "end_ts": 55.68,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "specifically",
+                    "ts": 55.92,
+                    "end_ts": 56.24,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "called",
+                    "ts": 56.24,
+                    "end_ts": 56.48,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "out",
+                    "ts": 56.68,
+                    "end_ts": 56.84,
+                    "confidence": 0.94
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Lemon",
+                    "ts": 56.84,
+                    "end_ts": 57.08,
+                    "confidence": 0.94
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "as",
+                    "ts": 57.22,
+                    "end_ts": 57.44,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "well",
+                    "ts": 57.44,
+                    "end_ts": 57.6,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "as",
+                    "ts": 57.6,
+                    "end_ts": 57.72,
+                    "confidence": 0.96
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Anderson",
+                    "ts": 57.92,
+                    "end_ts": 58.12,
+                    "confidence": 0.99
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Cooper",
+                    "ts": 58.12,
+                    "end_ts": 58.4,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": "."
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "So",
+                    "ts": 58.86,
+                    "end_ts": 59.08,
+                    "confidence": 0.46
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "stay",
+                    "ts": 59.08,
+                    "end_ts": 59.28,
+                    "confidence": 0.97
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "up",
+                    "ts": 59.28,
+                    "end_ts": 59.4,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "to",
+                    "ts": 59.4,
+                    "end_ts": 59.48,
+                    "confidence": 0.89
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "date",
+                    "ts": 59.48,
+                    "end_ts": 59.64,
+                    "confidence": 0.87
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "on",
+                    "ts": 59.64,
+                    "end_ts": 59.8,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 59.8,
+                    "end_ts": 59.92,
+                    "confidence": 0.59
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "story",
+                    "ts": 59.92,
+                    "end_ts": 60.12,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": "."
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Hit",
+                    "ts": 60.18,
+                    "end_ts": 60.4,
+                    "confidence": 0.63
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "to",
+                    "ts": 60.4,
+                    "end_ts": 60.52,
+                    "confidence": 0.87
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "thr.com",
+                    "ts": 60.78,
+                    "end_ts": 61.6,
+                    "confidence": 0.43
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "and",
+                    "ts": 61.6,
+                    "end_ts": 61.8,
+                    "confidence": 0.94
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "until",
+                    "ts": 61.8,
+                    "end_ts": 62.08,
+                    "confidence": 0.95
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "next",
+                    "ts": 62.08,
+                    "end_ts": 62.28,
+                    "confidence": 0.97
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "time",
+                    "ts": 62.28,
+                    "end_ts": 62.44,
+                    "confidence": 0.97
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "for",
+                    "ts": 62.44,
+                    "end_ts": 62.6,
+                    "confidence": 0.94
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "the",
+                    "ts": 62.6,
+                    "end_ts": 62.68,
+                    "confidence": 0.93
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Hollywood",
+                    "ts": 62.68,
+                    "end_ts": 63.0,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Reporter",
+                    "ts": 63.2,
+                    "end_ts": 63.28,
+                    "confidence": 0.98
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "News",
+                    "ts": 63.31,
+                    "end_ts": 63.6,
+                    "confidence": 0.95
+                },
+                {
+                    "type": "punct",
+                    "value": ","
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Emma",
+                    "ts": 63.63,
+                    "end_ts": 63.92,
+                    "confidence": 0.32
+                },
+                {
+                    "type": "punct",
+                    "value": " "
+                },
+                {
+                    "type": "text",
+                    "value": "Hijo",
+                    "ts": 63.95,
+                    "end_ts": 64.24,
+                    "confidence": 0.51
+                },
+                {
+                    "type": "punct",
+                    "value": "."
+                }
+            ]
+        }
+    ]
+}

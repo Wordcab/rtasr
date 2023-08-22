@@ -1,0 +1,3579 @@
+{
+    "metadata": {
+        "transaction_key": "deprecated",
+        "request_id": "54f607b2-1428-4d79-9124-27fb0cf19f21",
+        "sha256": "cadade53326e91918b482a41ab81817fc57bbaf35f809e5d7cc20e0c19d9ab2f",
+        "created": "2023-08-21T15:56:47.965Z",
+        "duration": 68.376,
+        "channels": 1,
+        "models": [
+            "aa274f3c-e8b3-456a-ac08-dfd797d45514"
+        ],
+        "model_info": {
+            "aa274f3c-e8b3-456a-ac08-dfd797d45514": {
+                "name": "general-nova",
+                "version": "2023-07-06.22746",
+                "arch": "nova"
+            }
+        }
+    },
+    "results": {
+        "channels": [
+            {
+                "alternatives": [
+                    {
+                        "transcript": "CNN has decided not to run a Donald Trump endorsed campaign ad after the network decided it does not meet their standards. The thirty second advertisement paid for by Trump's campaign targeted Joe Biden's conduct toward Ukraine while he served as vice president. While also referring to CNN personalities, Don Lemmon, Chris Cuomo, and Jim Acosta, as media lapdogs. A CNN spokesperson spoke to THR saying the ad does not meet the network's advertising standards adding. In addition to disparaging CNN and its journalists, the ad makes assertions that have been proven demonstrably false by various news outlets, including CNN. However, despite CNN's rejection, the president posted the advertisement onto his Twitter each last week, along with the caption, I'm draining the swamp. Now, this is not the first time CNN has rejected a Trump campaign ad. Back in twenty seventeen, the refused to run a Trump approved ad called let president Trump do his job, which criticized the media and specifically called out lemon as well as Anderson Cooper. To stay up to date on this story, hit the thr dot com, and until next time for the Hollywood reporter news, I may enjoy.",
+                        "confidence": 0.99560547,
+                        "words": [
+                            {
+                                "word": "cnn",
+                                "start": 0.24,
+                                "end": 0.71999997,
+                                "confidence": 0.73828125,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "CNN"
+                            },
+                            {
+                                "word": "has",
+                                "start": 0.71999997,
+                                "end": 0.88,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "has"
+                            },
+                            {
+                                "word": "decided",
+                                "start": 0.88,
+                                "end": 1.38,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "decided"
+                            },
+                            {
+                                "word": "not",
+                                "start": 1.4399999,
+                                "end": 1.68,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "not"
+                            },
+                            {
+                                "word": "to",
+                                "start": 1.68,
+                                "end": 1.8399999,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "to"
+                            },
+                            {
+                                "word": "run",
+                                "start": 1.8399999,
+                                "end": 2.08,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "run"
+                            },
+                            {
+                                "word": "a",
+                                "start": 2.08,
+                                "end": 2.1599998,
+                                "confidence": 0.95654297,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "a"
+                            },
+                            {
+                                "word": "donald",
+                                "start": 2.1599998,
+                                "end": 2.48,
+                                "confidence": 0.99560547,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "Donald"
+                            },
+                            {
+                                "word": "trump",
+                                "start": 2.48,
+                                "end": 2.72,
+                                "confidence": 0.99609375,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "Trump"
+                            },
+                            {
+                                "word": "endorsed",
+                                "start": 2.72,
+                                "end": 3.12,
+                                "confidence": 0.99316406,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "endorsed"
+                            },
+                            {
+                                "word": "campaign",
+                                "start": 3.12,
+                                "end": 3.62,
+                                "confidence": 0.9135742,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "campaign"
+                            },
+                            {
+                                "word": "ad",
+                                "start": 3.6799998,
+                                "end": 3.9199998,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "ad"
+                            },
+                            {
+                                "word": "after",
+                                "start": 3.9199998,
+                                "end": 4.24,
+                                "confidence": 0.9296875,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "after"
+                            },
+                            {
+                                "word": "the",
+                                "start": 4.24,
+                                "end": 4.4,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "network",
+                                "start": 4.4,
+                                "end": 4.7999997,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "network"
+                            },
+                            {
+                                "word": "decided",
+                                "start": 4.7999997,
+                                "end": 5.2799997,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "decided"
+                            },
+                            {
+                                "word": "it",
+                                "start": 5.2799997,
+                                "end": 5.52,
+                                "confidence": 0.9863281,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "it"
+                            },
+                            {
+                                "word": "does",
+                                "start": 5.52,
+                                "end": 5.68,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "does"
+                            },
+                            {
+                                "word": "not",
+                                "start": 5.68,
+                                "end": 5.92,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "not"
+                            },
+                            {
+                                "word": "meet",
+                                "start": 5.92,
+                                "end": 6.08,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "meet"
+                            },
+                            {
+                                "word": "their",
+                                "start": 6.08,
+                                "end": 6.3199997,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "their"
+                            },
+                            {
+                                "word": "standards",
+                                "start": 6.3199997,
+                                "end": 6.8199997,
+                                "confidence": 0.99194336,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8238818,
+                                "punctuated_word": "standards."
+                            },
+                            {
+                                "word": "the",
+                                "start": 8.565,
+                                "end": 8.724999,
+                                "confidence": 0.98291016,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "The"
+                            },
+                            {
+                                "word": "thirty",
+                                "start": 8.724999,
+                                "end": 9.045,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "thirty"
+                            },
+                            {
+                                "word": "second",
+                                "start": 9.045,
+                                "end": 9.445,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "second"
+                            },
+                            {
+                                "word": "advertisement",
+                                "start": 9.445,
+                                "end": 9.945,
+                                "confidence": 0.9975586,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "advertisement"
+                            },
+                            {
+                                "word": "paid",
+                                "start": 10.085,
+                                "end": 10.325,
+                                "confidence": 0.9248047,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "paid"
+                            },
+                            {
+                                "word": "for",
+                                "start": 10.325,
+                                "end": 10.565,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "for"
+                            },
+                            {
+                                "word": "by",
+                                "start": 10.565,
+                                "end": 10.725,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "by"
+                            },
+                            {
+                                "word": "trump's",
+                                "start": 10.725,
+                                "end": 11.125,
+                                "confidence": 0.98657227,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Trump's"
+                            },
+                            {
+                                "word": "campaign",
+                                "start": 11.125,
+                                "end": 11.625,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "campaign"
+                            },
+                            {
+                                "word": "targeted",
+                                "start": 11.764999,
+                                "end": 12.245,
+                                "confidence": 0.68896484,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "targeted"
+                            },
+                            {
+                                "word": "joe",
+                                "start": 12.245,
+                                "end": 12.485,
+                                "confidence": 0.9921875,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Joe"
+                            },
+                            {
+                                "word": "biden's",
+                                "start": 12.485,
+                                "end": 12.965,
+                                "confidence": 0.998291,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Biden's"
+                            },
+                            {
+                                "word": "conduct",
+                                "start": 12.965,
+                                "end": 13.365,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "conduct"
+                            },
+                            {
+                                "word": "toward",
+                                "start": 13.365,
+                                "end": 13.684999,
+                                "confidence": 0.9658203,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "toward"
+                            },
+                            {
+                                "word": "ukraine",
+                                "start": 13.684999,
+                                "end": 14.184999,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Ukraine"
+                            },
+                            {
+                                "word": "while",
+                                "start": 14.245,
+                                "end": 14.485,
+                                "confidence": 0.8154297,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "while"
+                            },
+                            {
+                                "word": "he",
+                                "start": 14.485,
+                                "end": 14.6449995,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "he"
+                            },
+                            {
+                                "word": "served",
+                                "start": 14.6449995,
+                                "end": 14.965,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "served"
+                            },
+                            {
+                                "word": "as",
+                                "start": 14.965,
+                                "end": 15.125,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "as"
+                            },
+                            {
+                                "word": "vice",
+                                "start": 15.125,
+                                "end": 15.445,
+                                "confidence": 0.9873047,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "vice"
+                            },
+                            {
+                                "word": "president",
+                                "start": 15.445,
+                                "end": 15.945,
+                                "confidence": 0.8586426,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "president."
+                            },
+                            {
+                                "word": "while",
+                                "start": 16.03,
+                                "end": 16.27,
+                                "confidence": 0.9868164,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "While"
+                            },
+                            {
+                                "word": "also",
+                                "start": 16.27,
+                                "end": 16.59,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "also"
+                            },
+                            {
+                                "word": "referring",
+                                "start": 16.59,
+                                "end": 16.99,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "referring"
+                            },
+                            {
+                                "word": "to",
+                                "start": 16.99,
+                                "end": 17.15,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "to"
+                            },
+                            {
+                                "word": "cnn",
+                                "start": 17.15,
+                                "end": 17.63,
+                                "confidence": 0.99560547,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "CNN"
+                            },
+                            {
+                                "word": "personalities",
+                                "start": 17.63,
+                                "end": 18.13,
+                                "confidence": 0.9086914,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "personalities,"
+                            },
+                            {
+                                "word": "don",
+                                "start": 18.35,
+                                "end": 18.59,
+                                "confidence": 0.9140625,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Don"
+                            },
+                            {
+                                "word": "lemmon",
+                                "start": 18.59,
+                                "end": 19.09,
+                                "confidence": 0.7232259,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Lemmon,"
+                            },
+                            {
+                                "word": "chris",
+                                "start": 19.23,
+                                "end": 19.47,
+                                "confidence": 0.98291016,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Chris"
+                            },
+                            {
+                                "word": "cuomo",
+                                "start": 19.47,
+                                "end": 19.97,
+                                "confidence": 0.89868164,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Cuomo,"
+                            },
+                            {
+                                "word": "and",
+                                "start": 20.189999,
+                                "end": 20.43,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "and"
+                            },
+                            {
+                                "word": "jim",
+                                "start": 20.43,
+                                "end": 20.67,
+                                "confidence": 0.9370117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Jim"
+                            },
+                            {
+                                "word": "acosta",
+                                "start": 20.67,
+                                "end": 21.17,
+                                "confidence": 0.8022461,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "Acosta,"
+                            },
+                            {
+                                "word": "as",
+                                "start": 21.23,
+                                "end": 21.39,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "as"
+                            },
+                            {
+                                "word": "media",
+                                "start": 21.39,
+                                "end": 21.789999,
+                                "confidence": 0.98291016,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "media"
+                            },
+                            {
+                                "word": "lapdogs",
+                                "start": 21.789999,
+                                "end": 22.289999,
+                                "confidence": 0.82161456,
+                                "speaker": 0,
+                                "speaker_confidence": 0.9041902,
+                                "punctuated_word": "lapdogs."
+                            },
+                            {
+                                "word": "a",
+                                "start": 22.75,
+                                "end": 22.91,
+                                "confidence": 0.99560547,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "A"
+                            },
+                            {
+                                "word": "cnn",
+                                "start": 22.91,
+                                "end": 23.41,
+                                "confidence": 0.9941406,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "CNN"
+                            },
+                            {
+                                "word": "spokesperson",
+                                "start": 23.47,
+                                "end": 23.97,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "spokesperson"
+                            },
+                            {
+                                "word": "spoke",
+                                "start": 24.029999,
+                                "end": 24.349998,
+                                "confidence": 0.9946289,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "spoke"
+                            },
+                            {
+                                "word": "to",
+                                "start": 24.349998,
+                                "end": 24.465,
+                                "confidence": 0.89941406,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "to"
+                            },
+                            {
+                                "word": "thr",
+                                "start": 24.465,
+                                "end": 24.965,
+                                "confidence": 0.6654053,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "THR"
+                            },
+                            {
+                                "word": "saying",
+                                "start": 25.025,
+                                "end": 25.265,
+                                "confidence": 0.5761719,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "saying"
+                            },
+                            {
+                                "word": "the",
+                                "start": 25.265,
+                                "end": 25.425,
+                                "confidence": 0.9824219,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "ad",
+                                "start": 25.425,
+                                "end": 25.745,
+                                "confidence": 0.9916992,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "ad"
+                            },
+                            {
+                                "word": "does",
+                                "start": 25.745,
+                                "end": 25.905,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "does"
+                            },
+                            {
+                                "word": "not",
+                                "start": 25.905,
+                                "end": 26.145,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "not"
+                            },
+                            {
+                                "word": "meet",
+                                "start": 26.145,
+                                "end": 26.385,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "meet"
+                            },
+                            {
+                                "word": "the",
+                                "start": 26.385,
+                                "end": 26.545,
+                                "confidence": 0.9975586,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "network's",
+                                "start": 26.545,
+                                "end": 26.945,
+                                "confidence": 0.97802734,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "network's"
+                            },
+                            {
+                                "word": "advertising",
+                                "start": 26.945,
+                                "end": 27.445,
+                                "confidence": 0.9868164,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "advertising"
+                            },
+                            {
+                                "word": "standards",
+                                "start": 27.585,
+                                "end": 28.065,
+                                "confidence": 0.9951172,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "standards"
+                            },
+                            {
+                                "word": "adding",
+                                "start": 28.065,
+                                "end": 28.565,
+                                "confidence": 0.7368164,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "adding."
+                            },
+                            {
+                                "word": "in",
+                                "start": 28.705,
+                                "end": 28.945,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "In"
+                            },
+                            {
+                                "word": "addition",
+                                "start": 28.945,
+                                "end": 29.265,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "addition"
+                            },
+                            {
+                                "word": "to",
+                                "start": 29.265,
+                                "end": 29.425,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "to"
+                            },
+                            {
+                                "word": "disparaging",
+                                "start": 29.425,
+                                "end": 29.925,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "disparaging"
+                            },
+                            {
+                                "word": "cnn",
+                                "start": 29.985,
+                                "end": 30.465,
+                                "confidence": 0.96484375,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "CNN"
+                            },
+                            {
+                                "word": "and",
+                                "start": 30.465,
+                                "end": 30.705,
+                                "confidence": 0.9863281,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "and"
+                            },
+                            {
+                                "word": "its",
+                                "start": 30.705,
+                                "end": 30.945,
+                                "confidence": 0.9921875,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "its"
+                            },
+                            {
+                                "word": "journalists",
+                                "start": 30.945,
+                                "end": 31.445,
+                                "confidence": 0.96875,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "journalists,"
+                            },
+                            {
+                                "word": "the",
+                                "start": 31.505001,
+                                "end": 31.665,
+                                "confidence": 0.9975586,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "ad",
+                                "start": 31.665,
+                                "end": 31.825,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "ad"
+                            },
+                            {
+                                "word": "makes",
+                                "start": 31.825,
+                                "end": 32.145,
+                                "confidence": 0.99560547,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "makes"
+                            },
+                            {
+                                "word": "assertions",
+                                "start": 32.145,
+                                "end": 32.625,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "assertions"
+                            },
+                            {
+                                "word": "that",
+                                "start": 32.625,
+                                "end": 32.785,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.86213976,
+                                "punctuated_word": "that"
+                            },
+                            {
+                                "word": "have",
+                                "start": 32.785,
+                                "end": 32.864998,
+                                "confidence": 0.9970703,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "have"
+                            },
+                            {
+                                "word": "been",
+                                "start": 32.864998,
+                                "end": 33.025,
+                                "confidence": 0.99609375,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "been"
+                            },
+                            {
+                                "word": "proven",
+                                "start": 33.025,
+                                "end": 33.505,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "proven"
+                            },
+                            {
+                                "word": "demonstrably",
+                                "start": 33.505,
+                                "end": 34.005,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "demonstrably"
+                            },
+                            {
+                                "word": "false",
+                                "start": 34.21,
+                                "end": 34.53,
+                                "confidence": 0.9082031,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "false"
+                            },
+                            {
+                                "word": "by",
+                                "start": 34.53,
+                                "end": 34.77,
+                                "confidence": 0.98828125,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "by"
+                            },
+                            {
+                                "word": "various",
+                                "start": 34.77,
+                                "end": 35.17,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "various"
+                            },
+                            {
+                                "word": "news",
+                                "start": 35.17,
+                                "end": 35.41,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "news"
+                            },
+                            {
+                                "word": "outlets",
+                                "start": 35.41,
+                                "end": 35.89,
+                                "confidence": 0.8796387,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "outlets,"
+                            },
+                            {
+                                "word": "including",
+                                "start": 35.89,
+                                "end": 36.39,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "including"
+                            },
+                            {
+                                "word": "cnn",
+                                "start": 36.45,
+                                "end": 36.95,
+                                "confidence": 0.9929199,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "CNN."
+                            },
+                            {
+                                "word": "however",
+                                "start": 37.01,
+                                "end": 37.41,
+                                "confidence": 0.99560547,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "However,"
+                            },
+                            {
+                                "word": "despite",
+                                "start": 37.41,
+                                "end": 37.809998,
+                                "confidence": 0.9975586,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "despite"
+                            },
+                            {
+                                "word": "cnn's",
+                                "start": 37.809998,
+                                "end": 38.29,
+                                "confidence": 0.9812012,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "CNN's"
+                            },
+                            {
+                                "word": "rejection",
+                                "start": 38.29,
+                                "end": 38.79,
+                                "confidence": 0.9946289,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "rejection,"
+                            },
+                            {
+                                "word": "the",
+                                "start": 38.85,
+                                "end": 39.01,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "president",
+                                "start": 39.01,
+                                "end": 39.329998,
+                                "confidence": 0.97998047,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "president"
+                            },
+                            {
+                                "word": "posted",
+                                "start": 39.329998,
+                                "end": 39.73,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "posted"
+                            },
+                            {
+                                "word": "the",
+                                "start": 39.73,
+                                "end": 39.89,
+                                "confidence": 0.9975586,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "advertisement",
+                                "start": 39.89,
+                                "end": 40.39,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "advertisement"
+                            },
+                            {
+                                "word": "onto",
+                                "start": 40.449997,
+                                "end": 40.69,
+                                "confidence": 0.9584961,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "onto"
+                            },
+                            {
+                                "word": "his",
+                                "start": 40.69,
+                                "end": 40.85,
+                                "confidence": 0.9970703,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "his"
+                            },
+                            {
+                                "word": "twitter",
+                                "start": 40.85,
+                                "end": 41.345,
+                                "confidence": 0.99560547,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "Twitter"
+                            },
+                            {
+                                "word": "each",
+                                "start": 41.345,
+                                "end": 41.585003,
+                                "confidence": 0.37158203,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "each"
+                            },
+                            {
+                                "word": "last",
+                                "start": 41.585003,
+                                "end": 41.905003,
+                                "confidence": 0.99560547,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "last"
+                            },
+                            {
+                                "word": "week",
+                                "start": 41.905003,
+                                "end": 42.225002,
+                                "confidence": 0.7651367,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "week,"
+                            },
+                            {
+                                "word": "along",
+                                "start": 42.225002,
+                                "end": 42.545002,
+                                "confidence": 0.99609375,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "along"
+                            },
+                            {
+                                "word": "with",
+                                "start": 42.545002,
+                                "end": 42.705,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "with"
+                            },
+                            {
+                                "word": "the",
+                                "start": 42.705,
+                                "end": 42.865,
+                                "confidence": 0.9863281,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "caption",
+                                "start": 42.865,
+                                "end": 43.345,
+                                "confidence": 0.93188477,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "caption,"
+                            },
+                            {
+                                "word": "i'm",
+                                "start": 43.345,
+                                "end": 43.585003,
+                                "confidence": 0.86938477,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "I'm"
+                            },
+                            {
+                                "word": "draining",
+                                "start": 43.585003,
+                                "end": 44.065002,
+                                "confidence": 0.9946289,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "draining"
+                            },
+                            {
+                                "word": "the",
+                                "start": 44.065002,
+                                "end": 44.145,
+                                "confidence": 0.9926758,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "swamp",
+                                "start": 44.145,
+                                "end": 44.645,
+                                "confidence": 0.9716797,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8604965,
+                                "punctuated_word": "swamp."
+                            },
+                            {
+                                "word": "now",
+                                "start": 44.705,
+                                "end": 44.865,
+                                "confidence": 0.782959,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "Now,"
+                            },
+                            {
+                                "word": "this",
+                                "start": 44.865,
+                                "end": 45.105,
+                                "confidence": 0.9970703,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "this"
+                            },
+                            {
+                                "word": "is",
+                                "start": 45.105,
+                                "end": 45.265,
+                                "confidence": 0.9975586,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "is"
+                            },
+                            {
+                                "word": "not",
+                                "start": 45.265,
+                                "end": 45.505,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "not"
+                            },
+                            {
+                                "word": "the",
+                                "start": 45.505,
+                                "end": 45.665,
+                                "confidence": 0.99658203,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "first",
+                                "start": 45.665,
+                                "end": 45.825,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "first"
+                            },
+                            {
+                                "word": "time",
+                                "start": 45.825,
+                                "end": 46.065002,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "time"
+                            },
+                            {
+                                "word": "cnn",
+                                "start": 46.065002,
+                                "end": 46.465,
+                                "confidence": 0.9628906,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "CNN"
+                            },
+                            {
+                                "word": "has",
+                                "start": 46.465,
+                                "end": 46.705,
+                                "confidence": 0.99853516,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "has"
+                            },
+                            {
+                                "word": "rejected",
+                                "start": 46.705,
+                                "end": 47.185,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "rejected"
+                            },
+                            {
+                                "word": "a",
+                                "start": 47.185,
+                                "end": 47.345,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "a"
+                            },
+                            {
+                                "word": "trump",
+                                "start": 47.345,
+                                "end": 47.585,
+                                "confidence": 0.85595703,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "Trump"
+                            },
+                            {
+                                "word": "campaign",
+                                "start": 47.585,
+                                "end": 48.085,
+                                "confidence": 0.9824219,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "campaign"
+                            },
+                            {
+                                "word": "ad",
+                                "start": 48.145,
+                                "end": 48.545002,
+                                "confidence": 0.751709,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "ad."
+                            },
+                            {
+                                "word": "back",
+                                "start": 48.545002,
+                                "end": 48.705,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "Back"
+                            },
+                            {
+                                "word": "in",
+                                "start": 48.705,
+                                "end": 48.865,
+                                "confidence": 0.9951172,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "in"
+                            },
+                            {
+                                "word": "twenty",
+                                "start": 48.865,
+                                "end": 49.185,
+                                "confidence": 0.99316406,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "twenty"
+                            },
+                            {
+                                "word": "seventeen",
+                                "start": 49.185,
+                                "end": 49.665,
+                                "confidence": 0.98413086,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "seventeen,"
+                            },
+                            {
+                                "word": "the",
+                                "start": 49.665,
+                                "end": 49.95,
+                                "confidence": 0.86279297,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "refused",
+                                "start": 49.95,
+                                "end": 50.45,
+                                "confidence": 0.76538086,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "refused"
+                            },
+                            {
+                                "word": "to",
+                                "start": 50.510002,
+                                "end": 50.59,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "to"
+                            },
+                            {
+                                "word": "run",
+                                "start": 50.59,
+                                "end": 50.83,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "run"
+                            },
+                            {
+                                "word": "a",
+                                "start": 50.83,
+                                "end": 50.99,
+                                "confidence": 0.99853516,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "a"
+                            },
+                            {
+                                "word": "trump",
+                                "start": 50.99,
+                                "end": 51.23,
+                                "confidence": 0.88427734,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "Trump"
+                            },
+                            {
+                                "word": "approved",
+                                "start": 51.23,
+                                "end": 51.63,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "approved"
+                            },
+                            {
+                                "word": "ad",
+                                "start": 51.63,
+                                "end": 52.03,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "ad"
+                            },
+                            {
+                                "word": "called",
+                                "start": 52.03,
+                                "end": 52.43,
+                                "confidence": 0.9692383,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "called"
+                            },
+                            {
+                                "word": "let",
+                                "start": 52.43,
+                                "end": 52.670002,
+                                "confidence": 0.53271484,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "let"
+                            },
+                            {
+                                "word": "president",
+                                "start": 52.670002,
+                                "end": 53.15,
+                                "confidence": 0.54589844,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "president"
+                            },
+                            {
+                                "word": "trump",
+                                "start": 53.15,
+                                "end": 53.47,
+                                "confidence": 0.8515625,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "Trump"
+                            },
+                            {
+                                "word": "do",
+                                "start": 53.47,
+                                "end": 53.63,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "do"
+                            },
+                            {
+                                "word": "his",
+                                "start": 53.63,
+                                "end": 53.95,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "his"
+                            },
+                            {
+                                "word": "job",
+                                "start": 53.95,
+                                "end": 54.27,
+                                "confidence": 0.9038086,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "job,"
+                            },
+                            {
+                                "word": "which",
+                                "start": 54.27,
+                                "end": 54.510002,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "which"
+                            },
+                            {
+                                "word": "criticized",
+                                "start": 54.510002,
+                                "end": 55.010002,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.8530749,
+                                "punctuated_word": "criticized"
+                            },
+                            {
+                                "word": "the",
+                                "start": 55.07,
+                                "end": 55.15,
+                                "confidence": 0.99853516,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "media",
+                                "start": 55.15,
+                                "end": 55.55,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "media"
+                            },
+                            {
+                                "word": "and",
+                                "start": 55.55,
+                                "end": 55.79,
+                                "confidence": 0.78222656,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "and"
+                            },
+                            {
+                                "word": "specifically",
+                                "start": 55.79,
+                                "end": 56.29,
+                                "confidence": 0.99853516,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "specifically"
+                            },
+                            {
+                                "word": "called",
+                                "start": 56.510002,
+                                "end": 56.75,
+                                "confidence": 0.99560547,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "called"
+                            },
+                            {
+                                "word": "out",
+                                "start": 56.75,
+                                "end": 56.91,
+                                "confidence": 0.99658203,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "out"
+                            },
+                            {
+                                "word": "lemon",
+                                "start": 56.91,
+                                "end": 57.23,
+                                "confidence": 0.68115234,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "lemon"
+                            },
+                            {
+                                "word": "as",
+                                "start": 57.23,
+                                "end": 57.39,
+                                "confidence": 0.6142578,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "as"
+                            },
+                            {
+                                "word": "well",
+                                "start": 57.39,
+                                "end": 57.55,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "well"
+                            },
+                            {
+                                "word": "as",
+                                "start": 57.55,
+                                "end": 57.79,
+                                "confidence": 0.99853516,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "as"
+                            },
+                            {
+                                "word": "anderson",
+                                "start": 57.79,
+                                "end": 58.11,
+                                "confidence": 0.8964844,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "Anderson"
+                            },
+                            {
+                                "word": "cooper",
+                                "start": 58.11,
+                                "end": 58.585,
+                                "confidence": 0.7988281,
+                                "speaker": 0,
+                                "speaker_confidence": 0.60973746,
+                                "punctuated_word": "Cooper."
+                            },
+                            {
+                                "word": "to",
+                                "start": 58.905,
+                                "end": 59.065,
+                                "confidence": 0.47143555,
+                                "speaker": 0,
+                                "speaker_confidence": 0.30368042,
+                                "punctuated_word": "To"
+                            },
+                            {
+                                "word": "stay",
+                                "start": 59.065,
+                                "end": 59.225,
+                                "confidence": 0.9975586,
+                                "speaker": 0,
+                                "speaker_confidence": 0.30368042,
+                                "punctuated_word": "stay"
+                            },
+                            {
+                                "word": "up",
+                                "start": 59.225,
+                                "end": 59.385,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.30368042,
+                                "punctuated_word": "up"
+                            },
+                            {
+                                "word": "to",
+                                "start": 59.385,
+                                "end": 59.545,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.30368042,
+                                "punctuated_word": "to"
+                            },
+                            {
+                                "word": "date",
+                                "start": 59.545,
+                                "end": 59.704998,
+                                "confidence": 1.0,
+                                "speaker": 0,
+                                "speaker_confidence": 0.30368042,
+                                "punctuated_word": "date"
+                            },
+                            {
+                                "word": "on",
+                                "start": 59.704998,
+                                "end": 59.864998,
+                                "confidence": 0.9970703,
+                                "speaker": 0,
+                                "speaker_confidence": 0.30368042,
+                                "punctuated_word": "on"
+                            },
+                            {
+                                "word": "this",
+                                "start": 59.864998,
+                                "end": 59.945,
+                                "confidence": 0.56152344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "this"
+                            },
+                            {
+                                "word": "story",
+                                "start": 59.945,
+                                "end": 60.265,
+                                "confidence": 0.94433594,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "story,"
+                            },
+                            {
+                                "word": "hit",
+                                "start": 60.265,
+                                "end": 60.504997,
+                                "confidence": 0.9506836,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "hit"
+                            },
+                            {
+                                "word": "the",
+                                "start": 60.504997,
+                                "end": 60.665,
+                                "confidence": 0.4946289,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "thr",
+                                "start": 60.665,
+                                "end": 61.065,
+                                "confidence": 0.9326172,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "thr"
+                            },
+                            {
+                                "word": "dot",
+                                "start": 61.065,
+                                "end": 61.305,
+                                "confidence": 0.984375,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "dot"
+                            },
+                            {
+                                "word": "com",
+                                "start": 61.305,
+                                "end": 61.545,
+                                "confidence": 0.71813965,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "com,"
+                            },
+                            {
+                                "word": "and",
+                                "start": 61.545,
+                                "end": 61.785,
+                                "confidence": 0.99902344,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "and"
+                            },
+                            {
+                                "word": "until",
+                                "start": 61.785,
+                                "end": 62.105,
+                                "confidence": 0.9980469,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "until"
+                            },
+                            {
+                                "word": "next",
+                                "start": 62.105,
+                                "end": 62.265,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "next"
+                            },
+                            {
+                                "word": "time",
+                                "start": 62.265,
+                                "end": 62.425,
+                                "confidence": 0.9995117,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "time"
+                            },
+                            {
+                                "word": "for",
+                                "start": 62.425,
+                                "end": 62.585,
+                                "confidence": 0.9550781,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "for"
+                            },
+                            {
+                                "word": "the",
+                                "start": 62.585,
+                                "end": 62.665,
+                                "confidence": 0.96484375,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "the"
+                            },
+                            {
+                                "word": "hollywood",
+                                "start": 62.665,
+                                "end": 63.065,
+                                "confidence": 0.9711914,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "Hollywood"
+                            },
+                            {
+                                "word": "reporter",
+                                "start": 63.065,
+                                "end": 63.385,
+                                "confidence": 0.9604492,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "reporter"
+                            },
+                            {
+                                "word": "news",
+                                "start": 63.385,
+                                "end": 63.704998,
+                                "confidence": 0.76586914,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "news,"
+                            },
+                            {
+                                "word": "i",
+                                "start": 63.704998,
+                                "end": 63.785,
+                                "confidence": 0.72021484,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "I"
+                            },
+                            {
+                                "word": "may",
+                                "start": 63.785,
+                                "end": 63.945,
+                                "confidence": 0.86083984,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "may"
+                            },
+                            {
+                                "word": "enjoy",
+                                "start": 63.945,
+                                "end": 64.445,
+                                "confidence": 0.75561523,
+                                "speaker": 0,
+                                "speaker_confidence": 0.57561845,
+                                "punctuated_word": "enjoy."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "utterances": [
+            {
+                "start": 0.24,
+                "end": 6.8199997,
+                "confidence": 0.97686213,
+                "channel": 0,
+                "transcript": "CNN has decided not to run a Donald Trump endorsed campaign ad after the network decided it does not meet their standards.",
+                "words": [
+                    {
+                        "word": "cnn",
+                        "start": 0.24,
+                        "end": 0.71999997,
+                        "confidence": 0.73828125,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "CNN"
+                    },
+                    {
+                        "word": "has",
+                        "start": 0.71999997,
+                        "end": 0.88,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "has"
+                    },
+                    {
+                        "word": "decided",
+                        "start": 0.88,
+                        "end": 1.38,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "decided"
+                    },
+                    {
+                        "word": "not",
+                        "start": 1.4399999,
+                        "end": 1.68,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "not"
+                    },
+                    {
+                        "word": "to",
+                        "start": 1.68,
+                        "end": 1.8399999,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "to"
+                    },
+                    {
+                        "word": "run",
+                        "start": 1.8399999,
+                        "end": 2.08,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "run"
+                    },
+                    {
+                        "word": "a",
+                        "start": 2.08,
+                        "end": 2.1599998,
+                        "confidence": 0.95654297,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "a"
+                    },
+                    {
+                        "word": "donald",
+                        "start": 2.1599998,
+                        "end": 2.48,
+                        "confidence": 0.99560547,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "Donald"
+                    },
+                    {
+                        "word": "trump",
+                        "start": 2.48,
+                        "end": 2.72,
+                        "confidence": 0.99609375,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "Trump"
+                    },
+                    {
+                        "word": "endorsed",
+                        "start": 2.72,
+                        "end": 3.12,
+                        "confidence": 0.99316406,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "endorsed"
+                    },
+                    {
+                        "word": "campaign",
+                        "start": 3.12,
+                        "end": 3.62,
+                        "confidence": 0.9135742,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "campaign"
+                    },
+                    {
+                        "word": "ad",
+                        "start": 3.6799998,
+                        "end": 3.9199998,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "ad"
+                    },
+                    {
+                        "word": "after",
+                        "start": 3.9199998,
+                        "end": 4.24,
+                        "confidence": 0.9296875,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "after"
+                    },
+                    {
+                        "word": "the",
+                        "start": 4.24,
+                        "end": 4.4,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "network",
+                        "start": 4.4,
+                        "end": 4.7999997,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "network"
+                    },
+                    {
+                        "word": "decided",
+                        "start": 4.7999997,
+                        "end": 5.2799997,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "decided"
+                    },
+                    {
+                        "word": "it",
+                        "start": 5.2799997,
+                        "end": 5.52,
+                        "confidence": 0.9863281,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "it"
+                    },
+                    {
+                        "word": "does",
+                        "start": 5.52,
+                        "end": 5.68,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "does"
+                    },
+                    {
+                        "word": "not",
+                        "start": 5.68,
+                        "end": 5.92,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "not"
+                    },
+                    {
+                        "word": "meet",
+                        "start": 5.92,
+                        "end": 6.08,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "meet"
+                    },
+                    {
+                        "word": "their",
+                        "start": 6.08,
+                        "end": 6.3199997,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "their"
+                    },
+                    {
+                        "word": "standards",
+                        "start": 6.3199997,
+                        "end": 6.8199997,
+                        "confidence": 0.99194336,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8238818,
+                        "punctuated_word": "standards."
+                    }
+                ],
+                "speaker": 0,
+                "id": "925c2d2b-94e2-44d0-a972-e5e684f84f35"
+            },
+            {
+                "start": 8.565,
+                "end": 22.289999,
+                "confidence": 0.94977087,
+                "channel": 0,
+                "transcript": "The thirty second advertisement paid for by Trump's campaign targeted Joe Biden's conduct toward Ukraine while he served as vice president. While also referring to CNN personalities, Don Lemmon, Chris Cuomo, and Jim Acosta, as media lapdogs.",
+                "words": [
+                    {
+                        "word": "the",
+                        "start": 8.565,
+                        "end": 8.724999,
+                        "confidence": 0.98291016,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "The"
+                    },
+                    {
+                        "word": "thirty",
+                        "start": 8.724999,
+                        "end": 9.045,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "thirty"
+                    },
+                    {
+                        "word": "second",
+                        "start": 9.045,
+                        "end": 9.445,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "second"
+                    },
+                    {
+                        "word": "advertisement",
+                        "start": 9.445,
+                        "end": 9.945,
+                        "confidence": 0.9975586,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "advertisement"
+                    },
+                    {
+                        "word": "paid",
+                        "start": 10.085,
+                        "end": 10.325,
+                        "confidence": 0.9248047,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "paid"
+                    },
+                    {
+                        "word": "for",
+                        "start": 10.325,
+                        "end": 10.565,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "for"
+                    },
+                    {
+                        "word": "by",
+                        "start": 10.565,
+                        "end": 10.725,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "by"
+                    },
+                    {
+                        "word": "trump's",
+                        "start": 10.725,
+                        "end": 11.125,
+                        "confidence": 0.98657227,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Trump's"
+                    },
+                    {
+                        "word": "campaign",
+                        "start": 11.125,
+                        "end": 11.625,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "campaign"
+                    },
+                    {
+                        "word": "targeted",
+                        "start": 11.764999,
+                        "end": 12.245,
+                        "confidence": 0.68896484,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "targeted"
+                    },
+                    {
+                        "word": "joe",
+                        "start": 12.245,
+                        "end": 12.485,
+                        "confidence": 0.9921875,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Joe"
+                    },
+                    {
+                        "word": "biden's",
+                        "start": 12.485,
+                        "end": 12.965,
+                        "confidence": 0.998291,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Biden's"
+                    },
+                    {
+                        "word": "conduct",
+                        "start": 12.965,
+                        "end": 13.365,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "conduct"
+                    },
+                    {
+                        "word": "toward",
+                        "start": 13.365,
+                        "end": 13.684999,
+                        "confidence": 0.9658203,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "toward"
+                    },
+                    {
+                        "word": "ukraine",
+                        "start": 13.684999,
+                        "end": 14.184999,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Ukraine"
+                    },
+                    {
+                        "word": "while",
+                        "start": 14.245,
+                        "end": 14.485,
+                        "confidence": 0.8154297,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "while"
+                    },
+                    {
+                        "word": "he",
+                        "start": 14.485,
+                        "end": 14.6449995,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "he"
+                    },
+                    {
+                        "word": "served",
+                        "start": 14.6449995,
+                        "end": 14.965,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "served"
+                    },
+                    {
+                        "word": "as",
+                        "start": 14.965,
+                        "end": 15.125,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "as"
+                    },
+                    {
+                        "word": "vice",
+                        "start": 15.125,
+                        "end": 15.445,
+                        "confidence": 0.9873047,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "vice"
+                    },
+                    {
+                        "word": "president",
+                        "start": 15.445,
+                        "end": 15.945,
+                        "confidence": 0.8586426,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "president."
+                    },
+                    {
+                        "word": "while",
+                        "start": 16.03,
+                        "end": 16.27,
+                        "confidence": 0.9868164,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "While"
+                    },
+                    {
+                        "word": "also",
+                        "start": 16.27,
+                        "end": 16.59,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "also"
+                    },
+                    {
+                        "word": "referring",
+                        "start": 16.59,
+                        "end": 16.99,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "referring"
+                    },
+                    {
+                        "word": "to",
+                        "start": 16.99,
+                        "end": 17.15,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "to"
+                    },
+                    {
+                        "word": "cnn",
+                        "start": 17.15,
+                        "end": 17.63,
+                        "confidence": 0.99560547,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "CNN"
+                    },
+                    {
+                        "word": "personalities",
+                        "start": 17.63,
+                        "end": 18.13,
+                        "confidence": 0.9086914,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "personalities,"
+                    },
+                    {
+                        "word": "don",
+                        "start": 18.35,
+                        "end": 18.59,
+                        "confidence": 0.9140625,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Don"
+                    },
+                    {
+                        "word": "lemmon",
+                        "start": 18.59,
+                        "end": 19.09,
+                        "confidence": 0.7232259,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Lemmon,"
+                    },
+                    {
+                        "word": "chris",
+                        "start": 19.23,
+                        "end": 19.47,
+                        "confidence": 0.98291016,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Chris"
+                    },
+                    {
+                        "word": "cuomo",
+                        "start": 19.47,
+                        "end": 19.97,
+                        "confidence": 0.89868164,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Cuomo,"
+                    },
+                    {
+                        "word": "and",
+                        "start": 20.189999,
+                        "end": 20.43,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "and"
+                    },
+                    {
+                        "word": "jim",
+                        "start": 20.43,
+                        "end": 20.67,
+                        "confidence": 0.9370117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Jim"
+                    },
+                    {
+                        "word": "acosta",
+                        "start": 20.67,
+                        "end": 21.17,
+                        "confidence": 0.8022461,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "Acosta,"
+                    },
+                    {
+                        "word": "as",
+                        "start": 21.23,
+                        "end": 21.39,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "as"
+                    },
+                    {
+                        "word": "media",
+                        "start": 21.39,
+                        "end": 21.789999,
+                        "confidence": 0.98291016,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "media"
+                    },
+                    {
+                        "word": "lapdogs",
+                        "start": 21.789999,
+                        "end": 22.289999,
+                        "confidence": 0.82161456,
+                        "speaker": 0,
+                        "speaker_confidence": 0.9041902,
+                        "punctuated_word": "lapdogs."
+                    }
+                ],
+                "speaker": 0,
+                "id": "02f80975-c7ea-4b59-986a-0b29a37ba792"
+            },
+            {
+                "start": 22.75,
+                "end": 64.445,
+                "confidence": 0.93077713,
+                "channel": 0,
+                "transcript": "A CNN spokesperson spoke to THR saying the ad does not meet the network's advertising standards adding. In addition to disparaging CNN and its journalists, the ad makes assertions that have been proven demonstrably false by various news outlets, including CNN. However, despite CNN's rejection, the president posted the advertisement onto his Twitter each last week, along with the caption, I'm draining the swamp. Now, this is not the first time CNN has rejected a Trump campaign ad. Back in twenty seventeen, the refused to run a Trump approved ad called let president Trump do his job, which criticized the media and specifically called out lemon as well as Anderson Cooper. To stay up to date on this story, hit the thr dot com, and until next time for the Hollywood reporter news, I may enjoy.",
+                "words": [
+                    {
+                        "word": "a",
+                        "start": 22.75,
+                        "end": 22.91,
+                        "confidence": 0.99560547,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "A"
+                    },
+                    {
+                        "word": "cnn",
+                        "start": 22.91,
+                        "end": 23.41,
+                        "confidence": 0.9941406,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "CNN"
+                    },
+                    {
+                        "word": "spokesperson",
+                        "start": 23.47,
+                        "end": 23.97,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "spokesperson"
+                    },
+                    {
+                        "word": "spoke",
+                        "start": 24.029999,
+                        "end": 24.349998,
+                        "confidence": 0.9946289,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "spoke"
+                    },
+                    {
+                        "word": "to",
+                        "start": 24.349998,
+                        "end": 24.465,
+                        "confidence": 0.89941406,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "to"
+                    },
+                    {
+                        "word": "thr",
+                        "start": 24.465,
+                        "end": 24.965,
+                        "confidence": 0.6654053,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "THR"
+                    },
+                    {
+                        "word": "saying",
+                        "start": 25.025,
+                        "end": 25.265,
+                        "confidence": 0.5761719,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "saying"
+                    },
+                    {
+                        "word": "the",
+                        "start": 25.265,
+                        "end": 25.425,
+                        "confidence": 0.9824219,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "ad",
+                        "start": 25.425,
+                        "end": 25.745,
+                        "confidence": 0.9916992,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "ad"
+                    },
+                    {
+                        "word": "does",
+                        "start": 25.745,
+                        "end": 25.905,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "does"
+                    },
+                    {
+                        "word": "not",
+                        "start": 25.905,
+                        "end": 26.145,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "not"
+                    },
+                    {
+                        "word": "meet",
+                        "start": 26.145,
+                        "end": 26.385,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "meet"
+                    },
+                    {
+                        "word": "the",
+                        "start": 26.385,
+                        "end": 26.545,
+                        "confidence": 0.9975586,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "network's",
+                        "start": 26.545,
+                        "end": 26.945,
+                        "confidence": 0.97802734,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "network's"
+                    },
+                    {
+                        "word": "advertising",
+                        "start": 26.945,
+                        "end": 27.445,
+                        "confidence": 0.9868164,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "advertising"
+                    },
+                    {
+                        "word": "standards",
+                        "start": 27.585,
+                        "end": 28.065,
+                        "confidence": 0.9951172,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "standards"
+                    },
+                    {
+                        "word": "adding",
+                        "start": 28.065,
+                        "end": 28.565,
+                        "confidence": 0.7368164,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "adding."
+                    },
+                    {
+                        "word": "in",
+                        "start": 28.705,
+                        "end": 28.945,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "In"
+                    },
+                    {
+                        "word": "addition",
+                        "start": 28.945,
+                        "end": 29.265,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "addition"
+                    },
+                    {
+                        "word": "to",
+                        "start": 29.265,
+                        "end": 29.425,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "to"
+                    },
+                    {
+                        "word": "disparaging",
+                        "start": 29.425,
+                        "end": 29.925,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "disparaging"
+                    },
+                    {
+                        "word": "cnn",
+                        "start": 29.985,
+                        "end": 30.465,
+                        "confidence": 0.96484375,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "CNN"
+                    },
+                    {
+                        "word": "and",
+                        "start": 30.465,
+                        "end": 30.705,
+                        "confidence": 0.9863281,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "and"
+                    },
+                    {
+                        "word": "its",
+                        "start": 30.705,
+                        "end": 30.945,
+                        "confidence": 0.9921875,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "its"
+                    },
+                    {
+                        "word": "journalists",
+                        "start": 30.945,
+                        "end": 31.445,
+                        "confidence": 0.96875,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "journalists,"
+                    },
+                    {
+                        "word": "the",
+                        "start": 31.505001,
+                        "end": 31.665,
+                        "confidence": 0.9975586,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "ad",
+                        "start": 31.665,
+                        "end": 31.825,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "ad"
+                    },
+                    {
+                        "word": "makes",
+                        "start": 31.825,
+                        "end": 32.145,
+                        "confidence": 0.99560547,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "makes"
+                    },
+                    {
+                        "word": "assertions",
+                        "start": 32.145,
+                        "end": 32.625,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "assertions"
+                    },
+                    {
+                        "word": "that",
+                        "start": 32.625,
+                        "end": 32.785,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.86213976,
+                        "punctuated_word": "that"
+                    },
+                    {
+                        "word": "have",
+                        "start": 32.785,
+                        "end": 32.864998,
+                        "confidence": 0.9970703,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "have"
+                    },
+                    {
+                        "word": "been",
+                        "start": 32.864998,
+                        "end": 33.025,
+                        "confidence": 0.99609375,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "been"
+                    },
+                    {
+                        "word": "proven",
+                        "start": 33.025,
+                        "end": 33.505,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "proven"
+                    },
+                    {
+                        "word": "demonstrably",
+                        "start": 33.505,
+                        "end": 34.005,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "demonstrably"
+                    },
+                    {
+                        "word": "false",
+                        "start": 34.21,
+                        "end": 34.53,
+                        "confidence": 0.9082031,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "false"
+                    },
+                    {
+                        "word": "by",
+                        "start": 34.53,
+                        "end": 34.77,
+                        "confidence": 0.98828125,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "by"
+                    },
+                    {
+                        "word": "various",
+                        "start": 34.77,
+                        "end": 35.17,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "various"
+                    },
+                    {
+                        "word": "news",
+                        "start": 35.17,
+                        "end": 35.41,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "news"
+                    },
+                    {
+                        "word": "outlets",
+                        "start": 35.41,
+                        "end": 35.89,
+                        "confidence": 0.8796387,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "outlets,"
+                    },
+                    {
+                        "word": "including",
+                        "start": 35.89,
+                        "end": 36.39,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "including"
+                    },
+                    {
+                        "word": "cnn",
+                        "start": 36.45,
+                        "end": 36.95,
+                        "confidence": 0.9929199,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "CNN."
+                    },
+                    {
+                        "word": "however",
+                        "start": 37.01,
+                        "end": 37.41,
+                        "confidence": 0.99560547,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "However,"
+                    },
+                    {
+                        "word": "despite",
+                        "start": 37.41,
+                        "end": 37.809998,
+                        "confidence": 0.9975586,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "despite"
+                    },
+                    {
+                        "word": "cnn's",
+                        "start": 37.809998,
+                        "end": 38.29,
+                        "confidence": 0.9812012,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "CNN's"
+                    },
+                    {
+                        "word": "rejection",
+                        "start": 38.29,
+                        "end": 38.79,
+                        "confidence": 0.9946289,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "rejection,"
+                    },
+                    {
+                        "word": "the",
+                        "start": 38.85,
+                        "end": 39.01,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "president",
+                        "start": 39.01,
+                        "end": 39.329998,
+                        "confidence": 0.97998047,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "president"
+                    },
+                    {
+                        "word": "posted",
+                        "start": 39.329998,
+                        "end": 39.73,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "posted"
+                    },
+                    {
+                        "word": "the",
+                        "start": 39.73,
+                        "end": 39.89,
+                        "confidence": 0.9975586,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "advertisement",
+                        "start": 39.89,
+                        "end": 40.39,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "advertisement"
+                    },
+                    {
+                        "word": "onto",
+                        "start": 40.449997,
+                        "end": 40.69,
+                        "confidence": 0.9584961,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "onto"
+                    },
+                    {
+                        "word": "his",
+                        "start": 40.69,
+                        "end": 40.85,
+                        "confidence": 0.9970703,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "his"
+                    },
+                    {
+                        "word": "twitter",
+                        "start": 40.85,
+                        "end": 41.345,
+                        "confidence": 0.99560547,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "Twitter"
+                    },
+                    {
+                        "word": "each",
+                        "start": 41.345,
+                        "end": 41.585003,
+                        "confidence": 0.37158203,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "each"
+                    },
+                    {
+                        "word": "last",
+                        "start": 41.585003,
+                        "end": 41.905003,
+                        "confidence": 0.99560547,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "last"
+                    },
+                    {
+                        "word": "week",
+                        "start": 41.905003,
+                        "end": 42.225002,
+                        "confidence": 0.7651367,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "week,"
+                    },
+                    {
+                        "word": "along",
+                        "start": 42.225002,
+                        "end": 42.545002,
+                        "confidence": 0.99609375,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "along"
+                    },
+                    {
+                        "word": "with",
+                        "start": 42.545002,
+                        "end": 42.705,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "with"
+                    },
+                    {
+                        "word": "the",
+                        "start": 42.705,
+                        "end": 42.865,
+                        "confidence": 0.9863281,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "caption",
+                        "start": 42.865,
+                        "end": 43.345,
+                        "confidence": 0.93188477,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "caption,"
+                    },
+                    {
+                        "word": "i'm",
+                        "start": 43.345,
+                        "end": 43.585003,
+                        "confidence": 0.86938477,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "I'm"
+                    },
+                    {
+                        "word": "draining",
+                        "start": 43.585003,
+                        "end": 44.065002,
+                        "confidence": 0.9946289,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "draining"
+                    },
+                    {
+                        "word": "the",
+                        "start": 44.065002,
+                        "end": 44.145,
+                        "confidence": 0.9926758,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "swamp",
+                        "start": 44.145,
+                        "end": 44.645,
+                        "confidence": 0.9716797,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8604965,
+                        "punctuated_word": "swamp."
+                    },
+                    {
+                        "word": "now",
+                        "start": 44.705,
+                        "end": 44.865,
+                        "confidence": 0.782959,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "Now,"
+                    },
+                    {
+                        "word": "this",
+                        "start": 44.865,
+                        "end": 45.105,
+                        "confidence": 0.9970703,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "this"
+                    },
+                    {
+                        "word": "is",
+                        "start": 45.105,
+                        "end": 45.265,
+                        "confidence": 0.9975586,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "is"
+                    },
+                    {
+                        "word": "not",
+                        "start": 45.265,
+                        "end": 45.505,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "not"
+                    },
+                    {
+                        "word": "the",
+                        "start": 45.505,
+                        "end": 45.665,
+                        "confidence": 0.99658203,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "first",
+                        "start": 45.665,
+                        "end": 45.825,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "first"
+                    },
+                    {
+                        "word": "time",
+                        "start": 45.825,
+                        "end": 46.065002,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "time"
+                    },
+                    {
+                        "word": "cnn",
+                        "start": 46.065002,
+                        "end": 46.465,
+                        "confidence": 0.9628906,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "CNN"
+                    },
+                    {
+                        "word": "has",
+                        "start": 46.465,
+                        "end": 46.705,
+                        "confidence": 0.99853516,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "has"
+                    },
+                    {
+                        "word": "rejected",
+                        "start": 46.705,
+                        "end": 47.185,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "rejected"
+                    },
+                    {
+                        "word": "a",
+                        "start": 47.185,
+                        "end": 47.345,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "a"
+                    },
+                    {
+                        "word": "trump",
+                        "start": 47.345,
+                        "end": 47.585,
+                        "confidence": 0.85595703,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "Trump"
+                    },
+                    {
+                        "word": "campaign",
+                        "start": 47.585,
+                        "end": 48.085,
+                        "confidence": 0.9824219,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "campaign"
+                    },
+                    {
+                        "word": "ad",
+                        "start": 48.145,
+                        "end": 48.545002,
+                        "confidence": 0.751709,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "ad."
+                    },
+                    {
+                        "word": "back",
+                        "start": 48.545002,
+                        "end": 48.705,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "Back"
+                    },
+                    {
+                        "word": "in",
+                        "start": 48.705,
+                        "end": 48.865,
+                        "confidence": 0.9951172,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "in"
+                    },
+                    {
+                        "word": "twenty",
+                        "start": 48.865,
+                        "end": 49.185,
+                        "confidence": 0.99316406,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "twenty"
+                    },
+                    {
+                        "word": "seventeen",
+                        "start": 49.185,
+                        "end": 49.665,
+                        "confidence": 0.98413086,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "seventeen,"
+                    },
+                    {
+                        "word": "the",
+                        "start": 49.665,
+                        "end": 49.95,
+                        "confidence": 0.86279297,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "refused",
+                        "start": 49.95,
+                        "end": 50.45,
+                        "confidence": 0.76538086,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "refused"
+                    },
+                    {
+                        "word": "to",
+                        "start": 50.510002,
+                        "end": 50.59,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "to"
+                    },
+                    {
+                        "word": "run",
+                        "start": 50.59,
+                        "end": 50.83,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "run"
+                    },
+                    {
+                        "word": "a",
+                        "start": 50.83,
+                        "end": 50.99,
+                        "confidence": 0.99853516,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "a"
+                    },
+                    {
+                        "word": "trump",
+                        "start": 50.99,
+                        "end": 51.23,
+                        "confidence": 0.88427734,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "Trump"
+                    },
+                    {
+                        "word": "approved",
+                        "start": 51.23,
+                        "end": 51.63,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "approved"
+                    },
+                    {
+                        "word": "ad",
+                        "start": 51.63,
+                        "end": 52.03,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "ad"
+                    },
+                    {
+                        "word": "called",
+                        "start": 52.03,
+                        "end": 52.43,
+                        "confidence": 0.9692383,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "called"
+                    },
+                    {
+                        "word": "let",
+                        "start": 52.43,
+                        "end": 52.670002,
+                        "confidence": 0.53271484,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "let"
+                    },
+                    {
+                        "word": "president",
+                        "start": 52.670002,
+                        "end": 53.15,
+                        "confidence": 0.54589844,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "president"
+                    },
+                    {
+                        "word": "trump",
+                        "start": 53.15,
+                        "end": 53.47,
+                        "confidence": 0.8515625,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "Trump"
+                    },
+                    {
+                        "word": "do",
+                        "start": 53.47,
+                        "end": 53.63,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "do"
+                    },
+                    {
+                        "word": "his",
+                        "start": 53.63,
+                        "end": 53.95,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "his"
+                    },
+                    {
+                        "word": "job",
+                        "start": 53.95,
+                        "end": 54.27,
+                        "confidence": 0.9038086,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "job,"
+                    },
+                    {
+                        "word": "which",
+                        "start": 54.27,
+                        "end": 54.510002,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "which"
+                    },
+                    {
+                        "word": "criticized",
+                        "start": 54.510002,
+                        "end": 55.010002,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.8530749,
+                        "punctuated_word": "criticized"
+                    },
+                    {
+                        "word": "the",
+                        "start": 55.07,
+                        "end": 55.15,
+                        "confidence": 0.99853516,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "media",
+                        "start": 55.15,
+                        "end": 55.55,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "media"
+                    },
+                    {
+                        "word": "and",
+                        "start": 55.55,
+                        "end": 55.79,
+                        "confidence": 0.78222656,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "and"
+                    },
+                    {
+                        "word": "specifically",
+                        "start": 55.79,
+                        "end": 56.29,
+                        "confidence": 0.99853516,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "specifically"
+                    },
+                    {
+                        "word": "called",
+                        "start": 56.510002,
+                        "end": 56.75,
+                        "confidence": 0.99560547,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "called"
+                    },
+                    {
+                        "word": "out",
+                        "start": 56.75,
+                        "end": 56.91,
+                        "confidence": 0.99658203,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "out"
+                    },
+                    {
+                        "word": "lemon",
+                        "start": 56.91,
+                        "end": 57.23,
+                        "confidence": 0.68115234,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "lemon"
+                    },
+                    {
+                        "word": "as",
+                        "start": 57.23,
+                        "end": 57.39,
+                        "confidence": 0.6142578,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "as"
+                    },
+                    {
+                        "word": "well",
+                        "start": 57.39,
+                        "end": 57.55,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "well"
+                    },
+                    {
+                        "word": "as",
+                        "start": 57.55,
+                        "end": 57.79,
+                        "confidence": 0.99853516,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "as"
+                    },
+                    {
+                        "word": "anderson",
+                        "start": 57.79,
+                        "end": 58.11,
+                        "confidence": 0.8964844,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "Anderson"
+                    },
+                    {
+                        "word": "cooper",
+                        "start": 58.11,
+                        "end": 58.585,
+                        "confidence": 0.7988281,
+                        "speaker": 0,
+                        "speaker_confidence": 0.60973746,
+                        "punctuated_word": "Cooper."
+                    },
+                    {
+                        "word": "to",
+                        "start": 58.905,
+                        "end": 59.065,
+                        "confidence": 0.47143555,
+                        "speaker": 0,
+                        "speaker_confidence": 0.30368042,
+                        "punctuated_word": "To"
+                    },
+                    {
+                        "word": "stay",
+                        "start": 59.065,
+                        "end": 59.225,
+                        "confidence": 0.9975586,
+                        "speaker": 0,
+                        "speaker_confidence": 0.30368042,
+                        "punctuated_word": "stay"
+                    },
+                    {
+                        "word": "up",
+                        "start": 59.225,
+                        "end": 59.385,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.30368042,
+                        "punctuated_word": "up"
+                    },
+                    {
+                        "word": "to",
+                        "start": 59.385,
+                        "end": 59.545,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.30368042,
+                        "punctuated_word": "to"
+                    },
+                    {
+                        "word": "date",
+                        "start": 59.545,
+                        "end": 59.704998,
+                        "confidence": 1.0,
+                        "speaker": 0,
+                        "speaker_confidence": 0.30368042,
+                        "punctuated_word": "date"
+                    },
+                    {
+                        "word": "on",
+                        "start": 59.704998,
+                        "end": 59.864998,
+                        "confidence": 0.9970703,
+                        "speaker": 0,
+                        "speaker_confidence": 0.30368042,
+                        "punctuated_word": "on"
+                    },
+                    {
+                        "word": "this",
+                        "start": 59.864998,
+                        "end": 59.945,
+                        "confidence": 0.56152344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "this"
+                    },
+                    {
+                        "word": "story",
+                        "start": 59.945,
+                        "end": 60.265,
+                        "confidence": 0.94433594,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "story,"
+                    },
+                    {
+                        "word": "hit",
+                        "start": 60.265,
+                        "end": 60.504997,
+                        "confidence": 0.9506836,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "hit"
+                    },
+                    {
+                        "word": "the",
+                        "start": 60.504997,
+                        "end": 60.665,
+                        "confidence": 0.4946289,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "thr",
+                        "start": 60.665,
+                        "end": 61.065,
+                        "confidence": 0.9326172,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "thr"
+                    },
+                    {
+                        "word": "dot",
+                        "start": 61.065,
+                        "end": 61.305,
+                        "confidence": 0.984375,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "dot"
+                    },
+                    {
+                        "word": "com",
+                        "start": 61.305,
+                        "end": 61.545,
+                        "confidence": 0.71813965,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "com,"
+                    },
+                    {
+                        "word": "and",
+                        "start": 61.545,
+                        "end": 61.785,
+                        "confidence": 0.99902344,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "and"
+                    },
+                    {
+                        "word": "until",
+                        "start": 61.785,
+                        "end": 62.105,
+                        "confidence": 0.9980469,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "until"
+                    },
+                    {
+                        "word": "next",
+                        "start": 62.105,
+                        "end": 62.265,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "next"
+                    },
+                    {
+                        "word": "time",
+                        "start": 62.265,
+                        "end": 62.425,
+                        "confidence": 0.9995117,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "time"
+                    },
+                    {
+                        "word": "for",
+                        "start": 62.425,
+                        "end": 62.585,
+                        "confidence": 0.9550781,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "for"
+                    },
+                    {
+                        "word": "the",
+                        "start": 62.585,
+                        "end": 62.665,
+                        "confidence": 0.96484375,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "the"
+                    },
+                    {
+                        "word": "hollywood",
+                        "start": 62.665,
+                        "end": 63.065,
+                        "confidence": 0.9711914,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "Hollywood"
+                    },
+                    {
+                        "word": "reporter",
+                        "start": 63.065,
+                        "end": 63.385,
+                        "confidence": 0.9604492,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "reporter"
+                    },
+                    {
+                        "word": "news",
+                        "start": 63.385,
+                        "end": 63.704998,
+                        "confidence": 0.76586914,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "news,"
+                    },
+                    {
+                        "word": "i",
+                        "start": 63.704998,
+                        "end": 63.785,
+                        "confidence": 0.72021484,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "I"
+                    },
+                    {
+                        "word": "may",
+                        "start": 63.785,
+                        "end": 63.945,
+                        "confidence": 0.86083984,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "may"
+                    },
+                    {
+                        "word": "enjoy",
+                        "start": 63.945,
+                        "end": 64.445,
+                        "confidence": 0.75561523,
+                        "speaker": 0,
+                        "speaker_confidence": 0.57561845,
+                        "punctuated_word": "enjoy."
+                    }
+                ],
+                "speaker": 0,
+                "id": "6665ed62-e038-4bf1-87ad-95430518e4c0"
+            }
+        ]
+    }
+}

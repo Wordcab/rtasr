@@ -277,7 +277,7 @@ async def _create_manifest(
         sorted(audio_files), sorted(rttm_files), sorted(uem_files)
     ):
         assert (
-            audio.stem.split(".")[0]
+            audio.stem.split("_")[0]
             == rttm.stem.split(".")[0]
             == uem.stem.split(".")[0]
         )

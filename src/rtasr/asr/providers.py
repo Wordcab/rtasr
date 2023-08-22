@@ -188,6 +188,7 @@ class ASRProvider(ABC):
                             )
                         )
                     else:
+                        task_tracking[audio_file.name]["status"] = TranscriptionStatus.CACHED
                         task_tracking[audio_file.name]["rttm_cache"] = True
 
                 else:
@@ -365,14 +366,14 @@ class ASRProvider(ABC):
                 The output directory where to save the results.
         """
         _file_name = audio_file_name.split(".")[0]
-        asr_output_file_path = (
+        asr_output_file_path = AsyncPath(
             output_dir
             / f"{self.__class__.__name__.lower()}"
             / "original"
             / f"{_file_name}.json"
         )
-        if not asr_output_file_path.parent.exists():
-            asr_output_file_path.parent.mkdir(parents=True, exist_ok=True)
+        if not await asr_output_file_path.parent.exists():
+            await asr_output_file_path.parent.mkdir(parents=True, exist_ok=True)
 
         async with aiofiles.open(asr_output_file_path, mode="w") as f:
             await f.write(
@@ -397,14 +398,14 @@ class ASRProvider(ABC):
                 The output directory where to save the results.
         """
         _file_name = audio_file_name.split(".")[0]
-        rttm_file_path = (
+        rttm_file_path = AsyncPath(
             output_dir
             / f"{self.__class__.__name__.lower()}"
             / "rttm"
             / f"{_file_name}.txt"
         )
-        if not rttm_file_path.parent.exists():
-            rttm_file_path.parent.mkdir(parents=True, exist_ok=True)
+        if not await rttm_file_path.parent.exists():
+            await rttm_file_path.parent.mkdir(parents=True, exist_ok=True)
 
         async with aiofiles.open(rttm_file_path, mode="w") as f:
             await f.write("\n".join(rttm_lines))

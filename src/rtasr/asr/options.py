@@ -1,6 +1,6 @@
 """Options regroup all the ASR providers options classes."""
 
-from typing import List, TypedDict
+from typing import Dict, List, TypedDict
 
 from typing_extensions import Literal
 
@@ -124,10 +124,11 @@ class SpeechmaticsOptions(TypedDict, total=False):
     The options for the Speechmatics transcription.
 
     References from the Speechmatics docs:
+    https://docs.speechmatics.com/features
     """
 
-    # TODO: Add the references from the Speechmatics docs.
-    # TODO: Add the options.
+    type: str
+    transcription_config: Dict[str, str]
 
 
 class WordcabOptions(TypedDict, total=False):

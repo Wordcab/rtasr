@@ -119,8 +119,16 @@ PROVIDERS = OrderedDict(
         (
             "speechmatics",
             {
-                "url": "",
+                "url": "https://asr.api.speechmatics.com/v2",
                 "engine": "Speechmatics",
+                "options": {
+                    "type": "transcription",
+                    "transcription_config": {
+                        "diarization": "speaker",
+                        "language": "en",
+                        "operating_point": "enhanced",
+                    },
+                },
             },
         ),
         (

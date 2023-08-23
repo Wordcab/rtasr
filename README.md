@@ -47,6 +47,26 @@ The CLI is available through the `rtasr` command.
 rtasr --help
 ```
 
+### List available datasets and ASR providers
+
+* Both:
+
+```bash
+rtasr list
+```
+
+* Datasets:
+
+```bash
+rtasr list -t datasets
+```
+
+* ASR providers:
+
+```bash
+rtasr list -t providers
+```
+
 ### Datasets download
 
 Available datasets are:
@@ -57,6 +77,80 @@ Available datasets are:
 ```bash
 rtasr download -d <dataset>
 ```
+
+### ASR Transcription
+
+#### Providers
+
+Implemented ASR providers are:
+
+* [x] `assemblyai`: [AssemblyAI](https://www.assemblyai.com/)
+* [ ] `aws`: [AWS Transcribe](https://aws.amazon.com/transcribe/)
+* [ ] `azure`: [Azure Speech](https://azure.microsoft.com/en-us/services/cognitive-services/speech-to-text/)
+* [x] `deepgram`: [Deepgram](https://www.deepgram.com/)
+* [ ] `google`: [Google Cloud Speech-to-Text](https://cloud.google.com/speech-to-text)
+* [x] `revai`: [RevAI](https://www.rev.ai/)
+* [x] `speechmatics`: [Speechmatics](https://www.speechmatics.com/)
+* [x] `wordcab`: [Wordcab](https://wordcab.com/)
+
+#### Run transcription
+
+Run ASR transcription on a given dataset with a given provider.
+
+```bash
+rtasr transcription -d <dataset> -p <provider>
+```
+
+#### Multiple providers
+
+You can specify as many providers as you want:
+
+```bash
+rtasr transcription -d <dataset> -p <provider1> <provider2> <provider3> ...
+```
+
+#### Choose dataset split
+
+You can specify the dataset split to use:
+
+```bash
+rtasr transcription -d <dataset> -p <provider> -s <split>
+```
+
+If not specified, all the available splits will be used.
+
+#### Caching
+
+By default, the transcription results are cached in the `~/.cache/rtasr/transcription` directory for each provider.
+
+If you don't want to use the cache, use the `--no-cache` flag.
+
+```bash
+rtasr transcription -d <dataset> -p <provider> --no-cache
+```
+
+_Note: the cache is used to avoid running the same file twice. By removing the cache, you will run the transcription on the whole dataset again. We aren't responsible for any extra costs._
+
+#### Debug mode
+
+Use the `--debug` flag to run only one file by split for each provider.
+
+```bash
+rtasr transcription -d <dataset> -p <provider> --debug
+```
+
+### Evaluation (🚧 WIP)
+
+The `evaluation` command allows you to run an evaluation on the transcription results.
+
+#### Run evaluation
+
+Specify the dataset to use:
+
+```bash
+rtasr evaluation -d <dataset>
+```
+
 
 ## Contributing
 

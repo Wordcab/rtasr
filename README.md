@@ -47,23 +47,16 @@ The CLI is available through the `rtasr` command.
 rtasr --help
 ```
 
-### List available datasets and ASR providers
-
-* Both:
+### List datasets, metrics and providers
 
 ```bash
+# List everything
 rtasr list
-```
-
-* Datasets:
-
-```bash
+# List only datasets
 rtasr list -t datasets
-```
-
-* ASR providers:
-
-```bash
+# List only metrics
+rtasr list -t metrics
+# List only providers
 rtasr list -t providers
 ```
 

@@ -8,6 +8,7 @@ from rich_argparse import RichHelpFormatter
 
 from rtasr.cli import (
     DownloadDatasetCommand,
+    EvaluationCommand,
     ListItemsCommand,
     TranscriptionASRCommand,
 )
@@ -28,6 +29,7 @@ def main() -> None:
 
     # Register subcommands
     DownloadDatasetCommand.register_subcommand(commands_parser)
+    EvaluationCommand.register_subcommand(commands_parser)
     ListItemsCommand.register_subcommand(commands_parser)
     TranscriptionASRCommand.register_subcommand(commands_parser)
 

@@ -1,5 +1,6 @@
 """Define all the constants used in rtasr."""
 
+from enum import Enum
 from typing import OrderedDict
 
 DATASETS = OrderedDict(
@@ -156,3 +157,10 @@ PROVIDERS = OrderedDict(
         ),
     ]
 )
+
+
+class Metrics(str, Enum):
+    """Define the metrics."""
+
+    DER = "DER"
+    WER = "WER"

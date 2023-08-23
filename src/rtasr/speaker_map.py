@@ -22,6 +22,12 @@ class AMISpeakerMap:
             file, the second speaker in the list is the second speaker in the audio
             file, etc.).
         """
+        if not all(isinstance(speaker, str) for speaker in speaker_list):
+            raise TypeError(
+                "Speaker list must be a list of strings. "
+                f"Got { {type(speaker) for speaker in speaker_list} }."
+            )
+
         self.speakers: List[str] = list(OrderedDict.fromkeys(speaker_list).keys())
 
     def __getitem__(self, value: str) -> int:
@@ -66,12 +72,12 @@ class AssemblyAISpeakerMap(int, Enum):
     @classmethod
     def from_value(cls, speaker_id: str) -> "AssemblyAISpeakerMap":
         """Get speaker map from a string value"""
-        _speaker_id = speaker_id.upper()
+        _speaker_id = speaker_id.upper() if isinstance(speaker_id, str) else speaker_id
 
         if _speaker_id not in cls.__members__:
             raise ValueError(
                 f"Speaker name {speaker_id} not found in speaker map."
-                f"HINT: Speaker names are in the format `A` where `A` is a letter, "
+                "HINT: Speaker names are in the format `A` where `A` is a letter, "
                 "between A and Z. For example, `A` or `Z` are valid speaker names."
             )
         else:
@@ -121,14 +127,15 @@ class DeepgramSpeakerMap(int, Enum):
         """Get speaker map from an integer value."""
         _speaker_id = f"_{speaker_id}"
 
-        if _speaker_id not in cls.__members__.values():
+        if _speaker_id not in cls.__members__:
             raise ValueError(
                 f"Speaker ID {speaker_id} not found in speaker map."
-                f"HINT: Speaker IDs are in the format `XX` where `XX` is a number, "
+                "HINT: Speaker IDs are in the format `XX` where `XX` is a number, "
                 "between 00 and 25. For example, `00` or `25` are valid speaker IDs."
             )
         else:
-            return cls(_speaker_id)
+            return cls[_speaker_id]
+
 
 class GoogleSpeakerMap(int, Enum):
     """Google speaker map."""
@@ -169,14 +176,14 @@ class RevAISpeakerMap(int, Enum):
         """Get speaker map from an integer value."""
         _speaker_id = f"_{speaker_id}"
 
-        if _speaker_id not in cls.__members__.values():
+        if _speaker_id not in cls.__members__:
             raise ValueError(
                 f"Speaker ID {speaker_id} not found in speaker map."
-                f"HINT: Speaker IDs are in the format `XX` where `XX` is a number, "
+                "HINT: Speaker IDs are in the format `XX` where `XX` is a number, "
                 "between 00 and 25. For example, `00` or `25` are valid speaker IDs."
             )
         else:
-            return cls(_speaker_id)
+            return cls[_speaker_id]
 
 
 class SpeechmaticsSpeakerMap(int, Enum):
@@ -212,13 +219,13 @@ class SpeechmaticsSpeakerMap(int, Enum):
     @classmethod
     def from_value(cls, speaker_id: str) -> "RevAISpeakerMap":
         """Get speaker map from a string value."""
-        _speaker_id = speaker_id.upper()
+        _speaker_id = speaker_id.upper() if isinstance(speaker_id, str) else speaker_id
 
         if _speaker_id not in cls.__members__:
             raise ValueError(
-                f"Speaker name {speaker_id} not found in speaker map."
-                f"HINT: Speaker names are in the format `SXX` where `XX` is a number, "
-                "between 00 and 25. For example, `S00` or `S25` are valid speaker names."
+                f"Speaker name {speaker_id} not found in speaker map.HINT: Speaker"
+                " names are in the format `SXX` where `XX` is a number, between 00 and"
+                " 25. For example, `S00` or `S25` are valid speaker names."
             )
         else:
             return cls[_speaker_id]
@@ -257,13 +264,14 @@ class VoxConverseSpeakerMap(int, Enum):
     @classmethod
     def from_value(cls, speaker_id: str) -> "VoxConverseSpeakerMap":
         """Get speaker map from string."""
-        _speaker_id = speaker_id.lower()
+        _speaker_id = speaker_id.lower() if isinstance(speaker_id, str) else speaker_id
 
         if _speaker_id not in cls.__members__:
             raise ValueError(
-                f"Speaker name {speaker_id} not found in VoxConverse speaker map."
-                f"HINT: Speaker names are in the format `spkXX` where `XX` is a number, "
-                "between 00 and 25. For example, `spk00` or `spk25` are valid speaker names."
+                f"Speaker name {speaker_id} not found in VoxConverse speaker map.HINT:"
+                " Speaker names are in the format `spkXX` where `XX` is a number,"
+                " between 00 and 25. For example, `spk00` or `spk25` are valid speaker"
+                " names."
             )
         else:
             return cls[_speaker_id]
@@ -302,12 +310,12 @@ class WordcabSpeakerMap(int, Enum):
     @classmethod
     def from_value(cls, speaker_id: str) -> "WordcabSpeakerMap":
         """Get speaker map from a string value."""
-        _speaker_id = speaker_id.upper()
+        _speaker_id = speaker_id.upper() if isinstance(speaker_id, str) else speaker_id
 
         if _speaker_id not in cls.__members__:
             raise ValueError(
                 f"Speaker name {speaker_id} not found in speaker map."
-                f"HINT: Speaker names are in the format `A` where `A` is a letter, "
+                "HINT: Speaker names are in the format `A` where `A` is a letter, "
                 "between A and Z. For example, `A` or `Z` are valid speaker names."
             )
         else:

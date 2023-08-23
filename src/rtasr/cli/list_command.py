@@ -4,13 +4,14 @@ import argparse
 from typing import Union
 
 from rich import print
+from typing_extensions import Literal
 
 from rtasr.cli_messages import error_message
-from rtasr.constants import DATASETS, PROVIDERS
+from rtasr.constants import DATASETS, PROVIDERS, Metrics
 
 
 def list_items_command_factory(args: argparse.Namespace):
-    return ListItemsCommand(args.type)
+    return ListItemsCommand(item_type=args.type)
 
 
 class ListItemsCommand:
@@ -29,39 +30,58 @@ class ListItemsCommand:
         )
         subparser.set_defaults(func=list_items_command_factory)
 
-    def __init__(self, item_type: Union[str, None] = None) -> None:
+    def __init__(
+        self, item_type: Union[Literal["datasets", "metrics", "providers"], None] = None
+    ) -> None:
         """Initialize the command."""
         self.item_type = item_type
 
     def run(self) -> None:
         """Run the command."""
         if self.item_type is None:
-            print("Datasets | Splits:")
-            print(
-                "".join(
-                    [
-                        f"  - [bold]{k}[/bold] | {v['splits']}\n"
-                        for k, v in DATASETS.items()
-                    ]
-                )
-            )
-            print("Providers:")
-            print("".join([f"  - {p}\n" for p in PROVIDERS.keys()]))
-            exit(1)
+            self._print_all()
+            exit(0)
+
         if self.item_type.lower() == "datasets":
-            print(
-                "".join(
-                    [
-                        f"  - [bold]{k}[/bold] | {v['splits']}\n"
-                        for k, v in DATASETS.items()
-                    ]
-                )
-            )
+            self._print_datasets()
+        elif self.item_type.lower() == "metrics":
+            self._print_metrics()
         elif self.item_type.lower() == "providers":
-            print("".join([f"  - {p}\n" for p in PROVIDERS.keys()]))
+            self._print_providers()
         else:
             print(
                 error_message.format(input_type="item type", user_input=self.item_type)
             )
-            print("`datasets` or `providers`")
+            print("`datasets`, `metrics` or `providers`")
             exit(1)
+
+    def _print_all(self) -> None:
+        """Print all the items."""
+        self._print_datasets()
+        self._print_metrics()
+        self._print_providers()
+
+    def _print_datasets(self) -> None:
+        """Print the datasets."""
+        print("Datasets | Splits:")
+        print(
+            "".join(
+                [f"  - [bold]{k}[/bold] | {v['splits']}\n" for k, v in DATASETS.items()]
+            )
+        )
+
+    def _print_providers(self) -> None:
+        """Print the providers."""
+        print(
+            "Providers: "
+            + ", ".join([f"[bold magenta]{p}[/bold magenta]" for p in PROVIDERS.keys()])
+        )
+
+    def _print_metrics(self) -> None:
+        """Print the metrics."""
+        print(
+            "Metrics: "
+            + ", ".join(
+                [f"[bold yellow]{m}[/bold yellow]" for m in Metrics.__members__.keys()]
+            )
+        )

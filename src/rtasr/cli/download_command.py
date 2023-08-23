@@ -11,7 +11,11 @@ from rtasr.constants import DATASETS
 
 
 def download_dataset_command_factory(args: argparse.Namespace):
-    return DownloadDatasetCommand(args.dataset, args.output_dir, args.no_cache)
+    return DownloadDatasetCommand(
+        dataset=args.dataset,
+        output_dir=args.output_dir,
+        use_cache=args.no_cache,
+    )
 
 
 class DownloadDatasetCommand:

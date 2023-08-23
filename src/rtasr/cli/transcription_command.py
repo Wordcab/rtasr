@@ -20,13 +20,13 @@ from rtasr.utils import create_live_panel, get_api_key, resolve_cache_dir
 
 def transcription_asr_command_factory(args: argparse.Namespace):
     return TranscriptionASRCommand(
-        args.providers,
-        args.dataset,
-        args.split,
-        args.dataset_dir,
-        args.output_dir,
-        args.no_cache,
-        args.debug,
+        providers=args.providers,
+        dataset=args.dataset,
+        split=args.split,
+        dataset_dir=args.dataset_dir,
+        output_dir=args.output_dir,
+        use_cache=args.no_cache,
+        debug=args.debug,
     )
 
 

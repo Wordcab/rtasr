@@ -161,8 +161,8 @@ class TranscriptionASRCommand:
 
             splits: List[str] = []
             if self.split.lower() == "all":
-                splits.extend(DATASETS[self.dataset.lower()]["splits"])
-            elif self.split.lower() in DATASETS[self.dataset.lower()]["splits"]:
+                splits.extend(DATASETS[_dataset]["splits"])
+            elif self.split.lower() in DATASETS[_dataset]["splits"]:
                 splits.append(self.split.lower())
             else:
                 print(error_message.format(input_type="split", user_input=self.split))

@@ -31,6 +31,11 @@ DATASETS = OrderedDict(
                         "train/manifest_Mix-Headset.json",
                     ],
                 },
+                "rttm_filepaths": {
+                    "dev": "dev/rttm",
+                    "test": "test/rttm",
+                    "train": "train/rttm",
+                },
             },
         ),
         (
@@ -50,6 +55,10 @@ DATASETS = OrderedDict(
                 "manifest_filepaths": {
                     "dev": ["dev_manifest.json"],
                     "test": ["test_manifest.json"],
+                },
+                "rttm_filepaths": {
+                    "dev": "rttm/voxconverse-master/dev",
+                    "test": "rttm/voxconverse-master/test",
                 },
             },
         ),

@@ -3,7 +3,7 @@
 import asyncio
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List
 
 from aiopath import AsyncPath
 from pydantic import BaseModel

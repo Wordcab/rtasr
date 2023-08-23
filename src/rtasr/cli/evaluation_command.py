@@ -137,10 +137,7 @@ class EvaluationCommand:
                 print(error_message.format(input_type="metric", user_input=self.metric))
                 print(
                     "".join(
-                        [
-                            f"  - [bold]{m}[bold]\n"
-                            for m in Metrics.__members__.keys()
-                        ]
+                        [f"  - [bold]{m}[bold]\n" for m in Metrics.__members__.keys()]
                     )
                 )
                 exit(1)
@@ -170,13 +167,15 @@ class EvaluationCommand:
             if self.transcription_dir is None:
                 transcription_dir = resolve_cache_dir() / "transcription" / _dataset
             else:
-                transcription_dir = Path(self.transcription_dir) / "transcription" / _dataset
+                transcription_dir = (
+                    Path(self.transcription_dir) / "transcription" / _dataset
+                )
 
             if not transcription_dir.exists():
                 print(
-                    f"Transcription directory does not exist:"
+                    "Transcription directory does not exist:"
                     f" {transcription_dir.resolve()}\nPlease check"
-                    f" `rtasr transcription --help` to run transcription on the"
+                    " `rtasr transcription --help` to run transcription on the"
                     " dataset."
                 )
                 exit(1)
@@ -316,9 +315,7 @@ class EvaluationCommand:
             )
             for split in rttm_filepaths.keys()
         ]
-        results: List[DerResult] = await asyncio.gather(
-            *tasks, return_exceptions=True
-        )
+        results: List[DerResult] = await asyncio.gather(*tasks, return_exceptions=True)
 
         splits_progress.update(splits_progress_task_id, visible=False)
 

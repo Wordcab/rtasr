@@ -466,14 +466,14 @@ class AssemblyAI(ASRProvider):
 
         async with aiofiles.open(audio_file, mode="rb") as f:
             async with session.post(
-                url=f"{url}/upload{build_query_string(self.options)}",
+                url=f"{url}/upload",
                 data=f,
                 headers=headers,
             ) as response:
                 content = (await response.text()).strip()
 
         upload_url = json.loads(content).get("upload_url")
-        payload = {"audio_url": upload_url}
+        payload = {"audio_url": upload_url, **self.options.dict()}
 
         async with session.post(
             url=f"{url}/transcript", json=payload, headers=headers

@@ -70,7 +70,7 @@ class AssemblyAISpeakerMap(int, Enum):
     Z = 26
 
     @classmethod
-    def from_value(cls, speaker_id: str) -> "AssemblyAISpeakerMap":
+    def from_value(cls, speaker_id: str) -> int:
         """Get speaker map from a string value"""
         _speaker_id = speaker_id.upper() if isinstance(speaker_id, str) else speaker_id
 
@@ -81,7 +81,7 @@ class AssemblyAISpeakerMap(int, Enum):
                 "between A and Z. For example, `A` or `Z` are valid speaker names."
             )
         else:
-            return cls[_speaker_id]
+            return cls[_speaker_id].value
 
 
 class AwsSpeakerMap(int, Enum):
@@ -123,7 +123,7 @@ class DeepgramSpeakerMap(int, Enum):
     _25 = 26
 
     @classmethod
-    def from_value(cls, speaker_id: int) -> "DeepgramSpeakerMap":
+    def from_value(cls, speaker_id: int) -> int:
         """Get speaker map from an integer value."""
         _speaker_id = f"_{speaker_id}"
 
@@ -134,7 +134,7 @@ class DeepgramSpeakerMap(int, Enum):
                 "between 00 and 25. For example, `00` or `25` are valid speaker IDs."
             )
         else:
-            return cls[_speaker_id]
+            return cls[_speaker_id].value
 
 
 class GoogleSpeakerMap(int, Enum):
@@ -172,7 +172,7 @@ class RevAISpeakerMap(int, Enum):
     _25 = 26
 
     @classmethod
-    def from_value(cls, speaker_id: int) -> "RevAISpeakerMap":
+    def from_value(cls, speaker_id: int) -> int:
         """Get speaker map from an integer value."""
         _speaker_id = f"_{speaker_id}"
 
@@ -183,7 +183,7 @@ class RevAISpeakerMap(int, Enum):
                 "between 00 and 25. For example, `00` or `25` are valid speaker IDs."
             )
         else:
-            return cls[_speaker_id]
+            return cls[_speaker_id].value
 
 
 class SpeechmaticsSpeakerMap(int, Enum):
@@ -217,7 +217,7 @@ class SpeechmaticsSpeakerMap(int, Enum):
     S26 = 26
 
     @classmethod
-    def from_value(cls, speaker_id: str) -> "RevAISpeakerMap":
+    def from_value(cls, speaker_id: str) -> int:
         """Get speaker map from a string value."""
         _speaker_id = speaker_id.upper() if isinstance(speaker_id, str) else speaker_id
 
@@ -228,7 +228,7 @@ class SpeechmaticsSpeakerMap(int, Enum):
                 " 25. For example, `S00` or `S25` are valid speaker names."
             )
         else:
-            return cls[_speaker_id]
+            return cls[_speaker_id].value
 
 
 class VoxConverseSpeakerMap(int, Enum):
@@ -262,7 +262,7 @@ class VoxConverseSpeakerMap(int, Enum):
     spk25 = 26
 
     @classmethod
-    def from_value(cls, speaker_id: str) -> "VoxConverseSpeakerMap":
+    def from_value(cls, speaker_id: str) -> int:
         """Get speaker map from string."""
         _speaker_id = speaker_id.lower() if isinstance(speaker_id, str) else speaker_id
 
@@ -274,7 +274,7 @@ class VoxConverseSpeakerMap(int, Enum):
                 " names."
             )
         else:
-            return cls[_speaker_id]
+            return cls[_speaker_id].value
 
 
 class WordcabSpeakerMap(int, Enum):
@@ -308,7 +308,7 @@ class WordcabSpeakerMap(int, Enum):
     Z = 26
 
     @classmethod
-    def from_value(cls, speaker_id: str) -> "WordcabSpeakerMap":
+    def from_value(cls, speaker_id: str) -> int:
         """Get speaker map from a string value."""
         _speaker_id = speaker_id.upper() if isinstance(speaker_id, str) else speaker_id
 
@@ -319,4 +319,4 @@ class WordcabSpeakerMap(int, Enum):
                 "between A and Z. For example, `A` or `Z` are valid speaker names."
             )
         else:
-            return cls[_speaker_id]
+            return cls[_speaker_id].value

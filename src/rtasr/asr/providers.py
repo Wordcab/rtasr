@@ -13,7 +13,6 @@ import aiofiles
 import aiohttp
 from aiopath import AsyncPath
 from pydantic import BaseModel, HttpUrl, SecretStr
-from rich import print
 from rich.progress import Progress, TaskID
 
 from rtasr.asr.options import (
@@ -219,9 +218,7 @@ class ASRProvider(ABC):
                     _split = task_tracking[audio_file_name]["split"]
 
                     if not task_tracking[audio_file_name]["rttm_cache"]:
-                        rttm_lines = await self.result_to_rttm(
-                            asr_output=asr_output
-                        )
+                        rttm_lines = await self.result_to_rttm(asr_output=asr_output)
                         await self._save_rttm_files(
                             audio_file_name=audio_file_name,
                             rttm_lines=rttm_lines,
@@ -241,7 +238,6 @@ class ASRProvider(ABC):
                         task_tracking[audio_file_name]["error"] = str(asr_output)
 
                 step_progress.advance(step_progress_task_id)
-
 
         step_progress.update(step_progress_task_id, advance=len(audio_files))
         split_progress.advance(split_progress_task_id)
@@ -890,14 +886,18 @@ class Speechmatics(ASRProvider):
                 form.add_field("data_file", f, filename=audio_file.name)
                 form.add_field("config", json.dumps(self.options, ensure_ascii=False))
 
-                async with session.post(url=_url, data=form, headers=headers) as response:
+                async with session.post(
+                    url=_url, data=form, headers=headers
+                ) as response:
                     content = (await response.text()).strip()
 
             body = json.loads(content)
             job_id = body.get("id")
 
             while True:
-                async with session.get(url=f"{_url}/{job_id}", headers=headers) as response:
+                async with session.get(
+                    url=f"{_url}/{job_id}", headers=headers
+                ) as response:
                     content = (await response.text()).strip()
 
                 body = json.loads(content)
@@ -989,7 +989,9 @@ class Wordcab(ASRProvider):
                 form = aiohttp.FormData()
                 form.add_field("file", f, filename=audio_file.name)
 
-                async with session.post(url=_url, data=form, headers=headers) as response:
+                async with session.post(
+                    url=_url, data=form, headers=headers
+                ) as response:
                     content = (await response.text()).strip()
 
             body = json.loads(content)

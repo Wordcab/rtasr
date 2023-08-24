@@ -239,6 +239,7 @@ def _ami_speaker_list(ami_rttm_segments: List[List[Union[str, float]]]) -> List[
 
     return speaker_list
 
+
 def _filename_dots_filter(file_path: Path) -> Path:
     """
     Filter dots in the filename to avoid issues with API calls.

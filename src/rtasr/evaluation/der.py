@@ -2,6 +2,7 @@
 
 import asyncio
 import importlib
+import traceback
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Tuple, Union
@@ -49,28 +50,11 @@ class DerEvalMode(tuple, Enum):
     FORGIVING = (0.25, True)
 
 
-class ProviderDerResult(BaseModel):
-    """The DER evaluation result for a provider."""
-
-    cached: int
-    evaluated: int
-    not_found: int
-    provider_name: str
-
-
-class DerResult(BaseModel):
-    """The DER evaluation result."""
-
-    split_name: str
-    results: List[ProviderDerResult]
-
-
 class EvaluationStatus(str, Enum):
     """Status of the evaluation."""
 
     CACHED = "CACHED"
     EVALUATED = "EVALUATED"
-    IN_PROGRESS = "IN_PROGRESS"
     NOT_FOUND = "NOT_FOUND"
 
 
@@ -80,6 +64,41 @@ class DerTaskStatus(str, Enum):
     DONE = "DONE"
     ERROR = "ERROR"
     IN_PROGRESS = "IN_PROGRESS"
+
+
+class ProviderDerResult(BaseModel):
+    """The DER evaluation result for a provider."""
+
+    cached: int
+    evaluated: int
+    not_found: int
+    provider_name: str
+
+
+class ProviderComputeScore(BaseModel):
+    """The score computed for a provider."""
+
+    confusion: Union[float, None]
+    der: Union[float, None]
+    false_alarm: Union[float, None]
+    miss: Union[float, None]
+    status: EvaluationStatus
+
+
+class ComputeScores(BaseModel):
+    """The result of a compute score task."""
+
+    error: Union[str, None]
+    filename: str
+    scores: Union[Dict[str, ProviderComputeScore], None]
+
+
+class DerResult(BaseModel):
+    """The DER evaluation result."""
+
+    errors: List[str]
+    split_name: str
+    results: List[ProviderDerResult]
 
 
 async def evaluate_der(
@@ -101,9 +120,10 @@ async def evaluate_der(
     """
     if debug:
         from pathlib import PosixPath
+
         _pa = PosixPath(
-                "/Users/chainyo/.cache/rtasr/datasets/voxconverse/rttm/voxconverse-master/test/aepyx.rttm"
-            )
+            "/Users/chainyo/.cache/rtasr/datasets/voxconverse/rttm/voxconverse-master/test/aepyx.rttm"
+        )
         split_rttm_files = [_pa]
 
     step_progress_task_id = step_progress.add_task(
@@ -118,9 +138,8 @@ async def evaluate_der(
 
     for rttm_file in split_rttm_files:
         task_tracking[rttm_file.name] = {
-            "status": DerTaskStatus.IN_PROGRESS,
             "rttm_file_name": rttm_file.name,
-            "split": split_name,
+            "status": DerTaskStatus.IN_PROGRESS,
         }
         tasks.append(
             compute_score(
@@ -130,17 +149,31 @@ async def evaluate_der(
                 split=split_name,
                 transcription_dir=transcription_dir,
                 step_progress=step_progress,
+                use_cache=use_cache,
             )
         )
 
     for future in asyncio.as_completed(tasks):
-        try:
-            task_result = await future
-            print(task_result)
-        except Exception as e:
-            raise Exception(e) from e
-        finally:
-            step_progress.advance(step_progress_task_id)
+        task_result: ComputeScores = await future
+
+        if task_result.error:
+            task_tracking[task_result.filename] = DerTaskStatus.ERROR
+            task_tracking["error"] = f"{task_result.filename} -> {task_result.error}"
+        else:
+            task_tracking[task_result.filename] = DerTaskStatus.DONE
+            for provider, score in task_result.scores.items():
+                if score.status == EvaluationStatus.CACHED:
+                    print(f"{provider} -> {score.status}")
+                elif score.status == EvaluationStatus.EVALUATED:
+                    task_tracking[task_result.filename][
+                        provider
+                    ] = EvaluationStatus.EVALUATED
+                elif score.status == EvaluationStatus.NOT_FOUND:
+                    task_tracking[task_result.filename][
+                        provider
+                    ] = EvaluationStatus.NOT_FOUND
+
+        step_progress.advance(step_progress_task_id)
 
     step_progress.update(step_progress_task_id, advance=len(split_rttm_files))
     split_progress.advance(split_progress_task_id)
@@ -148,6 +181,7 @@ async def evaluate_der(
     # status_counts = Counter(task["status"] for task in task_tracking.values())
 
     return DerResult(
+        errors=[],
         split_name=split_name,
         results=[],
     )
@@ -160,7 +194,8 @@ async def compute_score(
     split: str,
     transcription_dir: Path,
     step_progress: Progress,
-) -> None:
+    use_cache: bool,
+) -> ComputeScores:
     """Compute the score for each provider.
 
     The score is computed using the Diarization Error Rate (DER) metric.
@@ -194,46 +229,89 @@ async def compute_score(
             Path to the directory containing the transcriptions.
         step_progress (Progress):
             Progress bar for the current step.
+        use_cache (bool):
+            Wether to use cache or not.
 
     Returns:
-        None
+        ComputeScores:
+            The result of the compute score task. It contains the filename
+            (i.e. the name of the reference RTTM file) and the scores for each
+            provider in the form of a dictionary:
+            {
+                "provider_1": ProviderComputerScore,
+                "provider_2": ProviderComputerScore,
+                ...
+            }
     """
-    step_progress_task_id = step_progress.add_task(
-        "",
-        action=f"[bold green]{ref_rttm_path.name}[/bold green]",
-        total=len(providers),
-    )
-
-    ref_rttm_content: List[List[Union[str, float]]] = await _prepare_rttm_content(ref_rttm_path, "dataset")
-    ref_rttm: List[Tuple[str, float, float]] = await _prepare_provider_rttm_segments(
-        rttm_content=ref_rttm_content,
-        target_name=dataset,
-        target_type="dataset",
-    )
-
-    scores: Dict[str, float] = {}
-    for provider in providers:
-        provider_rttm_path = AsyncPath(
-            transcription_dir / split / provider / "rttm" / ref_rttm_path.name
+    try:
+        step_progress_task_id = step_progress.add_task(
+            "",
+            action=f"[bold green]{ref_rttm_path.name}[/bold green]",
+            total=len(providers),
         )
-        if await provider_rttm_path.exists():
-            hyp_rttm_content = await _prepare_rttm_content(provider_rttm_path, "provider")
-            hyp_rttm = await _prepare_provider_rttm_segments(
-                rttm_content=hyp_rttm_content,
-                target_name=provider,
-                target_type="provider",
+
+        ref_rttm_content: List[List[Union[str, float]]] = await _prepare_rttm_content(
+            ref_rttm_path, "dataset"
+        )
+        ref_rttm: List[
+            Tuple[str, float, float]
+        ] = await _prepare_provider_rttm_segments(
+            rttm_content=ref_rttm_content,
+            target_name=dataset,
+            target_type="dataset",
+        )
+
+        error = None
+        scores: Dict[str, float] = {}
+        for provider in providers:
+            provider_rttm_path = AsyncPath(
+                transcription_dir / split / provider / "rttm" / ref_rttm_path.name
             )
 
-            score = spyder.DER(ref_rttm, hyp_rttm, collar=0.0, regions="single")
-            print(score)
-        else:
-            score = None
+            if await provider_rttm_path.exists():
+                hyp_rttm_content = await _prepare_rttm_content(
+                    provider_rttm_path, "provider"
+                )
+                hyp_rttm = await _prepare_provider_rttm_segments(
+                    rttm_content=hyp_rttm_content,
+                    target_name=provider,
+                    target_type="provider",
+                )
 
-        scores[provider] = score
+                _score = spyder.DER(ref_rttm, hyp_rttm, collar=0.0, regions="single")
+                score = ProviderComputeScore(
+                    der=_score.der,
+                    confusion=_score.conf,
+                    miss=_score.miss,
+                    false_alarm=_score.falarm,
+                    status=EvaluationStatus.EVALUATED,
+                )
 
-        step_progress.advance(step_progress_task_id)
+            else:
+                score = ProviderComputeScore(
+                    der=None,
+                    confusion=None,
+                    miss=None,
+                    false_alarm=None,
+                    status=EvaluationStatus.NOT_FOUND,
+                )
 
-    return ref_rttm_path.name, scores
+            scores[provider] = score
+
+            step_progress.advance(step_progress_task_id)
+
+    except Exception as e:
+        scores = None
+        error = f"{e}\n{traceback.format_exc()}"
+
+    finally:
+        step_progress.update(step_progress_task_id, visible=False)
+
+    return ComputeScores(
+        filename=ref_rttm_path.name,
+        scores=scores,
+        error=error,
+    )
 
 
 async def _prepare_rttm_content(
@@ -267,9 +345,7 @@ async def _prepare_rttm_content(
     return rttm_content
 
 
-async def _iter_dataset_rttm(
-    raw_content: List[str]
-) -> List[List[Union[str, float]]]:
+async def _iter_dataset_rttm(raw_content: List[str]) -> List[List[Union[str, float]]]:
     """Iterate over the RTTM content of a dataset."""
     rttm_content: List[List[Union[str, float]]] = []
 
@@ -281,17 +357,17 @@ async def _iter_dataset_rttm(
 
     return rttm_content
 
-async def _iter_provider_rttm(
-    raw_content: List[str]
-) -> List[List[Union[str, float]]]:
+
+async def _iter_provider_rttm(raw_content: List[str]) -> List[List[Union[str, float]]]:
     """Iterate over the RTTM content of a provider."""
     rttm_content: List[List[Union[str, float]]] = []
 
     for line in raw_content:
         items = line.split()
-        rttm_content.append([str(items[3]), float(items[1]), float(items[2])])
+        rttm_content.append([str(items[2]), float(items[0]), float(items[1])])
 
     return rttm_content
+
 
 async def _prepare_provider_rttm_segments(
     rttm_content: List[List[Union[str, float]]],
@@ -325,8 +401,7 @@ async def _prepare_provider_rttm_segments(
         )
 
     prepared_ref_rttm: List[Tuple[str, float, float]] = [
-        (speaker_map.from_value(item[0]), item[1], item[2])
-        for item in rttm_content
+        (speaker_map.from_value(item[0]), item[1], item[2]) for item in rttm_content
     ]
 
     return prepared_ref_rttm

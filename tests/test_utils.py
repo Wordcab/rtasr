@@ -63,8 +63,7 @@ class TestUtilsModule:
         assert cache_dir == expected_path
         assert part_name in cache_dir.parts
 
-    @pytest.mark.asyncio
-    async def test_get_files(self, tmp_path: Path) -> None:
+    def test_get_files(self, tmp_path: Path) -> None:
         """Test the get_files function."""
         dir_with_files = tmp_path / "testdir"
         dir_with_files.mkdir()
@@ -80,8 +79,8 @@ class TestUtilsModule:
         file2 = dir_with_files / "file2.txt"
         file2.write_text("content")
 
-        files = [f async for f in get_files(dir_with_files)]
-        empty_dir_files = [f async for f in get_files(empty_dir)]
+        files = list(get_files(dir_with_files))
+        empty_dir_files = list(get_files(empty_dir))
 
         assert all(isinstance(file, Path) for file in files)
         assert subdir not in files

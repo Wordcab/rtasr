@@ -161,8 +161,8 @@ class TranscriptionASRCommand:
 
             splits: List[str] = []
             if self.split.lower() == "all":
-                splits.extend(DATASETS[self.dataset.lower()]["splits"])
-            elif self.split.lower() in DATASETS[self.dataset.lower()]["splits"]:
+                splits.extend(DATASETS[_dataset]["splits"])
+            elif self.split.lower() in DATASETS[_dataset]["splits"]:
                 splits.append(self.split.lower())
             else:
                 print(error_message.format(input_type="split", user_input=self.split))
@@ -288,13 +288,15 @@ class TranscriptionASRCommand:
             )
 
             for result in results:
-                if not isinstance(result, Exception):
+                print(
+                    f"- {result.provider_name}:"
+                    f" [green]{result.completed}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.failed}[/red]"
+                )
+                if len(result.errors) > 0:
+                    errors = "\n".join([f"  - {e}" for e in result.errors])
                     print(
-                        f"- {result.provider_name}:"
-                        f" [green]{result.completed}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.failed}[/red]"
+                        f"[bold red]{len(result.errors)} Errors[/bold red]:\n{errors}"
                     )
-                else:
-                    print(f"[red]Error: {result}[/red]")
 
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")

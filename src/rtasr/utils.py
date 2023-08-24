@@ -163,7 +163,7 @@ def get_api_key(provider: str) -> Union[str, None]:
     return key
 
 
-async def get_files(path: Path) -> Path:
+def get_files(path: Path) -> Path:
     """
     Get all files in a directory.
 
@@ -215,6 +215,29 @@ async def unzip_file(zip_path: Path, output_dir: Path, use_cache: bool = True) -
 def resolve_cache_dir() -> Path:
     """Resolve the cache directory for rtasr."""
     return Path.home() / ".cache" / "rtasr"
+
+
+def _ami_speaker_list(ami_rttm_segments: List[List[Union[str, float]]]) -> List[str]:
+    """
+    Get the list of speakers from the AMI RTTM segments and keep the order
+    of appearance.
+
+    Args:
+        ami_rttm_segments (List[Tuple[str, float, float]]):
+            List of RTTM segments from the AMI dataset.
+
+    Returns:
+        List of speakers.
+    """
+    speaker_list: List[str] = []
+
+    for segment in ami_rttm_segments:
+        speaker = segment[0]
+
+        if speaker not in speaker_list:
+            speaker_list.append(speaker)
+
+    return speaker_list
 
 
 def _filename_dots_filter(file_path: Path) -> Path:

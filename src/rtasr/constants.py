@@ -11,6 +11,7 @@ DATASETS = OrderedDict(
                 "splits": ["test", "dev", "train"],
                 "audio_types": ["Mix-Headset", "Array1-01"],
                 "concurrency_limit": 5,
+                "speaker_map": "AMISpeakerMap",
                 "urls": {
                     "rttm": "https://raw.githubusercontent.com/BUTSpeechFIT/AMI-diarization-setup/main/only_words/rttms/{}/{}.rttm",
                     "uem": "https://raw.githubusercontent.com/BUTSpeechFIT/AMI-diarization-setup/main/uems/{}/{}.uem",
@@ -31,12 +32,18 @@ DATASETS = OrderedDict(
                         "train/manifest_Mix-Headset.json",
                     ],
                 },
+                "rttm_filepaths": {
+                    "dev": "dev/rttm",
+                    "test": "test/rttm",
+                    "train": "train/rttm",
+                },
             },
         ),
         (
             "voxconverse",
             {
                 "splits": ["dev", "test"],
+                "speaker_map": "VoxConverseSpeakerMap",
                 "zip_urls": {
                     "rttm": "https://github.com/joonson/voxconverse/archive/refs/heads/master.zip",
                     "dev": "https://www.robots.ox.ac.uk/~vgg/data/voxconverse/data/voxconverse_dev_wav.zip",
@@ -51,6 +58,10 @@ DATASETS = OrderedDict(
                     "dev": ["dev_manifest.json"],
                     "test": ["test_manifest.json"],
                 },
+                "rttm_filepaths": {
+                    "dev": "rttm/voxconverse-master/dev",
+                    "test": "rttm/voxconverse-master/test",
+                },
             },
         ),
     ]
@@ -63,6 +74,7 @@ PROVIDERS = OrderedDict(
                 "url": "https://api.assemblyai.com/v2",
                 "engine": "AssemblyAI",
                 "output": "AssemblyAIOutput",
+                "speaker_map": "AssemblyAISpeakerMap",
                 "concurrency_limit": 5,
                 "options": {
                     "speaker_labels": True,
@@ -76,6 +88,8 @@ PROVIDERS = OrderedDict(
                 "url": "",
                 "engine": "Aws",
                 "output": "AwsOutput",
+                "speaker_map": "AwsSpeakerMap",
+                "options": {},
             },
         ),
         (
@@ -84,6 +98,8 @@ PROVIDERS = OrderedDict(
                 "url": "",
                 "engine": "Azure",
                 "output": "AzureOutput",
+                "speaker_map": "AzureSpeakerMap",
+                "options": {},
             },
         ),
         (
@@ -92,6 +108,8 @@ PROVIDERS = OrderedDict(
                 "url": "https://api.deepgram.com/v1/listen",
                 "engine": "Deepgram",
                 "output": "DeepgramOutput",
+                "speaker_map": "DeepgramSpeakerMap",
+                "concurrency_limit": 5,
                 "options": {
                     "diarize": True,
                     "model": "nova",
@@ -106,6 +124,8 @@ PROVIDERS = OrderedDict(
                 "url": "",
                 "engine": "Google",
                 "output": "GoogleOutput",
+                "speaker_map": "GoogleSpeakerMap",
+                "options": {},
             },
         ),
         (
@@ -114,6 +134,7 @@ PROVIDERS = OrderedDict(
                 "url": "https://api.rev.ai/speechtotext/v1",
                 "engine": "RevAI",
                 "output": "RevAIOutput",
+                "speaker_map": "RevAISpeakerMap",
                 "concurrency_limit": 5,
                 "options": {
                     "remove_disfluencies": False,
@@ -130,6 +151,8 @@ PROVIDERS = OrderedDict(
                 "url": "https://asr.api.speechmatics.com/v2",
                 "engine": "Speechmatics",
                 "output": "SpeechmaticsOutput",
+                "speaker_map": "SpeechmaticsSpeakerMap",
+                "concurrency_limit": 5,
                 "options": {
                     "type": "transcription",
                     "transcription_config": {
@@ -146,6 +169,8 @@ PROVIDERS = OrderedDict(
                 "url": "https://wordcab.com/api/v1",
                 "engine": "Wordcab",
                 "output": "WordcabOutput",
+                "speaker_map": "WordcabSpeakerMap",
+                "concurrency_limit": 10,
                 "options": {
                     "alignment": False,
                     "diarize": True,

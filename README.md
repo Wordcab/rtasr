@@ -136,12 +136,12 @@ rtasr transcription -d <dataset> -p <provider> --debug
 
 The `evaluation` command allows you to run an evaluation on the transcription results.
 
-#### Run evaluation
+#### Run DER evaluation
 
 Specify the dataset to use:
 
 ```bash
-rtasr evaluation -d <dataset>
+rtasr evaluation -m der -d <dataset> -s <split>
 ```
 
 

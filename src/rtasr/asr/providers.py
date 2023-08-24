@@ -150,15 +150,9 @@ class ASRProvider(ABC):
         """
         if debug:
             audio_files = {
-                split_name: [audio_files[split_name][0]]
+                split_name: audio_files[split_name][0:1]
                 for split_name in audio_files.keys()
             }
-
-        step_progress_task_id = step_progress.add_task(
-            "",
-            action=f"[bold green]{self.__class__.__name__}[/bold green]",
-            total=len(audio_files),
-        )
 
         task_tracking: Dict[str, Any] = {}
 
@@ -203,6 +197,12 @@ class ASRProvider(ABC):
                             session=session,
                         )
                     )
+
+            step_progress_task_id = step_progress.add_task(
+                "",
+                action=f"[bold green]{self.__class__.__name__}[/bold green]",
+                total=len(tasks),
+            )
 
             for future in asyncio.as_completed(tasks):
                 try:
@@ -287,7 +287,7 @@ class ASRProvider(ABC):
             output_dir
             / f"{self.__class__.__name__.lower()}"
             / "rttm"
-            / f"{_file_name}.txt"
+            / f"{_file_name}.rttm"
         )
 
         asr_output_exists = await asr_output_file_path.exists()
@@ -404,7 +404,7 @@ class ASRProvider(ABC):
             output_dir
             / f"{self.__class__.__name__.lower()}"
             / "rttm"
-            / f"{_file_name}.txt"
+            / f"{_file_name}.rttm"
         )
         if not await rttm_file_path.parent.exists():
             await rttm_file_path.parent.mkdir(parents=True, exist_ok=True)

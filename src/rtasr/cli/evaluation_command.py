@@ -10,14 +10,14 @@ from rich.live import Live
 from rich.progress import Progress
 
 from rtasr.cli_messages import error_message
-from rtasr.constants import DATASETS, PROVIDERS, Metrics
+from rtasr.constants import DATASETS, Metrics
 from rtasr.evaluation import DerResult, evaluate_der
 from rtasr.utils import create_live_panel, get_files, resolve_cache_dir
 
 
 def evaluation_command_factory(args: argparse.Namespace):
     return EvaluationCommand(
-        metrics=args.metrics,
+        metric=args.metric,
         dataset=args.dataset,
         split=args.split,
         dataset_dir=args.dataset_dir,
@@ -142,7 +142,6 @@ class EvaluationCommand:
                 )
                 exit(1)
 
-            _providers = list(PROVIDERS.keys())
             _dataset = self.dataset.lower()
             _metric = Metrics[self.metric.upper()]
 
@@ -240,7 +239,7 @@ class EvaluationCommand:
                 results = asyncio.run(
                     func_to_run(
                         **func_args,
-                        providers=_providers,
+                        dataset=_dataset,
                         evaluation_dir=evaluation_dir,
                         transcription_dir=transcription_dir,
                         splits_progress=splits_progress,
@@ -264,10 +263,11 @@ class EvaluationCommand:
 
             for result in results:
                 if not isinstance(result, Exception):
-                    print(
-                        f"- {result.provider_name}:"
-                        f" [green]{result.evaluated}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.not_found}[/red]"
-                    )
+                    pass
+                    # print(
+                    #     f"- {result.results.provider_name}:"
+                    #     f" [green]{result.evaluated}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.not_found}[/red]"
+                    # )
                 else:
                     print(f"[red]Error: {result}[/red]")
 
@@ -281,7 +281,7 @@ class EvaluationCommand:
     async def _run_der(
         self,
         rttm_filepaths: Dict[str, List[Path]],
-        providers: List[str],
+        dataset: str,
         evaluation_dir: Path,
         transcription_dir: Path,
         splits_progress: Progress,
@@ -302,9 +302,9 @@ class EvaluationCommand:
 
         tasks = [
             evaluate_der(
+                dataset=dataset,
                 split_name=split,
                 split_rttm_files=rttm_filepaths[split],
-                providers=providers,
                 evaluation_dir=evaluation_dir,
                 transcription_dir=transcription_dir,
                 split_progress=splits_progress,
@@ -323,7 +323,7 @@ class EvaluationCommand:
 
     async def _run_wer(
         self,
-        providers: List[str],
+        dataset: str,
         evaluation_dir: Path,
         transcription_dir: Path,
         splits_progress: Progress,

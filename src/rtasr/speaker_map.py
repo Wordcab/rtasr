@@ -1,5 +1,6 @@
 """Speaker map for RTASR."""
 
+import string
 from collections import OrderedDict
 from enum import Enum
 from typing import List
@@ -32,45 +33,46 @@ class AMISpeakerMap:
 
     def __getitem__(self, value: str) -> int:
         """Get speaker ID from speaker name."""
-        return self.speakers.index(value) + 1
+        speaker_index = self.speakers.index(value)
+        return string.ascii_uppercase[speaker_index]
 
-    def from_value(self, speaker_id: str) -> int:
+    def from_value(self, speaker_id: str) -> str:
         """Get speaker ID from speaker name."""
-        return self.__getitem__(speaker_id)
+        return str(self.__getitem__(speaker_id))
 
 
-class AssemblyAISpeakerMap(int, Enum):
+class AssemblyAISpeakerMap(str, Enum):
     """AssemblyAI speaker map."""
 
-    A = 1
-    B = 2
-    C = 3
-    D = 4
-    E = 5
-    F = 6
-    G = 7
-    H = 8
-    I = 9  # noqa: E741
-    J = 10
-    K = 11
-    L = 12
-    M = 13
-    N = 14
-    O = 15  # noqa: E741
-    P = 16
-    Q = 17
-    R = 18
-    S = 19
-    T = 20
-    U = 21
-    V = 22
-    W = 23
-    X = 24
-    Y = 25
-    Z = 26
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
+    E = "E"
+    F = "F"
+    G = "G"
+    H = "H"
+    I = "I"  # noqa: E741
+    J = "J"
+    K = "K"
+    L = "L"
+    M = "M"
+    N = "N"
+    O = "O"  # noqa: E741
+    P = "P"
+    Q = "Q"
+    R = "R"
+    S = "S"
+    T = "T"
+    U = "U"
+    V = "V"
+    W = "W"
+    X = "X"
+    Y = "Y"
+    Z = "Z"
 
     @classmethod
-    def from_value(cls, speaker_id: str) -> int:
+    def from_value(cls, speaker_id: str) -> str:
         """Get speaker map from a string value"""
         _speaker_id = speaker_id.upper() if isinstance(speaker_id, str) else speaker_id
 
@@ -84,46 +86,46 @@ class AssemblyAISpeakerMap(int, Enum):
             return cls[_speaker_id].value
 
 
-class AwsSpeakerMap(int, Enum):
+class AwsSpeakerMap(str, Enum):
     """AWS speaker map."""
 
 
-class AzureSpeakerMap(int, Enum):
+class AzureSpeakerMap(str, Enum):
     """Azure speaker map."""
 
 
-class DeepgramSpeakerMap(int, Enum):
+class DeepgramSpeakerMap(str, Enum):
     """Deepgram speaker map."""
 
-    _0 = 1
-    _1 = 2
-    _2 = 3
-    _3 = 4
-    _4 = 5
-    _5 = 6
-    _6 = 7
-    _7 = 8
-    _8 = 9
-    _9 = 10
-    _10 = 11
-    _11 = 12
-    _12 = 13
-    _13 = 14
-    _14 = 15
-    _15 = 16
-    _16 = 17
-    _17 = 18
-    _18 = 19
-    _19 = 20
-    _20 = 21
-    _21 = 22
-    _22 = 23
-    _23 = 24
-    _24 = 25
-    _25 = 26
+    _0 = "A"
+    _1 = "B"
+    _2 = "C"
+    _3 = "D"
+    _4 = "E"
+    _5 = "F"
+    _6 = "G"
+    _7 = "H"
+    _8 = "I"
+    _9 = "J"
+    _10 = "K"
+    _11 = "L"
+    _12 = "M"
+    _13 = "N"
+    _14 = "O"
+    _15 = "P"
+    _16 = "Q"
+    _17 = "R"
+    _18 = "S"
+    _19 = "T"
+    _20 = "U"
+    _21 = "V"
+    _22 = "W"
+    _23 = "X"
+    _24 = "Y"
+    _25 = "Z"
 
     @classmethod
-    def from_value(cls, speaker_id: int) -> int:
+    def from_value(cls, speaker_id: int) -> str:
         """Get speaker map from an integer value."""
         _speaker_id = f"_{speaker_id}"
 
@@ -137,42 +139,42 @@ class DeepgramSpeakerMap(int, Enum):
             return cls[_speaker_id].value
 
 
-class GoogleSpeakerMap(int, Enum):
+class GoogleSpeakerMap(str, Enum):
     """Google speaker map."""
 
 
-class RevAISpeakerMap(int, Enum):
+class RevAISpeakerMap(str, Enum):
     """RevAI speaker map."""
 
-    _0 = 1
-    _1 = 2
-    _2 = 3
-    _3 = 4
-    _4 = 5
-    _5 = 6
-    _6 = 7
-    _7 = 8
-    _8 = 9
-    _9 = 10
-    _10 = 11
-    _11 = 12
-    _12 = 13
-    _13 = 14
-    _14 = 15
-    _15 = 16
-    _16 = 17
-    _17 = 18
-    _18 = 19
-    _19 = 20
-    _20 = 21
-    _21 = 22
-    _22 = 23
-    _23 = 24
-    _24 = 25
-    _25 = 26
+    _0 = "A"
+    _1 = "B"
+    _2 = "C"
+    _3 = "D"
+    _4 = "E"
+    _5 = "F"
+    _6 = "G"
+    _7 = "H"
+    _8 = "I"
+    _9 = "J"
+    _10 = "K"
+    _11 = "L"
+    _12 = "M"
+    _13 = "N"
+    _14 = "O"
+    _15 = "P"
+    _16 = "Q"
+    _17 = "R"
+    _18 = "S"
+    _19 = "T"
+    _20 = "U"
+    _21 = "V"
+    _22 = "W"
+    _23 = "X"
+    _24 = "Y"
+    _25 = "Z"
 
     @classmethod
-    def from_value(cls, speaker_id: int) -> int:
+    def from_value(cls, speaker_id: int) -> str:
         """Get speaker map from an integer value."""
         _speaker_id = f"_{speaker_id}"
 
@@ -186,38 +188,38 @@ class RevAISpeakerMap(int, Enum):
             return cls[_speaker_id].value
 
 
-class SpeechmaticsSpeakerMap(int, Enum):
+class SpeechmaticsSpeakerMap(str, Enum):
     """Speechmatics speaker map."""
 
-    S1 = 1
-    S2 = 2
-    S3 = 3
-    S4 = 4
-    S5 = 5
-    S6 = 6
-    S7 = 7
-    S8 = 8
-    S9 = 9
-    S10 = 10
-    S11 = 11
-    S12 = 12
-    S13 = 13
-    S14 = 14
-    S15 = 15
-    S16 = 16
-    S17 = 17
-    S18 = 18
-    S19 = 19
-    S20 = 20
-    S21 = 21
-    S22 = 22
-    S23 = 23
-    S24 = 24
-    S25 = 25
-    S26 = 26
+    S1 = "A"
+    S2 = "B"
+    S3 = "C"
+    S4 = "D"
+    S5 = "E"
+    S6 = "F"
+    S7 = "G"
+    S8 = "H"
+    S9 = "I"
+    S10 = "J"
+    S11 = "K"
+    S12 = "L"
+    S13 = "M"
+    S14 = "N"
+    S15 = "O"
+    S16 = "P"
+    S17 = "Q"
+    S18 = "R"
+    S19 = "S"
+    S20 = "T"
+    S21 = "U"
+    S22 = "V"
+    S23 = "W"
+    S24 = "X"
+    S25 = "Y"
+    S26 = "Z"
 
     @classmethod
-    def from_value(cls, speaker_id: str) -> int:
+    def from_value(cls, speaker_id: str) -> str:
         """Get speaker map from a string value."""
         _speaker_id = speaker_id.upper() if isinstance(speaker_id, str) else speaker_id
 
@@ -231,35 +233,35 @@ class SpeechmaticsSpeakerMap(int, Enum):
             return cls[_speaker_id].value
 
 
-class VoxConverseSpeakerMap(int, Enum):
+class VoxConverseSpeakerMap(str, Enum):
     """VoxConverse speaker map."""
 
-    spk00 = 1
-    spk01 = 2
-    spk02 = 3
-    spk03 = 4
-    spk04 = 5
-    spk05 = 6
-    spk06 = 7
-    spk07 = 8
-    spk08 = 9
-    spk09 = 10
-    spk10 = 11
-    spk11 = 12
-    spk12 = 13
-    spk13 = 14
-    spk14 = 15
-    spk15 = 16
-    spk16 = 17
-    spk17 = 18
-    spk18 = 19
-    spk19 = 20
-    spk20 = 21
-    spk21 = 22
-    spk22 = 23
-    spk23 = 24
-    spk24 = 25
-    spk25 = 26
+    spk00 = "A"
+    spk01 = "B"
+    spk02 = "C"
+    spk03 = "D"
+    spk04 = "E"
+    spk05 = "F"
+    spk06 = "G"
+    spk07 = "H"
+    spk08 = "I"
+    spk09 = "J"
+    spk10 = "K"
+    spk11 = "L"
+    spk12 = "M"
+    spk13 = "N"
+    spk14 = "O"
+    spk15 = "P"
+    spk16 = "Q"
+    spk17 = "R"
+    spk18 = "S"
+    spk19 = "T"
+    spk20 = "U"
+    spk21 = "V"
+    spk22 = "W"
+    spk23 = "X"
+    spk24 = "Y"
+    spk25 = "Z"
 
     @classmethod
     def from_value(cls, speaker_id: str) -> int:
@@ -277,38 +279,38 @@ class VoxConverseSpeakerMap(int, Enum):
             return cls[_speaker_id].value
 
 
-class WordcabSpeakerMap(int, Enum):
+class WordcabSpeakerMap(str, Enum):
     """Wordcab speaker map."""
 
-    A = 1
-    B = 2
-    C = 3
-    D = 4
-    E = 5
-    F = 6
-    G = 7
-    H = 8
-    I = 9  # noqa: E741
-    J = 10
-    K = 11
-    L = 12
-    M = 13
-    N = 14
-    O = 15  # noqa: E741
-    P = 16
-    Q = 17
-    R = 18
-    S = 19
-    T = 20
-    U = 21
-    V = 22
-    W = 23
-    X = 24
-    Y = 25
-    Z = 26
+    A = "A"
+    B = "B"
+    C = "C"
+    D = "D"
+    E = "E"
+    F = "F"
+    G = "G"
+    H = "H"
+    I = "I"  # noqa: E741
+    J = "J"
+    K = "K"
+    L = "L"
+    M = "M"
+    N = "N"
+    O = "O"  # noqa: E741
+    P = "P"
+    Q = "Q"
+    R = "R"
+    S = "S"
+    T = "T"
+    U = "U"
+    V = "V"
+    W = "W"
+    X = "X"
+    Y = "Y"
+    Z = "Z"
 
     @classmethod
-    def from_value(cls, speaker_id: str) -> int:
+    def from_value(cls, speaker_id: str) -> str:
         """Get speaker map from a string value."""
         _speaker_id = speaker_id.upper() if isinstance(speaker_id, str) else speaker_id
 

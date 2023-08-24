@@ -156,22 +156,29 @@ async def evaluate_der(
     for future in asyncio.as_completed(tasks):
         task_result: ComputeScores = await future
 
+        filename = task_result.filename
         if task_result.error:
-            task_tracking[task_result.filename] = DerTaskStatus.ERROR
-            task_tracking["error"] = f"{task_result.filename} -> {task_result.error}"
+            task_tracking[filename]["status"] = DerTaskStatus.ERROR
+            task_tracking[filename]["error"] = (
+                f"{filename} -> {task_result.error}"
+            )
+
         else:
-            task_tracking[task_result.filename] = DerTaskStatus.DONE
-            for provider, score in task_result.scores.items():
-                if score.status == EvaluationStatus.CACHED:
-                    print(f"{provider} -> {score.status}")
-                elif score.status == EvaluationStatus.EVALUATED:
-                    task_tracking[task_result.filename][
-                        provider
-                    ] = EvaluationStatus.EVALUATED
-                elif score.status == EvaluationStatus.NOT_FOUND:
-                    task_tracking[task_result.filename][
-                        provider
-                    ] = EvaluationStatus.NOT_FOUND
+            task_tracking[filename]["status"] = DerTaskStatus.DONE
+            task_tracking[filename]["provider_results"] = {
+                provider: task_result.scores[provider].status
+                for provider in task_result.scores
+            }
+
+            for provider in task_result.scores:
+                status = task_result.scores[provider].status
+
+                if status == EvaluationStatus.CACHED or status == EvaluationStatus.EVALUATED:
+                    pass
+                elif status == EvaluationStatus.NOT_FOUND:
+                    pass
+
+        print(task_tracking[filename])
 
         step_progress.advance(step_progress_task_id)
 
@@ -405,3 +412,12 @@ async def _prepare_provider_rttm_segments(
     ]
 
     return prepared_ref_rttm
+
+
+async def store_der_results(
+    der_results: List[DerResult],
+    evaluation_dir: Path,
+    debug: bool,
+) -> None:
+    """Store the DER results in a JSON file."""
+    pass

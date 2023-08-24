@@ -236,7 +236,7 @@ class EvaluationCommand:
                 current_progress_task_id = current_progress.add_task(
                     f"Running evaluation {_metric} over the `{_dataset}` dataset"
                 )
-                results = asyncio.run(
+                split_results: List[DerResult] = asyncio.run(
                     func_to_run(
                         **func_args,
                         dataset=_dataset,
@@ -256,20 +256,20 @@ class EvaluationCommand:
                 )
 
             print(f"Find the evaluation results in {evaluation_dir.resolve()}")
-            print(
-                "Results by provider:"
-                " [green]evaluated[/green]/[cyan]cached[/cyan]/[red]not_found[/red]"
-            )
 
-            for result in results:
-                if not isinstance(result, Exception):
-                    pass
-                    # print(
-                    #     f"- {result.results.provider_name}:"
-                    #     f" [green]{result.evaluated}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.not_found}[/red]"
-                    # )
-                else:
-                    print(f"[red]Error: {result}[/red]")
+            for split in split_results:
+                print(
+                    f"Results for split {split.split_name}:"
+                    " [green]evaluated[/green]/[cyan]cached[/cyan]/[red]not_found[/red]"
+                )
+                for result in split.results:
+                    print(
+                        f"- {result.provider_name}:"
+                        f" [green]{result.evaluated}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.not_found}[/red]"
+                    )
+                if len(split.errors) > 0:
+                    errors = "\n".join([f"  - {e}" for e in split.errors])
+                    print(f"[bold red]{len(split.errors)} Errors[/bold red]:\n{errors}")
 
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")

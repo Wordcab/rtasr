@@ -2,7 +2,9 @@
 
 import asyncio
 import importlib
+import json
 import traceback
+from collections import Counter
 from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Tuple, Union
@@ -11,7 +13,6 @@ import aiofiles
 import spyder
 from aiopath import AsyncPath
 from pydantic import BaseModel
-from rich import print
 from rich.progress import Progress, TaskID
 from typing_extensions import Literal
 
@@ -140,6 +141,7 @@ async def evaluate_der(
         task_tracking[rttm_file.name] = {
             "rttm_file_name": rttm_file.name,
             "status": DerTaskStatus.IN_PROGRESS,
+            "provider_results": {provider: None for provider in providers},
         }
         tasks.append(
             compute_score(
@@ -159,38 +161,75 @@ async def evaluate_der(
         filename = task_result.filename
         if task_result.error:
             task_tracking[filename]["status"] = DerTaskStatus.ERROR
-            task_tracking[filename]["error"] = (
-                f"{filename} -> {task_result.error}"
-            )
+            task_tracking[filename]["error"] = f"{filename} -> {task_result.error}"
 
         else:
             task_tracking[filename]["status"] = DerTaskStatus.DONE
-            task_tracking[filename]["provider_results"] = {
-                provider: task_result.scores[provider].status
-                for provider in task_result.scores
-            }
 
             for provider in task_result.scores:
                 status = task_result.scores[provider].status
 
-                if status == EvaluationStatus.CACHED or status == EvaluationStatus.EVALUATED:
-                    pass
-                elif status == EvaluationStatus.NOT_FOUND:
-                    pass
+                if (
+                    status == EvaluationStatus.CACHED
+                    or status == EvaluationStatus.EVALUATED
+                ):
+                    file_exists, file_path = await _check_cache(
+                        rttm_file=filename,
+                        evaluation_dir=evaluation_dir,
+                        split=split_name,
+                        provider=provider,
+                    )
 
-        print(task_tracking[filename])
+                    if use_cache and file_exists:
+                        task_tracking[filename]["provider_results"][
+                            provider
+                        ] = EvaluationStatus.CACHED
+                    else:
+                        task_tracking[filename]["provider_results"][
+                            provider
+                        ] = EvaluationStatus.EVALUATED
+                        await _store_evaluation_results(
+                            results=task_result.scores[provider],
+                            save_path=file_path,
+                        )
+
+                else:
+                    task_tracking[filename]["provider_results"][
+                        provider
+                    ] = EvaluationStatus.NOT_FOUND
 
         step_progress.advance(step_progress_task_id)
 
     step_progress.update(step_progress_task_id, advance=len(split_rttm_files))
     split_progress.advance(split_progress_task_id)
 
-    # status_counts = Counter(task["status"] for task in task_tracking.values())
+    results: List[ProviderDerResult] = []
+    for provider in providers:
+        counter = Counter(
+            [
+                task_tracking[rttm_file.name]["provider_results"][provider]
+                for rttm_file in split_rttm_files
+            ]
+        )
+        results.append(
+            ProviderDerResult(
+                cached=counter[EvaluationStatus.CACHED],
+                evaluated=counter[EvaluationStatus.EVALUATED],
+                not_found=counter[EvaluationStatus.NOT_FOUND],
+                provider_name=provider,
+            )
+        )
+
+    errors: List[str] = [
+        task_tracking[rttm_file.name]["error"]
+        for rttm_file in split_rttm_files
+        if task_tracking[rttm_file.name]["status"] == DerTaskStatus.ERROR
+    ]
 
     return DerResult(
-        errors=[],
+        errors=errors,
         split_name=split_name,
-        results=[],
+        results=results,
     )
 
 
@@ -414,10 +453,52 @@ async def _prepare_provider_rttm_segments(
     return prepared_ref_rttm
 
 
-async def store_der_results(
-    der_results: List[DerResult],
-    evaluation_dir: Path,
-    debug: bool,
+async def _store_evaluation_results(
+    results: ProviderComputeScore,
+    save_path: AsyncPath,
 ) -> None:
     """Store the DER results in a JSON file."""
-    pass
+    data = results.model_dump()
+    data.pop("status")
+
+    await save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    async with aiofiles.open(save_path, mode="w") as file:
+        await file.write(json.dumps(data, indent=4, ensure_ascii=False))
+
+
+async def _check_cache(
+    rttm_file: str,
+    evaluation_dir: AsyncPath,
+    split: str,
+    provider: str,
+) -> Tuple[bool, AsyncPath]:
+    """Check the cache for the results of the diarization evaluation.
+
+    This method check if the provider has already been evaluated for the given
+    audio file. If so, it returns True, otherwise it returns False.
+
+    Args:
+        rttm_file (Path):
+            The rttm file to check.
+        evaluation_dir (Path):
+            The evaluation directory where the results are saved, i.e. the cache.
+        split (str):
+            The split of the dataset.
+        provider (str):
+            The provider to check.
+
+    Returns:
+        Tuple[bool, Path]:
+            A tuple containing a boolean indicating whether the provider has
+            already been evaluated for the given audio file and the path to the
+            evaluation results.
+    """
+    _file_name = rttm_file.split(".")[0]
+    eval_output_file_path = AsyncPath(
+        evaluation_dir / split / provider / f"{_file_name}.json"
+    )
+
+    eval_output_exists = await eval_output_file_path.exists()
+
+    return eval_output_exists, eval_output_file_path

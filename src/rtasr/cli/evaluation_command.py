@@ -288,12 +288,30 @@ class EvaluationCommand:
         step_progress: Progress,
         use_cache: bool,
         debug: bool,
-    ) -> None:
+    ) -> List[DerResult]:
         """
         Run the evaluation for the Diarization Error Rate (DER).
 
-        TODO: Add docstrings
-        TODO: Add return type
+        Args:
+            rttm_filepaths (Dict[str, List[Path]]):
+                The RTTM filepaths for each split.
+            dataset (str):
+                The dataset to run evaluation on.
+            evaluation_dir (Path):
+                The path where to store the evaluation results.
+            transcription_dir (Path):
+                The path where the transcription files are stored.
+            splits_progress (Progress):
+                The progress bar for the splits.
+            step_progress (Progress):
+                The progress bar for the steps.
+            use_cache (bool):
+                Whether to use the cache or not.
+            debug (bool):
+                Whether to run in debug mode or not.
+
+        Returns:
+            List[DerResult]: The evaluation results.
         """
         splits_progress_task_id = splits_progress.add_task(
             "",

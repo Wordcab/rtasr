@@ -114,18 +114,50 @@ async def evaluate_der(
     use_cache: bool,
     debug: bool,
 ) -> DerResult:
-    """
-    Evaluate the Diarization Error Rate (DER).
-    TODO: Add docstrings
-    TODO: Implement cache
+    """Evaluate the Diarization Error Rate (DER).
+
+    The Diarization Error Rate (DER) is the sum of the false alarm (FA),
+    missed detection (Miss) and speaker confusion (Conf) rates. We use the
+    implementation of the DER metric provided by the `spyder` library:
+    https://github.com/desh2608/spyder/tree/main
+
+    Args:
+        dataset (str):
+            Name of the dataset to use for evaluation.
+        split_name (str):
+            Name of the split of the dataset (e.g.: "train", "dev", "test").
+        split_rttm_files (List[Path]):
+            List of RTTM files to evaluate.
+        evaluation_dir (Path):
+            Path to the directory where the evaluation results are saved or
+            retrieved from (i.e. the cache).
+        transcription_dir (Path):
+            Path to the directory containing the transcriptions.
+        split_progress (Progress):
+            Progress bar for the current split.
+        split_progress_task_id (TaskID):
+            Task ID of the current split.
+        step_progress (Progress):
+            Progress bar for the current step.
+        use_cache (bool):
+            Wether to use cache or not.
+        debug (bool):
+            Wether to run in debug mode or not. If True, only the first RTTM
+            file of the split is evaluated. This is useful for debugging.
+
+    Returns:
+        DerResult:
+            The result of the DER evaluation. It contains the errors, the name
+            of the split and the results for each provider in the form of a
+            list:
+            [
+                ProviderDerResult,
+                ProviderDerResult,
+                ...
+            ]
     """
     if debug:
-        from pathlib import PosixPath
-
-        _pa = PosixPath(
-            "/Users/chainyo/.cache/rtasr/datasets/voxconverse/rttm/voxconverse-master/test/aepyx.rttm"
-        )
-        split_rttm_files = [_pa]
+        split_rttm_files = split_rttm_files[:1]
 
     step_progress_task_id = step_progress.add_task(
         "",

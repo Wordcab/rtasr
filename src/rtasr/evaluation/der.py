@@ -100,7 +100,11 @@ async def evaluate_der(
     TODO: Implement cache
     """
     if debug:
-        split_rttm_files = split_rttm_files[:1]
+        from pathlib import PosixPath
+        _pa = PosixPath(
+                "/Users/chainyo/.cache/rtasr/datasets/voxconverse/rttm/voxconverse-master/test/aepyx.rttm"
+            )
+        split_rttm_files = [_pa]
 
     step_progress_task_id = step_progress.add_task(
         "",
@@ -132,6 +136,7 @@ async def evaluate_der(
     for future in asyncio.as_completed(tasks):
         try:
             task_result = await future
+            print(task_result)
         except Exception as e:
             raise Exception(e) from e
         finally:
@@ -156,39 +161,84 @@ async def compute_score(
     transcription_dir: Path,
     step_progress: Progress,
 ) -> None:
-    """Compute the score for each provider."""
-    # Read the reference RTTM file and convert it to a segment
-    # with proper speaker mapping
-    ref_rttm_content: List[List[Union[str, float]]] = await _prepare_rttm_content(ref_rttm_path)
+    """Compute the score for each provider.
 
+    The score is computed using the Diarization Error Rate (DER) metric.
+    Here is the process:
+        Read reference RTTM file.
+                |
+        Format reference RTTM file with
+        proper speaker mapping (e.g.: 1, 2, 3...).
+                |
+        For each provider:
+            If provider RTTM file exists:
+                Read provider RTTM file.
+                            |
+                Format provider RTTM file with
+                proper speaker mapping (e.g.: 1, 2, 3...).
+                            |
+                Compute DER score.
+                |
+        Return scores.
+
+    Args:
+        dataset (str):
+            Name of the dataset.
+        ref_rttm_path (AsyncPath):
+            Path to the reference RTTM file.
+        providers (List[str]):
+            List of providers to evaluate.
+        split (str):
+            Name of the split of the dataset (e.g.: "train", "dev", "test").
+        transcription_dir (Path):
+            Path to the directory containing the transcriptions.
+        step_progress (Progress):
+            Progress bar for the current step.
+
+    Returns:
+        None
+    """
+    step_progress_task_id = step_progress.add_task(
+        "",
+        action=f"[bold green]{ref_rttm_path.name}[/bold green]",
+        total=len(providers),
+    )
+
+    ref_rttm_content: List[List[Union[str, float]]] = await _prepare_rttm_content(ref_rttm_path, "dataset")
     ref_rttm: List[Tuple[str, float, float]] = await _prepare_provider_rttm_segments(
         rttm_content=ref_rttm_content,
         target_name=dataset,
         target_type="dataset",
     )
 
-    # For each provider:
-    #   Read the the rttm file if available and convert it to a segment
-    #   Score the reference and hypothesis segments
+    scores: Dict[str, float] = {}
     for provider in providers:
         provider_rttm_path = AsyncPath(
             transcription_dir / split / provider / "rttm" / ref_rttm_path.name
         )
         if await provider_rttm_path.exists():
-            hyp_rttm_content = await _prepare_rttm_content(provider_rttm_path)
+            hyp_rttm_content = await _prepare_rttm_content(provider_rttm_path, "provider")
             hyp_rttm = await _prepare_provider_rttm_segments(
                 rttm_content=hyp_rttm_content,
                 target_name=provider,
                 target_type="provider",
             )
 
-            print(spyder.DER(ref_rttm, hyp_rttm, collar=0.0, regions="single"))
+            score = spyder.DER(ref_rttm, hyp_rttm, collar=0.0, regions="single")
+            print(score)
+        else:
+            score = None
 
-    # Gather the scores for each provider on one rttm file
-    # Save the scores in a json file and csv file
+        scores[provider] = score
+
+        step_progress.advance(step_progress_task_id)
+
+    return ref_rttm_path.name, scores
+
 
 async def _prepare_rttm_content(
-    rttm_path: Union[str, Path, AsyncPath]
+    rttm_path: Union[str, Path, AsyncPath],
+    target_type: Literal["dataset", "provider"],
 ) -> List[List[Union[str, float]]]:
     """
     Prepare the RTTM content for evaluation. The RTTM content is a list of
@@ -197,6 +247,8 @@ async def _prepare_rttm_content(
     Args:
         rttm_path (Union[str, Path, AsyncPath]):
             Path to the RTTM file.
+        target_type (Literal["dataset", "provider"]):
+            Type of the target (dataset or provider).
 
     Returns:
         List of RTTM segments (speaker, start, end).
@@ -207,19 +259,39 @@ async def _prepare_rttm_content(
     async with aiofiles.open(rttm_path, mode="r") as file:
         content: List[str] = (await file.read()).splitlines()
 
+    if target_type == "dataset":
+        rttm_content = await _iter_dataset_rttm(content)
+    elif target_type == "provider":
+        rttm_content = await _iter_provider_rttm(content)
+
+    return rttm_content
+
+
+async def _iter_dataset_rttm(
+    raw_content: List[str]
+) -> List[List[Union[str, float]]]:
+    """Iterate over the RTTM content of a dataset."""
     rttm_content: List[List[Union[str, float]]] = []
-    for line in content:
+
+    for line in raw_content:
         items = line.split()
         rttm_content.append(
-            [
-                str(items[7]),
-                float(items[3]),
-                float(items[3]) + float(items[4]),
-            ]
+            [str(items[7]), float(items[3]), float(items[3]) + float(items[4])]
         )
 
     return rttm_content
 
+async def _iter_provider_rttm(
+    raw_content: List[str]
+) -> List[List[Union[str, float]]]:
+    """Iterate over the RTTM content of a provider."""
+    rttm_content: List[List[Union[str, float]]] = []
+
+    for line in raw_content:
+        items = line.split()
+        rttm_content.append([str(items[3]), float(items[1]), float(items[2])])
+
+    return rttm_content
 
 async def _prepare_provider_rttm_segments(
     rttm_content: List[List[Union[str, float]]],
@@ -238,7 +310,7 @@ async def _prepare_provider_rttm_segments(
             Type of the target (dataset or provider).
 
     Returns:
-        List[Tuple[str, float, float]]: 
+        List[Tuple[str, float, float]]:
             List of RTTM segments (speaker, start, end) with proper speaker
             mapping.
     """

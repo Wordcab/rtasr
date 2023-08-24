@@ -150,7 +150,7 @@ class ASRProvider(ABC):
         """
         if debug:
             audio_files = {
-                split_name: audio_files[split_name][0:1]
+                split_name: audio_files[split_name][0:25]
                 for split_name in audio_files.keys()
             }
 

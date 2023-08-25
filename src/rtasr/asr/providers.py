@@ -1095,7 +1095,8 @@ class Speechmatics(ASRProvider):
                 end_seconds: float = result.end_time
                 speaker: str = result.alternatives[0].speaker
 
-                rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+                if speaker != "UU":
+                    rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
 
         return rttm_lines
 

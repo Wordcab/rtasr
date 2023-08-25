@@ -109,6 +109,7 @@ class ASRProvider(ABC):
         split_progress: Progress,
         split_progress_task_id: TaskID,
         step_progress: Progress,
+        data_range: Union[str, None],
         use_cache: bool,
         debug: bool,
     ) -> ProviderResult:
@@ -134,6 +135,10 @@ class ASRProvider(ABC):
                 The progress bar for the step progress. It is used to track the
                 progress of the transcription of all the audio files for a
                 specific ASR provider.
+            data_range (Union[str, None]):
+                The range of the data to transcribe. It is used to restrict the
+                transcription to a specific range of the data. If `None`, the
+                transcription is done on the full data range.
             use_cache (bool):
                 Whether to use the cache or not. If `True`, the ASR provider will
                 not transcribe the audio files that are already in the cache.
@@ -141,7 +146,8 @@ class ASRProvider(ABC):
                 present.
             debug (bool):
                 Whether to run in debug mode or not. If `True`, the ASR provider
-                will only transcribe the first audio file of each split.
+                will only transcribe the first audio file of each split, no
+                matter data range.
                 This is useful for debugging or testing the full process.
 
         Returns:
@@ -152,7 +158,14 @@ class ASRProvider(ABC):
         """
         if debug:
             audio_files = {
-                split_name: audio_files[split_name][0:5]
+                split_name: audio_files[split_name][0:1]
+                for split_name in audio_files.keys()
+            }
+        elif data_range:
+            start, end = data_range.split(":")
+            start, end = int(start), int(end)
+            audio_files = {
+                split_name: audio_files[split_name][start:end]
                 for split_name in audio_files.keys()
             }
 

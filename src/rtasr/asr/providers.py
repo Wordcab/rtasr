@@ -537,12 +537,12 @@ class AssemblyAI(ASRProvider):
                 aiohttp.client_exceptions.ClientOSError,
                 aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
+                retries += 1
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
                     asr_output = Exception(f"{e}\n{traceback.format_exc()}")
                     break
                 else:
-                    retries += 1
                     print(
                         f"Retrying {audio_file.name} for {self.__class__.__name__}..."
                     )
@@ -613,12 +613,12 @@ class Aws(ASRProvider):
                 aiohttp.client_exceptions.ClientOSError,
                 aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
+                retries += 1
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
                     asr_output = Exception(f"{e}\n{traceback.format_exc()}")
                     break
                 else:
-                    retries += 1
                     print(
                         f"Retrying {audio_file.name} for {self.__class__.__name__}..."
                     )
@@ -674,12 +674,12 @@ class Azure(ASRProvider):
                 aiohttp.client_exceptions.ClientOSError,
                 aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
+                retries += 1
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
                     asr_output = Exception(f"{e}\n{traceback.format_exc()}")
                     break
                 else:
-                    retries += 1
                     print(
                         f"Retrying {audio_file.name} for {self.__class__.__name__}..."
                     )
@@ -762,12 +762,12 @@ class Deepgram(ASRProvider):
                 aiohttp.client_exceptions.ClientOSError,
                 aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
+                retries += 1
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
                     asr_output = Exception(f"{e}\n{traceback.format_exc()}")
                     break
                 else:
-                    retries += 1
                     print(
                         f"Retrying {audio_file.name} for {self.__class__.__name__}..."
                     )
@@ -833,12 +833,12 @@ class Google(ASRProvider):
                 aiohttp.client_exceptions.ClientOSError,
                 aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
+                retries += 1
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
                     asr_output = Exception(f"{e}\n{traceback.format_exc()}")
                     break
                 else:
-                    retries += 1
                     print(
                         f"Retrying {audio_file.name} for {self.__class__.__name__}..."
                     )
@@ -940,12 +940,12 @@ class RevAI(ASRProvider):
                 aiohttp.client_exceptions.ClientOSError,
                 aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
+                retries += 1
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
                     asr_output = Exception(f"{e}\n{traceback.format_exc()}")
                     break
                 else:
-                    retries += 1
                     print(
                         f"Retrying {audio_file.name} for {self.__class__.__name__}..."
                     )
@@ -1085,12 +1085,12 @@ class Speechmatics(ASRProvider):
                 aiohttp.client_exceptions.ClientOSError,
                 aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
+                retries += 1
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
                     asr_output = Exception(f"{e}\n{traceback.format_exc()}")
                     break
                 else:
-                    retries += 1
                     print(
                         f"Retrying {audio_file.name} for {self.__class__.__name__}..."
                     )
@@ -1207,12 +1207,12 @@ class Wordcab(ASRProvider):
                 aiohttp.client_exceptions.ClientOSError,
                 aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
+                retries += 1
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
                     asr_output = Exception(f"{e}\n{traceback.format_exc()}")
                     break
                 else:
-                    retries += 1
                     print(
                         f"Retrying {audio_file.name} for {self.__class__.__name__}..."
                     )

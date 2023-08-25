@@ -1043,7 +1043,12 @@ class Speechmatics(ASRProvider):
                         content = (await response.text()).strip()
 
                 body = json.loads(content)
-                job_id = body.get("id")
+                if body.get("error") == "Forbidden":
+                    _status = TranscriptionStatus.FAILED
+                    asr_output = Exception(body.get("detail"))
+                    break
+                else:
+                    job_id = body.get("id")
 
                 await asyncio.sleep(1)  # Extra pause for Speechmatics
 
@@ -1055,6 +1060,7 @@ class Speechmatics(ASRProvider):
 
                     body = json.loads(content)
                     _job = body.get("job")
+                    print(f"Retrieving the job status: {_job}")
 
                     if _job.get("status") == "done":
                         _status = TranscriptionStatus.COMPLETED

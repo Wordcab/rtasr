@@ -206,38 +206,51 @@ class ASRProvider(ABC):
                 total=len(tasks),
             )
 
-            for future in asyncio.as_completed(tasks):
-                task_result = await future
-                audio_file_name, status, asr_output = task_result
+            try:
+                for future in asyncio.as_completed(tasks):
+                    task_result = await future
+                    audio_file_name, status, asr_output = task_result
 
-                if (
-                    status == TranscriptionStatus.CACHED
-                    or status == TranscriptionStatus.COMPLETED
-                ):
-                    task_tracking[audio_file_name]["status"] = status
-                    _split = task_tracking[audio_file_name]["split"]
+                    if (
+                        status == TranscriptionStatus.CACHED
+                        or status == TranscriptionStatus.COMPLETED
+                    ):
+                        task_tracking[audio_file_name]["status"] = status
+                        _split = task_tracking[audio_file_name]["split"]
 
-                    if not task_tracking[audio_file_name]["rttm_cache"]:
-                        rttm_lines = await self.result_to_rttm(asr_output=asr_output)
-                        await self._save_rttm_files(
-                            audio_file_name=audio_file_name,
-                            rttm_lines=rttm_lines,
-                            output_dir=output_dir / _split,
+                        if not task_tracking[audio_file_name]["rttm_cache"]:
+                            rttm_lines = await self.result_to_rttm(asr_output=asr_output)
+                            await self._save_rttm_files(
+                                audio_file_name=audio_file_name,
+                                rttm_lines=rttm_lines,
+                                output_dir=output_dir / _split,
+                            )
+
+                        if not task_tracking[audio_file_name]["asr_output_cache"]:
+                            await self._save_asr_outputs(
+                                audio_file_name=audio_file_name,
+                                asr_output=asr_output,
+                                output_dir=output_dir / _split,
+                            )
+
+                    elif status == TranscriptionStatus.FAILED:
+                        task_tracking[audio_file_name]["status"] = status
+                        if isinstance(asr_output, Exception):
+                            task_tracking[audio_file_name]["error"] = str(asr_output)
+
+                    step_progress.advance(step_progress_task_id)
+
+            except Exception as e:
+                print(
+                    f"[bold red]Problem with {self.__class__.__name__} -> {e}[/bold red]]"
+                )
+                # If there is an exception, we mark all the tasks still in progress
+                # as failed.
+                for task in task_tracking.values():
+                    if task["status"] == TranscriptionStatus.IN_PROGRESS:
+                        task_tracking[task["audio_file_name"]]["status"] = (
+                            TranscriptionStatus.FAILED
                         )
-
-                    if not task_tracking[audio_file_name]["asr_output_cache"]:
-                        await self._save_asr_outputs(
-                            audio_file_name=audio_file_name,
-                            asr_output=asr_output,
-                            output_dir=output_dir / _split,
-                        )
-
-                elif status == TranscriptionStatus.FAILED:
-                    task_tracking[audio_file_name]["status"] = status
-                    if isinstance(asr_output, Exception):
-                        task_tracking[audio_file_name]["error"] = str(asr_output)
-
-                step_progress.advance(step_progress_task_id)
 
         step_progress.update(step_progress_task_id, advance=len(audio_files))
         split_progress.advance(split_progress_task_id)
@@ -499,6 +512,10 @@ class AssemblyAI(ASRProvider):
                 else:
                     await asyncio.sleep(3)
 
+        except aiohttp.client_exceptions.ClientOSError:
+            asyncio.sleep(3)
+            self._launch(audio_file=audio_file, url=url, session=session)
+
         except Exception as e:
             _status = TranscriptionStatus.FAILED
             asr_output = Exception(f"{e}\n{traceback.format_exc()}")
@@ -556,6 +573,10 @@ class Aws(ASRProvider):
             concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
             raise NotImplementedError("Aws not implemented.")
 
+        except aiohttp.client_exceptions.ClientOSError:
+            asyncio.sleep(3)
+            self._launch(audio_file=audio_file, url=url, session=session)
+
         except Exception as e:
             _status = TranscriptionStatus.FAILED
             asr_output = Exception(f"{e}\n{traceback.format_exc()}")
@@ -598,6 +619,10 @@ class Azure(ASRProvider):
         try:
             concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
             raise NotImplementedError("Azure not implemented.")
+
+        except aiohttp.client_exceptions.ClientOSError:
+            asyncio.sleep(3)
+            self._launch(audio_file=audio_file, url=url, session=session)
 
         except Exception as e:
             _status = TranscriptionStatus.FAILED
@@ -665,6 +690,10 @@ class Deepgram(ASRProvider):
                     asr_output = DeepgramOutput.from_json(body)
                     _status = TranscriptionStatus.COMPLETED
 
+        except aiohttp.client_exceptions.ClientOSError:
+            asyncio.sleep(3)
+            self._launch(audio_file=audio_file, url=url, session=session)
+
         except Exception as e:
             _status = TranscriptionStatus.FAILED
             asr_output = Exception(f"{e}\n{traceback.format_exc()}")
@@ -717,6 +746,10 @@ class Google(ASRProvider):
         try:
             concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
             raise NotImplementedError("Google not implemented.")
+
+        except aiohttp.client_exceptions.ClientOSError:
+            asyncio.sleep(3)
+            self._launch(audio_file=audio_file, url=url, session=session)
 
         except Exception as e:
             _status = TranscriptionStatus.FAILED
@@ -804,6 +837,10 @@ class RevAI(ASRProvider):
 
             else:
                 asr_output = body.get("failure_detail")
+
+        except aiohttp.client_exceptions.ClientOSError:
+            asyncio.sleep(3)
+            self._launch(audio_file=audio_file, url=url, session=session)
 
         except Exception as e:
             _status = TranscriptionStatus.FAILED
@@ -925,6 +962,10 @@ class Speechmatics(ASRProvider):
                 _errors = body.get("errors")
                 asr_output = "\n".join([error.get("message") for error in _errors])
 
+        except aiohttp.client_exceptions.ClientOSError:
+            asyncio.sleep(3)
+            self._launch(audio_file=audio_file, url=url, session=session)
+
         except Exception as e:
             _status = TranscriptionStatus.FAILED
             asr_output = Exception(f"{e}\n{traceback.format_exc()}")
@@ -1025,6 +1066,10 @@ class Wordcab(ASRProvider):
 
             else:
                 asr_output = body.get("error_message")
+
+        except aiohttp.client_exceptions.ClientOSError:
+            asyncio.sleep(3)
+            self._launch(audio_file=audio_file, url=url, session=session)
 
         except Exception as e:
             _status = TranscriptionStatus.FAILED

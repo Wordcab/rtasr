@@ -256,20 +256,30 @@ class EvaluationCommand:
                 )
 
             print(f"Find the evaluation results in {evaluation_dir.resolve()}")
+            print(
+                "Results by provider:"
+                " [green]evaluated[/green]/[cyan]cached[/cyan]/[red]not_found[/red]"
+            )
 
             for split in split_results:
-                print(
-                    f"Results for split {split.split_name}:"
-                    " [green]evaluated[/green]/[cyan]cached[/cyan]/[red]not_found[/red]"
-                )
-                for result in split.results:
-                    print(
-                        f"- {result.provider_name}:"
-                        f" [green]{result.evaluated}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.not_found}[/red]"
-                    )
-                if len(split.errors) > 0:
-                    errors = "\n".join([f"  - {e}" for e in split.errors])
-                    print(f"[bold red]{len(split.errors)} Errors[/bold red]:\n{errors}")
+                if not isinstance(split, Exception):
+                    print(f"Split: [bold yellow]{split.split_name}[/bold yellow]")
+                    for result in split.results:
+                        if result.evaluated + result.cached > 0:
+                            print(
+                                f"- {result.provider_name}:"
+                                f" [green]{result.evaluated}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.not_found}[/red]"
+                            )
+                        else:
+                            print(f"- {result.provider_name}: [red]NOT EVALUATED[/red]")
+                    if len(split.errors) > 0:
+                        errors = "\n".join([f"  - {e}" for e in split.errors])
+                        print(
+                            f"[bold red]{len(split.errors)} Errors[/bold"
+                            f" red]:\n{errors}"
+                        )
+                else:
+                    print(f"[bold red]Error[/bold red]: {split}")
 
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")

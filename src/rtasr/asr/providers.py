@@ -220,7 +220,9 @@ class ASRProvider(ABC):
                         _split = task_tracking[audio_file_name]["split"]
 
                         if not task_tracking[audio_file_name]["rttm_cache"]:
-                            rttm_lines = await self.result_to_rttm(asr_output=asr_output)
+                            rttm_lines = await self.result_to_rttm(
+                                asr_output=asr_output
+                            )
                             await self._save_rttm_files(
                                 audio_file_name=audio_file_name,
                                 rttm_lines=rttm_lines,
@@ -243,15 +245,16 @@ class ASRProvider(ABC):
 
             except Exception as e:
                 print(
-                    f"[bold red]Problem with {self.__class__.__name__} -> {e}[/bold red]]"
+                    f"[bold red]Problem with {self.__class__.__name__} -> {e}[/bold"
+                    " red]]"
                 )
                 # If there is an exception, we mark all the tasks still in progress
                 # as failed.
                 for task in task_tracking.values():
                     if task["status"] == TranscriptionStatus.IN_PROGRESS:
-                        task_tracking[task["audio_file_name"]]["status"] = (
-                            TranscriptionStatus.FAILED
-                        )
+                        task_tracking[task["audio_file_name"]][
+                            "status"
+                        ] = TranscriptionStatus.FAILED
 
         step_progress.update(step_progress_task_id, advance=len(audio_files))
         split_progress.advance(split_progress_task_id)
@@ -519,7 +522,7 @@ class AssemblyAI(ASRProvider):
 
             except (
                 aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError
+                aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
@@ -595,7 +598,7 @@ class Aws(ASRProvider):
 
             except (
                 aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError
+                aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
@@ -656,7 +659,7 @@ class Azure(ASRProvider):
 
             except (
                 aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError
+                aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
@@ -722,7 +725,9 @@ class Deepgram(ASRProvider):
 
                 _url = f"{url}{build_query_string(self.options)}"
                 async with aiofiles.open(audio_file, mode="rb") as f:
-                    async with session.post(url=_url, data=f, headers=headers) as response:
+                    async with session.post(
+                        url=_url, data=f, headers=headers
+                    ) as response:
                         content = (await response.text()).strip()
 
                 if not content:
@@ -742,7 +747,7 @@ class Deepgram(ASRProvider):
 
             except (
                 aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError
+                aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
@@ -813,7 +818,7 @@ class Google(ASRProvider):
 
             except (
                 aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError
+                aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
@@ -920,7 +925,7 @@ class RevAI(ASRProvider):
 
             except (
                 aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError
+                aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
@@ -1015,7 +1020,9 @@ class Speechmatics(ASRProvider):
                 async with aiofiles.open(audio_file, mode="rb") as f:
                     form = aiohttp.FormData()
                     form.add_field("data_file", f, filename=audio_file.name)
-                    form.add_field("config", json.dumps(self.options, ensure_ascii=False))
+                    form.add_field(
+                        "config", json.dumps(self.options, ensure_ascii=False)
+                    )
 
                     async with session.post(
                         url=_url, data=form, headers=headers
@@ -1047,7 +1054,8 @@ class Speechmatics(ASRProvider):
 
                 if _status == TranscriptionStatus.COMPLETED:
                     async with session.get(
-                        url=f"{_url}/{job_id}/transcript?format=json-v2", headers=headers
+                        url=f"{_url}/{job_id}/transcript?format=json-v2",
+                        headers=headers,
                     ) as response:
                         content = (await response.text()).strip()
 
@@ -1062,7 +1070,7 @@ class Speechmatics(ASRProvider):
 
             except (
                 aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError
+                aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED
@@ -1184,7 +1192,7 @@ class Wordcab(ASRProvider):
 
             except (
                 aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError
+                aiohttp.client_exceptions.ServerDisconnectedError,
             ) as e:
                 if retries >= self.max_retries:
                     _status = TranscriptionStatus.FAILED

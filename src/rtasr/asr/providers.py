@@ -512,7 +512,10 @@ class AssemblyAI(ASRProvider):
                 else:
                     await asyncio.sleep(3)
 
-        except aiohttp.client_exceptions.ClientOSError:
+        except (
+            aiohttp.client_exceptions.ClientOSError,
+            aiohttp.client_exceptions.ServerDisconnectedError
+        ):
             asyncio.sleep(3)
             self._launch(audio_file=audio_file, url=url, session=session)
 
@@ -573,7 +576,10 @@ class Aws(ASRProvider):
             concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
             raise NotImplementedError("Aws not implemented.")
 
-        except aiohttp.client_exceptions.ClientOSError:
+        except (
+            aiohttp.client_exceptions.ClientOSError,
+            aiohttp.client_exceptions.ServerDisconnectedError
+        ):
             asyncio.sleep(3)
             self._launch(audio_file=audio_file, url=url, session=session)
 
@@ -620,7 +626,10 @@ class Azure(ASRProvider):
             concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
             raise NotImplementedError("Azure not implemented.")
 
-        except aiohttp.client_exceptions.ClientOSError:
+        except (
+            aiohttp.client_exceptions.ClientOSError,
+            aiohttp.client_exceptions.ServerDisconnectedError
+        ):
             asyncio.sleep(3)
             self._launch(audio_file=audio_file, url=url, session=session)
 
@@ -690,7 +699,10 @@ class Deepgram(ASRProvider):
                     asr_output = DeepgramOutput.from_json(body)
                     _status = TranscriptionStatus.COMPLETED
 
-        except aiohttp.client_exceptions.ClientOSError:
+        except (
+            aiohttp.client_exceptions.ClientOSError,
+            aiohttp.client_exceptions.ServerDisconnectedError
+        ):
             asyncio.sleep(3)
             self._launch(audio_file=audio_file, url=url, session=session)
 
@@ -747,7 +759,10 @@ class Google(ASRProvider):
             concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
             raise NotImplementedError("Google not implemented.")
 
-        except aiohttp.client_exceptions.ClientOSError:
+        except (
+            aiohttp.client_exceptions.ClientOSError,
+            aiohttp.client_exceptions.ServerDisconnectedError
+        ):
             asyncio.sleep(3)
             self._launch(audio_file=audio_file, url=url, session=session)
 
@@ -838,7 +853,10 @@ class RevAI(ASRProvider):
             else:
                 asr_output = body.get("failure_detail")
 
-        except aiohttp.client_exceptions.ClientOSError:
+        except (
+            aiohttp.client_exceptions.ClientOSError,
+            aiohttp.client_exceptions.ServerDisconnectedError
+        ):
             asyncio.sleep(3)
             self._launch(audio_file=audio_file, url=url, session=session)
 
@@ -962,7 +980,10 @@ class Speechmatics(ASRProvider):
                 _errors = body.get("errors")
                 asr_output = "\n".join([error.get("message") for error in _errors])
 
-        except aiohttp.client_exceptions.ClientOSError:
+        except (
+            aiohttp.client_exceptions.ClientOSError,
+            aiohttp.client_exceptions.ServerDisconnectedError
+        ):
             asyncio.sleep(3)
             self._launch(audio_file=audio_file, url=url, session=session)
 
@@ -1067,7 +1088,10 @@ class Wordcab(ASRProvider):
             else:
                 asr_output = body.get("error_message")
 
-        except aiohttp.client_exceptions.ClientOSError:
+        except (
+            aiohttp.client_exceptions.ClientOSError,
+            aiohttp.client_exceptions.ServerDisconnectedError
+        ):
             asyncio.sleep(3)
             self._launch(audio_file=audio_file, url=url, session=session)
 

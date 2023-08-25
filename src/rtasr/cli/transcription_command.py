@@ -24,6 +24,7 @@ def transcription_asr_command_factory(args: argparse.Namespace):
         dataset=args.dataset,
         split=args.split,
         dataset_dir=args.dataset_dir,
+        data_range=args.range,
         output_dir=args.output_dir,
         use_cache=args.no_cache,
         debug=args.debug,
@@ -62,21 +63,32 @@ class TranscriptionASRCommand:
             type=str,
         )
         subparser.add_argument(
-            "--dataset_dir",
+            "-o",
+            "--output_dir",
             help=(
-                "Path where the dataset files are stored. Defaults to"
-                " `~/.cache/rtasr/datasets`."
+                "Path where store the transcription outputs. Defaults to"
+                " `~/.cache/rtasr/transcription`."
             ),
             required=False,
             default=None,
             type=str,
         )
         subparser.add_argument(
-            "-o",
-            "--output_dir",
+            "-r",
+            "--range",
             help=(
-                "Path where store the transcription outputs. Defaults to"
-                " `~/.cache/rtasr/transcription`."
+                "The range of audio files to use. Defaults to None, which means all"
+                " files. If you want to use a range, specify it as `start:end`."
+            ),
+            required=False,
+            default=None,
+            type=str,
+        )
+        subparser.add_argument(
+            "--dataset_dir",
+            help=(
+                "Path where the dataset files are stored. Defaults to"
+                " `~/.cache/rtasr/datasets`."
             ),
             required=False,
             default=None,
@@ -101,8 +113,9 @@ class TranscriptionASRCommand:
         providers: List[str],
         dataset: str,
         split: str,
-        dataset_dir: Union[str, None] = None,
         output_dir: Union[str, None] = None,
+        data_range: Union[str, None] = None,
+        dataset_dir: Union[str, None] = None,
         use_cache: bool = True,
         debug: bool = False,
     ) -> None:
@@ -110,8 +123,9 @@ class TranscriptionASRCommand:
         self.providers = providers
         self.dataset = dataset
         self.split = split
-        self.dataset_dir = dataset_dir
         self.output_dir = output_dir
+        self.data_range = data_range
+        self.dataset_dir = dataset_dir
         self.use_cache = use_cache
         self.debug = debug
 
@@ -138,8 +152,20 @@ class TranscriptionASRCommand:
                 print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS.keys()]))
                 exit(1)
 
+            if self.data_range is not None:
+                try:
+                    tuple([int(i) for i in self.data_range.split(":") if i != ""])
+                except ValueError:
+                    print(
+                        error_message.format(
+                            input_type="data_range", user_input=self.data_range
+                        )
+                    )
+                    exit(1)
+
             _providers = [p.lower() for p in self.providers]
             _dataset = self.dataset.lower()
+            _data_range = self.data_range
 
             if self.dataset_dir is None:
                 dataset_dir = resolve_cache_dir() / "datasets" / _dataset
@@ -270,6 +296,7 @@ class TranscriptionASRCommand:
                         transcription_dir,
                         splits_progress,
                         step_progress,
+                        _data_range,
                         self.use_cache,
                         self.debug,
                     )
@@ -311,6 +338,7 @@ class TranscriptionASRCommand:
         output_dir: Path,
         splits_progress: Progress,
         step_progress: Progress,
+        data_range: Union[str, None],
         use_cache: bool,
         debug: bool,
     ) -> List[ProviderResult]:
@@ -326,6 +354,7 @@ class TranscriptionASRCommand:
                     split_progress=splits_progress,
                     split_progress_task_id=splits_progress_task_id,
                     step_progress=step_progress,
+                    data_range=data_range,
                     use_cache=use_cache,
                     debug=debug,
                 )

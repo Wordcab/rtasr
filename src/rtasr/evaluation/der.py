@@ -3,6 +3,7 @@
 import asyncio
 import importlib
 import json
+import sys
 import traceback
 from collections import Counter
 from enum import Enum
@@ -321,13 +322,15 @@ async def compute_score(
                 ...
             }
     """
-    try:
-        step_progress_task_id = step_progress.add_task(
-            "",
-            action=f"[bold green]{ref_rttm_path.name}[/bold green]",
-            total=len(providers),
-        )
+    step_progress_task_id = step_progress.add_task(
+        "",
+        action=f"[bold green]{ref_rttm_path.name}[/bold green]",
+        total=len(providers),
+    )
+    current_provider = None  # Error tracking purpose
+    error = None
 
+    try:
         ref_rttm_content: List[List[Union[str, float]]] = await _prepare_rttm_content(
             ref_rttm_path, "dataset"
         )
@@ -339,9 +342,9 @@ async def compute_score(
             target_type="dataset",
         )
 
-        error = None
         scores: Dict[str, float] = {}
         for provider in providers:
+            current_provider = provider
             provider_rttm_path = AsyncPath(
                 transcription_dir / split / provider / "rttm" / ref_rttm_path.name
             )
@@ -378,9 +381,13 @@ async def compute_score(
 
             step_progress.advance(step_progress_task_id)
 
-    except Exception as e:
+    except Exception:
         scores = None
-        error = f"{e}\n{traceback.format_exc()}"
+        error_type, error_instance, _ = sys.exc_info()
+        error = (
+            f"[bold]({current_provider})[/bold] "
+            f"{traceback.format_exception_only(error_type, error_instance)[-1].strip()}"
+        )
 
     finally:
         step_progress.update(step_progress_task_id, visible=False)

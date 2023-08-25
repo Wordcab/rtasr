@@ -22,6 +22,22 @@
 
 ---
 
+## Early Results
+
+### DER
+
+As a first evaluation, we ran the `der` metric on the `voxconverse` dataset using only the `test` split.
+
+__AssemblyAI__, __Deepgram__, and __Wordcab__ were evaluated almost on the whole split (224 files) while __RevAI__ and __Speechmatics__ were evaluated respectively on 29 and 7 files, due to respective API limitations and issues for Speechmatics...
+
+Here are the results:
+
+![DER evaluation](./assets/der_first_evaluation.png)
+
+### WER
+
+Work in progress...
+
 ## Installation
 
 ### Last stable version
@@ -136,14 +152,13 @@ rtasr transcription -d <dataset> -p <provider> --debug
 
 The `evaluation` command allows you to run an evaluation on the transcription results.
 
-#### Run evaluation
+#### Run DER evaluation
 
 Specify the dataset to use:
 
 ```bash
-rtasr evaluation -d <dataset>
+rtasr evaluation -m der -d <dataset> -s <split>
 ```
-
 
 ## Contributing
 

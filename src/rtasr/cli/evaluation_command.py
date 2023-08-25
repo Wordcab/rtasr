@@ -2,6 +2,8 @@
 
 import argparse
 import asyncio
+import json
+import time
 from pathlib import Path
 from typing import Dict, List, Union
 
@@ -256,20 +258,48 @@ class EvaluationCommand:
                 )
 
             print(f"Find the evaluation results in {evaluation_dir.resolve()}")
+            print(
+                "Results by provider:"
+                " [green]evaluated[/green]/[cyan]cached[/cyan]/[red]not_found[/red]"
+            )
 
+            errors_to_save = []
+            errors_file = evaluation_dir / "errors.json"
             for split in split_results:
-                print(
-                    f"Results for split {split.split_name}:"
-                    " [green]evaluated[/green]/[cyan]cached[/cyan]/[red]not_found[/red]"
-                )
-                for result in split.results:
-                    print(
-                        f"- {result.provider_name}:"
-                        f" [green]{result.evaluated}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.not_found}[/red]"
-                    )
-                if len(split.errors) > 0:
-                    errors = "\n".join([f"  - {e}" for e in split.errors])
-                    print(f"[bold red]{len(split.errors)} Errors[/bold red]:\n{errors}")
+                if not isinstance(split, Exception):
+                    print(f"Split: [bold yellow]{split.split_name}[/bold yellow]")
+                    for result in split.results:
+                        if result.evaluated + result.cached > 0:
+                            print(
+                                f"- {result.provider_name}:"
+                                f" [green]{result.evaluated}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.not_found}[/red]"
+                            )
+                        else:
+                            print(f"- {result.provider_name}: [red]NOT EVALUATED[/red]")
+                    if len(split.errors) > 0:
+                        errors_to_save.append(
+                            {
+                                "date": time.strftime("%Y-%m-%d %H:%M:%S"),
+                                split.split_name: split.errors,
+                            }
+                        )
+                        errors = "\n".join([f"  - {e}" for e in split.errors])
+                        print(
+                            f"[bold red]{len(split.errors)} Errors[/bold"
+                            f" red] (stored at {errors_file}):\n{errors}"
+                        )
+                else:
+                    print(f"[bold red]Error[/bold red]: {split}")
+
+            if errors_file.exists():
+                with open(errors_file, "r") as f:
+                    errors = json.load(f)
+                    errors.extend(errors_to_save)
+
+                errors_to_save = errors
+
+            with open(errors_file, "w") as f:
+                json.dump(errors_to_save, f, indent=4, ensure_ascii=False)
 
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")

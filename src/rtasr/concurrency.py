@@ -3,18 +3,13 @@
 import asyncio
 from typing import Union
 
+from pydantic import BaseModel
 
-class ConcurrencyToken:
+
+class ConcurrencyToken(BaseModel):
     """A concurrency token."""
 
-    def __init__(self, value: int) -> None:
-        """Initialize the concurrency token."""
-        self._value = value
-
-    @property
-    def value(self) -> int:
-        """Return the value of the token."""
-        return self._value
+    value: int
 
 
 class ConcurrencyHandler:
@@ -48,4 +43,4 @@ class ConcurrencyHandler:
     def _fill_queue(self):
         """Fill the queue with tokens."""
         for i in range(self.limit):
-            self.queue.put_nowait(ConcurrencyToken(i))
+            self.queue.put_nowait(ConcurrencyToken(value=i))

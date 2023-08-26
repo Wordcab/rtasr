@@ -17,8 +17,8 @@ from rtasr.cli_messages import ascii_art
 install(show_locals=True)
 
 
-def main() -> None:
-    """Define the entry point for the command line interface of rtasr."""
+def parse_arguments() -> argparse.Namespace:
+    """Parse the arguments passed to the command line interface."""
     parser = argparse.ArgumentParser(
         prog="rtasr",
         description="🏆 Run benchmarks against the most common ASR tools on the market.",
@@ -33,21 +33,28 @@ def main() -> None:
     ListItemsCommand.register_subcommand(commands_parser)
     TranscriptionASRCommand.register_subcommand(commands_parser)
 
-    args = parser.parse_args()
+    return parser.parse_args()
 
-    print(ascii_art)
 
+def execute_command(args: argparse.Namespace) -> None:
+    """Execute the command passed to the command line interface."""
     if not hasattr(args, "func"):
         print(
             "[bold red]Oops something went wrong. Please check the command you"
             f" entered.[/bold red]\n👉 {args}\n"
         )
-        parser.print_help()
-        exit(1)
+        return 1
 
     args.func(args).run()
-    exit(0)
+    return 0
+
+
+def main() -> None:
+    """CLI main wrapper."""
+    args = parse_arguments()
+    print(ascii_art)
+    execute_command(args)
 
 
 if __name__ == "__main__":
-    main()
+    main()  # pragma: no cover

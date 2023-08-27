@@ -8,7 +8,7 @@ DATASETS = OrderedDict(
         (
             "ami",
             {
-                "splits": ["test", "dev", "train"],
+                "splits": ["train", "dev", "test"],
                 "audio_types": ["Mix-Headset", "Array1-01"],
                 "concurrency_limit": 5,
                 "speaker_map": "AMISpeakerMap",
@@ -37,6 +37,11 @@ DATASETS = OrderedDict(
                     "test": "test/rttm",
                     "train": "train/rttm",
                 },
+                "number_of_files": {
+                    "train": 134,
+                    "dev": 18,
+                    "test": 16,
+                },
             },
         ),
         (
@@ -61,6 +66,10 @@ DATASETS = OrderedDict(
                 "rttm_filepaths": {
                     "dev": "rttm/voxconverse-master/dev",
                     "test": "rttm/voxconverse-master/test",
+                },
+                "number_of_files": {
+                    "dev": 216,
+                    "test": 232,
                 },
             },
         ),

@@ -19,7 +19,7 @@ class TestConstants:
 
     def test_datasets_ami(self) -> None:
         """Test AMI dataset."""
-        assert DATASETS["ami"]["splits"] == ["test", "dev", "train"]
+        assert DATASETS["ami"]["splits"] == ["train", "dev", "test"]
         assert DATASETS["ami"]["audio_types"] == ["Mix-Headset", "Array1-01"]
         assert DATASETS["ami"]["concurrency_limit"] == 5
         assert DATASETS["ami"]["speaker_map"] == "AMISpeakerMap"

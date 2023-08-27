@@ -63,12 +63,15 @@ class ListItemsCommand:
 
     def _print_datasets(self) -> None:
         """Print the datasets."""
-        print("Datasets | Splits:")
-        print(
-            "".join(
-                [f"  - [bold]{k}[/bold] | {v['splits']}\n" for k, v in DATASETS.items()]
+        print("Datasets: splits (number of files):")
+        for dataset in DATASETS.keys():
+            splits_and_files = [
+                f"{split} ({nb_files})"
+                for split, nb_files in DATASETS[dataset]["number_of_files"].items()
+            ]
+            print(
+                f"  - [bold]{dataset}[/bold]: {', '.join(splits_and_files)}",
             )
-        )
 
     def _print_providers(self) -> None:
         """Print the providers."""

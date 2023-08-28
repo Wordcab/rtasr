@@ -640,7 +640,17 @@ class AssemblyAI(ASRProvider):
 
     async def result_to_dialogue(self, asr_output: AssemblyAIOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        utterances: List[AssemblyAIUtterance] = asr_output.utterances
+
+        dialogue_lines: List[str] = []
+        if not utterances:  # This means there is only one speaker
+            words: List[AssemblyAIWord] = asr_output.words
+            dialogue_lines.append(" ".join([word.text for word in words]))
+        else:
+            for utterance in utterances:
+                dialogue_lines.append(utterance.text)
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: AssemblyAIOutput) -> List[str]:
         """Convert the result to RTTM format for DER."""

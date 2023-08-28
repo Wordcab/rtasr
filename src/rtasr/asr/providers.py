@@ -304,6 +304,7 @@ class ASRProvider(ABC):
                     url=url,
                     session=session,
                 )
+                status, asr_output = results
 
                 retries = self.max_retries  # To break the while loop
 
@@ -329,7 +330,6 @@ class ASRProvider(ABC):
 
             finally:
                 self.concurrency_handler.put(concurr_token)
-                status, asr_output = results
 
         return audio_file.name, status, asr_output
 

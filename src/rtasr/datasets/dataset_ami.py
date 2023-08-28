@@ -12,7 +12,7 @@ import asyncio
 import json
 import traceback
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import aiofiles
 import aiohttp
@@ -127,9 +127,7 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
         split_tasks = []
         for split in dataset_metadata["splits"]:
             split_dir = output_dir / split
-            split_tasks.append(
-                _prepare_ami_manifest_split(split_dir, use_cache, dataset_metadata)
-            )
+            split_tasks.append(_prepare_ami_manifest_split(split_dir, use_cache))
 
         for future in asyncio.as_completed(split_tasks):
             try:
@@ -211,19 +209,18 @@ async def _download_ami_split(
         for file_id in file_ids
         if file_id not in dataset_metadata["exclude_ids"]
     ]
-    audio_types = dataset_metadata["audio_types"]
 
     file_download_results: List[Dict[str, str]] = []
     for file_id in filtered_file_ids:
-        for audio_type in audio_types:
-            file_download_results.append(
-                _download_file(
-                    url=f"https://groups.inf.ed.ac.uk/ami/AMICorpusMirror//amicorpus/{file_id}/audio/{file_id}.{audio_type}.wav",
-                    output_dir=split_dir / "audio" / audio_type,
-                    session=session,
-                    use_cache=use_cache,
-                )
+        file_download_results.append(
+            _download_file(
+                url=f"https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/{file_id}/audio/{file_id}.Array1-01.wav",
+                output_dir=split_dir / "audio",
+                session=session,
+                use_cache=use_cache,
+                target_name=f"{file_id}.wav",
             )
+        )
         file_download_results.append(
             _download_file(
                 url=dataset_metadata["urls"]["rttm"].format(split, file_id),
@@ -292,11 +289,12 @@ async def _download_file(
     output_dir: Path,
     session: aiohttp.ClientSession,
     use_cache: bool,
+    target_name: Union[str, None] = None,
 ) -> Path:
     """Wrapper around the utils download_file function to add concurrency."""
     concurr_token: ConcurrencyToken = await concurrency_handler.get()
 
-    file_path = await download_file(url, output_dir, session, use_cache)
+    file_path = await download_file(url, output_dir, session, use_cache, target_name)
 
     concurrency_handler.put(concurr_token)
 
@@ -306,7 +304,6 @@ async def _download_file(
 async def _prepare_ami_manifest_split(
     split_dir: Path,
     use_cache: bool,
-    dataset_metadata: Dict[str, Any],
 ) -> List[Path]:
     """Prepare a manifest file."""
     rttm_files = []
@@ -318,22 +315,20 @@ async def _prepare_ami_manifest_split(
         uem_files.append(path)
 
     manifest_paths: List[Path] = []
-    audio_types = dataset_metadata["audio_types"]
-    for audio_type in audio_types:
-        audio_type_path = split_dir / "audio" / audio_type
-        audio_files = []
-        for path in get_files(audio_type_path):
-            audio_files.append(path)
+    audio_path = split_dir / "audio"
+    audio_files = []
+    for path in get_files(audio_path):
+        audio_files.append(path)
 
-        audio_type_manifest_path = split_dir / f"manifest_{audio_type}.json"
-        if use_cache is False or not audio_type_manifest_path.exists():
-            manifest_path = await _create_manifest(
-                audio_files, audio_type_manifest_path, rttm_files, uem_files
-            )
-        else:
-            manifest_path = audio_type_manifest_path
+    audio_type_manifest_path = split_dir / "manifest.json"
+    if use_cache is False or not audio_type_manifest_path.exists():
+        manifest_path = await _create_manifest(
+            audio_files, audio_type_manifest_path, rttm_files, uem_files
+        )
+    else:
+        manifest_path = audio_type_manifest_path
 
-        manifest_paths.append(manifest_path)
+    manifest_paths.append(manifest_path)
 
     return manifest_paths
 

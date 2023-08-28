@@ -97,6 +97,7 @@ async def download_file(
     output_dir: Path,
     session: aiohttp.ClientSession,
     use_cache: bool,
+    target_name: Union[str, None] = None,
 ) -> Path:
     """
     Download a file from url to output_dir.
@@ -110,15 +111,20 @@ async def download_file(
             aiohttp session to use for downloading.`
         use_cache (bool):
             Whether to use the cache or not.
+        target_name (Union[str, None]):
+            Target name of the file. Defaults to None.
 
     Returns:
         Path to output file.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    _output_file = output_dir / Path(url).name
-    output_file = _filename_dots_filter(_output_file)
+    if target_name is not None:
+        _output_file = output_dir / target_name
+    else:
+        _output_file = output_dir / Path(url).name
 
+    output_file = _filename_dots_filter(_output_file)
     if use_cache and output_file.exists():
         return output_file
     else:

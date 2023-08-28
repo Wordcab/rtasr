@@ -304,6 +304,7 @@ class ASRProvider(ABC):
                     url=url,
                     session=session,
                 )
+                status, asr_output = results
 
                 retries = self.max_retries  # To break the while loop
 
@@ -329,7 +330,6 @@ class ASRProvider(ABC):
 
             finally:
                 self.concurrency_handler.put(concurr_token)
-                status, asr_output = results
 
         return audio_file.name, status, asr_output
 
@@ -914,7 +914,6 @@ class Speechmatics(ASRProvider):
 
             body = json.loads(content)
             _job = body.get("job")
-            print(f"Retrieving the job status: {_job}")
 
             if _job.get("status") == "done":
                 status = TranscriptionStatus.COMPLETED

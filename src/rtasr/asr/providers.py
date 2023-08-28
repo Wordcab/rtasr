@@ -796,7 +796,13 @@ class Deepgram(ASRProvider):
 
     async def result_to_dialogue(self, asr_output: DeepgramOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        utterances: List[DeepgramUtterance] = asr_output.results.utterances
+
+        dialogue_lines: List[str] = []
+        for utterance in utterances:
+            dialogue_lines.append(utterance.transcript)
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: DeepgramOutput) -> List[str]:
         """Convert the result to RTTM format for DER."""

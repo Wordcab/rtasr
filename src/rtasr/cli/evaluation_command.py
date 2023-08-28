@@ -398,7 +398,6 @@ class EvaluationCommand:
         Run the evaluation for the Word Error Rate (WER).
 
         TODO: Add docstrings
-        TODO: Add return type
         """
         splits_progress_task_id = splits_progress.add_task(
             "",

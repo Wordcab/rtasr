@@ -18,6 +18,7 @@ from rich.progress import Progress, TaskID
 from typing_extensions import Literal
 
 from rtasr.constants import DATASETS, PROVIDERS
+from rtasr.evaluation.schemas import EvaluationResult, EvaluationStatus, ProviderResult
 from rtasr.speaker_map import AMISpeakerMap
 from rtasr.utils import _ami_speaker_list
 
@@ -52,29 +53,12 @@ class DerEvalMode(tuple, Enum):
     FORGIVING = (0.25, True)
 
 
-class EvaluationStatus(str, Enum):
-    """Status of the evaluation."""
-
-    CACHED = "CACHED"
-    EVALUATED = "EVALUATED"
-    NOT_FOUND = "NOT_FOUND"
-
-
 class DerTaskStatus(str, Enum):
     """Status of a DER evaluation task."""
 
     DONE = "DONE"
     ERROR = "ERROR"
     IN_PROGRESS = "IN_PROGRESS"
-
-
-class ProviderDerResult(BaseModel):
-    """The DER evaluation result for a provider."""
-
-    cached: int
-    evaluated: int
-    not_found: int
-    provider_name: str
 
 
 class ProviderComputeScore(BaseModel):
@@ -95,14 +79,6 @@ class ComputeScores(BaseModel):
     scores: Union[Dict[str, ProviderComputeScore], None]
 
 
-class DerResult(BaseModel):
-    """The DER evaluation result."""
-
-    errors: List[str]
-    split_name: str
-    results: List[ProviderDerResult]
-
-
 async def evaluate_der(
     dataset: str,
     split_name: str,
@@ -114,7 +90,7 @@ async def evaluate_der(
     step_progress: Progress,
     use_cache: bool,
     debug: bool,
-) -> DerResult:
+) -> EvaluationResult:
     """Evaluate the Diarization Error Rate (DER).
 
     The Diarization Error Rate (DER) is the sum of the false alarm (FA),
@@ -147,7 +123,7 @@ async def evaluate_der(
             file of the split is evaluated. This is useful for debugging.
 
     Returns:
-        DerResult:
+        EvaluationResult:
             The result of the DER evaluation. It contains the errors, the name
             of the split and the results for each provider in the form of a
             list:
@@ -236,7 +212,7 @@ async def evaluate_der(
     step_progress.update(step_progress_task_id, advance=len(split_rttm_files))
     split_progress.advance(split_progress_task_id)
 
-    results: List[ProviderDerResult] = []
+    results: List[ProviderResult] = []
     for provider in providers:
         counter = Counter(
             [
@@ -245,7 +221,7 @@ async def evaluate_der(
             ]
         )
         results.append(
-            ProviderDerResult(
+            ProviderResult(
                 cached=counter[EvaluationStatus.CACHED],
                 evaluated=counter[EvaluationStatus.EVALUATED],
                 not_found=counter[EvaluationStatus.NOT_FOUND],
@@ -259,7 +235,7 @@ async def evaluate_der(
         if task_tracking[rttm_file.name]["status"] == DerTaskStatus.ERROR
     ]
 
-    return DerResult(
+    return EvaluationResult(
         errors=errors,
         split_name=split_name,
         results=results,

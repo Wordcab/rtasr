@@ -286,6 +286,53 @@ class ASRProvider(ABC):
             ],
         )
 
+    async def _launch(
+        self,
+        audio_file: Path,
+        url: HttpUrl,
+        session: aiohttp.ClientSession,
+    ) -> Tuple[str, TranscriptionStatus, ASROutput]:
+        """Run the ASR provider."""
+        retries = 0
+
+        while retries < self.max_retries:
+            try:
+                concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
+
+                results = await self.get_transcription(
+                    audio_file=audio_file,
+                    url=url,
+                    session=session,
+                )
+
+                retries = self.max_retries  # To break the while loop
+
+            except (
+                aiohttp.client_exceptions.ClientOSError,
+                aiohttp.client_exceptions.ServerDisconnectedError,
+            ) as e:
+                retries += 1
+                if retries >= self.max_retries:
+                    status = TranscriptionStatus.FAILED
+                    asr_output = Exception(f"{e}\n{traceback.format_exc()}")
+                    break
+                else:
+                    print(
+                        f"Retrying {audio_file.name} for {self.__class__.__name__}..."
+                    )
+                    await asyncio.sleep(3)
+
+            except Exception as e:
+                status = TranscriptionStatus.FAILED
+                asr_output = Exception(f"{e}\n{traceback.format_exc()}")
+                break
+
+            finally:
+                self.concurrency_handler.put(concurr_token)
+                status, asr_output = results
+
+        return audio_file.name, status, asr_output
+
     async def _check_cache(
         self, audio_file: AsyncPath, output_dir: AsyncPath
     ) -> Tuple[bool, bool]:
@@ -441,15 +488,15 @@ class ASRProvider(ABC):
             await f.write("\n".join(rttm_lines))
 
     @abstractmethod
-    async def _launch(
+    async def get_transcription(
         self,
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, ASROutput]:
-        """Run the ASR provider."""
+    ) -> Tuple[TranscriptionStatus, ASROutput]:
+        """Make API calls to the ASR provider and return the result."""
         raise NotImplementedError(
-            "The ASR provider must implement the `_launch` method."
+            "The ASR provider must implement the `get_transcription` method."
         )
 
     @abstractmethod
@@ -478,85 +525,54 @@ class AssemblyAI(ASRProvider):
         """The output format of the AssemblyAI ASR provider."""
         return AssemblyAIOutput
 
-    async def _launch(
+    async def get_transcription(
         self,
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, Union[AssemblyAIOutput, Exception]]:
+    ) -> Tuple[TranscriptionStatus, Union[AssemblyAIOutput, Exception]]:
         """Call the API of the AssemblyAI ASR provider."""
-        retries = 0
+        headers = {
+            "Authorization": f"{self.config.api_key.get_secret_value()}",
+        }
 
-        while retries < self.max_retries:
-            try:
-                headers = {
-                    "Authorization": f"{self.config.api_key.get_secret_value()}",
-                }
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            async with session.post(
+                url=f"{url}/upload",
+                data=f,
+                headers=headers,
+            ) as response:
+                content = (await response.text()).strip()
 
-                concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
+        upload_url = json.loads(content).get("upload_url")
+        payload = {"audio_url": upload_url, **self.options}
 
-                async with aiofiles.open(audio_file, mode="rb") as f:
-                    async with session.post(
-                        url=f"{url}/upload",
-                        data=f,
-                        headers=headers,
-                    ) as response:
-                        content = (await response.text()).strip()
+        async with session.post(
+            url=f"{url}/transcript", json=payload, headers=headers
+        ) as response:
+            content = (await response.text()).strip()
 
-                upload_url = json.loads(content).get("upload_url")
-                payload = {"audio_url": upload_url, **self.options}
+        transcript_id = json.loads(content).get("id")
 
-                async with session.post(
-                    url=f"{url}/transcript", json=payload, headers=headers
-                ) as response:
-                    content = (await response.text()).strip()
+        while True:
+            async with session.get(
+                url=f"{url}/transcript/{transcript_id}", headers=headers
+            ) as response:
+                content = (await response.text()).strip()
 
-                transcript_id = json.loads(content).get("id")
-
-                while True:
-                    async with session.get(
-                        url=f"{url}/transcript/{transcript_id}", headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
-
-                    body = json.loads(content)
-                    if body.get("status") == "completed":
-                        asr_output = AssemblyAIOutput.from_json(body)
-                        _status = TranscriptionStatus.COMPLETED
-                        break
-                    elif body.get("status") == "error":
-                        asr_output = Exception(body.get("error"))
-                        _status = TranscriptionStatus.FAILED
-                        break
-                    else:
-                        await asyncio.sleep(3)
-
-                retries = self.max_retries  # To break the while loop
-
-            except (
-                aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError,
-            ) as e:
-                retries += 1
-                if retries >= self.max_retries:
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-                    break
-                else:
-                    print(
-                        f"Retrying {audio_file.name} for {self.__class__.__name__}..."
-                    )
-                    await asyncio.sleep(3)
-
-            except Exception as e:
-                _status = TranscriptionStatus.FAILED
-                asr_output = Exception(f"{e}\n{traceback.format_exc()}")
+            body = json.loads(content)
+            if body.get("status") == "completed":
+                asr_output = AssemblyAIOutput.from_json(body)
+                status = TranscriptionStatus.COMPLETED
                 break
+            elif body.get("status") == "error":
+                asr_output = Exception(body.get("error"))
+                status = TranscriptionStatus.FAILED
+                break
+            else:
+                await asyncio.sleep(3)
 
-            finally:
-                self.concurrency_handler.put(concurr_token)
-
-        return audio_file.name, _status, asr_output
+        return status, asr_output
 
     async def result_to_rttm(self, asr_output: AssemblyAIOutput) -> List[str]:
         """Convert the result to RTTM format."""
@@ -595,43 +611,14 @@ class Aws(ASRProvider):
         """The output format of the AWS ASR provider."""
         return AwsOutput
 
-    async def _launch(
+    async def get_transcription(
         self,
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, AwsOutput]:
+    ) -> Tuple[TranscriptionStatus, AwsOutput]:
         """Call the API of the AWS ASR provider."""
-        retries = 0
-
-        while retries < self.max_retries:
-            try:
-                concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
-                raise NotImplementedError("Aws not implemented.")
-
-            except (
-                aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError,
-            ) as e:
-                retries += 1
-                if retries >= self.max_retries:
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-                    break
-                else:
-                    print(
-                        f"Retrying {audio_file.name} for {self.__class__.__name__}..."
-                    )
-                    await asyncio.sleep(3)
-
-            except Exception as e:
-                _status = TranscriptionStatus.FAILED
-                asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-
-            finally:
-                self.concurrency_handler.put(concurr_token)
-
-        return audio_file.name, _status, asr_output
+        raise NotImplementedError("Aws not implemented.")
 
     async def result_to_rttm(self, asr_output: AwsOutput) -> List[str]:
         """Convert the result to RTTM format."""
@@ -656,43 +643,14 @@ class Azure(ASRProvider):
         """The output format of the Azure ASR provider."""
         return AzureOutput
 
-    async def _launch(
+    async def get_transcription(
         self,
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, AzureOutput]:
+    ) -> Tuple[TranscriptionStatus, AzureOutput]:
         """Call the API of the Azure ASR provider."""
-        retries = 0
-
-        while retries < self.max_retries:
-            try:
-                concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
-                raise NotImplementedError("Azure not implemented.")
-
-            except (
-                aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError,
-            ) as e:
-                retries += 1
-                if retries >= self.max_retries:
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-                    break
-                else:
-                    print(
-                        f"Retrying {audio_file.name} for {self.__class__.__name__}..."
-                    )
-                    await asyncio.sleep(3)
-
-            except Exception as e:
-                _status = TranscriptionStatus.FAILED
-                asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-
-            finally:
-                self.concurrency_handler.put(concurr_token)
-
-        return audio_file.name, _status, asr_output
+        raise NotImplementedError("Azure not implemented.")
 
     async def result_to_rttm(self, asr_output: AzureOutput) -> List[str]:
         """Convert the result to RTTM format."""
@@ -718,69 +676,37 @@ class Deepgram(ASRProvider):
         """The output format of the Deepgram ASR provider."""
         return DeepgramOutput
 
-    async def _launch(
+    async def get_transcription(
         self,
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, DeepgramOutput]:
+    ) -> Tuple[TranscriptionStatus, DeepgramOutput]:
         """Run the Deepgram ASR provider."""
-        retries = 0
+        headers = {
+            "Authorization": f"Token {self.config.api_key.get_secret_value()}",
+            "Content-Type": f"audio/{audio_file.suffix[1:]}",
+        }
 
-        while retries < self.max_retries:
-            try:
-                headers = {
-                    "Authorization": f"Token {self.config.api_key.get_secret_value()}",
-                    "Content-Type": f"audio/{audio_file.suffix[1:]}",
-                }
+        _url = f"{url}{build_query_string(self.options)}"
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            async with session.post(url=_url, data=f, headers=headers) as response:
+                content = (await response.text()).strip()
 
-                concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
+        if not content:
+            status = TranscriptionStatus.FAILED
+            asr_output = None
+        else:
+            body = json.loads(content)
 
-                _url = f"{url}{build_query_string(self.options)}"
-                async with aiofiles.open(audio_file, mode="rb") as f:
-                    async with session.post(
-                        url=_url, data=f, headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
+            if body.get("err_code"):
+                asr_output = body.get("err_msg")
+                status = TranscriptionStatus.FAILED
+            else:
+                asr_output = DeepgramOutput.from_json(body)
+                status = TranscriptionStatus.COMPLETED
 
-                if not content:
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = None
-                else:
-                    body = json.loads(content)
-
-                    if body.get("err_code"):
-                        asr_output = body.get("err_msg")
-                        _status = TranscriptionStatus.FAILED
-                    else:
-                        asr_output = DeepgramOutput.from_json(body)
-                        _status = TranscriptionStatus.COMPLETED
-
-                retries = self.max_retries  # To break the while loop
-
-            except (
-                aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError,
-            ) as e:
-                retries += 1
-                if retries >= self.max_retries:
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-                    break
-                else:
-                    print(
-                        f"Retrying {audio_file.name} for {self.__class__.__name__}..."
-                    )
-                    await asyncio.sleep(3)
-
-            except Exception as e:
-                _status = TranscriptionStatus.FAILED
-                asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-
-            finally:
-                self.concurrency_handler.put(concurr_token)
-
-        return audio_file.name, _status, asr_output
+        return status, asr_output
 
     async def result_to_rttm(self, asr_output: DeepgramOutput) -> List[str]:
         """Convert the result to RTTM format."""
@@ -815,43 +741,14 @@ class Google(ASRProvider):
         """The output format of the Google ASR provider."""
         return GoogleOutput
 
-    async def _launch(
+    async def get_transcription(
         self,
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, GoogleOutput]:
+    ) -> Tuple[TranscriptionStatus, GoogleOutput]:
         """Run the ASR provider."""
-        retries = 0
-
-        while retries < self.max_retries:
-            try:
-                concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
-                raise NotImplementedError("Google not implemented.")
-
-            except (
-                aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError,
-            ) as e:
-                retries += 1
-                if retries >= self.max_retries:
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-                    break
-                else:
-                    print(
-                        f"Retrying {audio_file.name} for {self.__class__.__name__}..."
-                    )
-                    await asyncio.sleep(3)
-
-            except Exception as e:
-                _status = TranscriptionStatus.FAILED
-                asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-
-            finally:
-                self.concurrency_handler.put(concurr_token)
-
-        return audio_file.name, _status, asr_output
+        raise NotImplementedError("Google not implemented.")
 
     async def result_to_rttm(self, asr_output: GoogleOutput) -> List[str]:
         """Convert the result to RTTM format."""
@@ -876,89 +773,59 @@ class RevAI(ASRProvider):
         """The output format of the RevAI ASR provider."""
         return RevAIOutput
 
-    async def _launch(
+    async def get_transcription(
         self,
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, RevAIOutput]:
+    ) -> Tuple[TranscriptionStatus, RevAIOutput]:
         """Call the API of the RevAI ASR provider."""
-        retries = 0
+        headers = {
+            "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
+        }
 
-        while retries < self.max_retries:
-            try:
-                headers = {
-                    "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
-                }
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            form = aiohttp.FormData()
+            form.add_field("media", f, filename=audio_file.name)
+            form.add_field("options", json.dumps(self.options, sort_keys=True))
 
-                concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
+            async with session.post(
+                url=f"{url}/jobs/", data=form, headers=headers
+            ) as response:
+                content = (await response.text()).strip()
 
-                async with aiofiles.open(audio_file, mode="rb") as f:
-                    form = aiohttp.FormData()
-                    form.add_field("media", f, filename=audio_file.name)
-                    form.add_field("options", json.dumps(self.options, sort_keys=True))
+        body = json.loads(content)
+        job_id = body.get("id")
 
-                    async with session.post(
-                        url=f"{url}/jobs/", data=form, headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
+        while True:
+            async with session.get(
+                url=f"{url}/jobs/{job_id}", headers=headers
+            ) as response:
+                content = (await response.text()).strip()
 
-                body = json.loads(content)
-                job_id = body.get("id")
+            body = json.loads(content)
+            if body.get("status") == "transcribed":
+                status = TranscriptionStatus.COMPLETED
+                break
+            elif body.get("status") == "failed":
+                status = TranscriptionStatus.FAILED
+                break
+            else:
+                await asyncio.sleep(3)
 
-                while True:
-                    async with session.get(
-                        url=f"{url}/jobs/{job_id}", headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
+        if status == TranscriptionStatus.COMPLETED:
+            async with session.get(
+                url=f"{url}/jobs/{job_id}/transcript", headers=headers
+            ) as response:
+                content = (await response.text()).strip()
 
-                    body = json.loads(content)
-                    if body.get("status") == "transcribed":
-                        _status = TranscriptionStatus.COMPLETED
-                        break
-                    elif body.get("status") == "failed":
-                        _status = TranscriptionStatus.FAILED
-                        break
-                    else:
-                        await asyncio.sleep(3)
+            body = json.loads(content)
+            asr_output = RevAIOutput.from_json(body)
 
-                if _status == TranscriptionStatus.COMPLETED:
-                    async with session.get(
-                        url=f"{url}/jobs/{job_id}/transcript", headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
+        else:
+            asr_output = body.get("failure_detail")
 
-                    body = json.loads(content)
-                    asr_output = RevAIOutput.from_json(body)
-
-                else:
-                    asr_output = body.get("failure_detail")
-
-                retries = self.max_retries  # To break the while loop
-
-            except (
-                aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError,
-            ) as e:
-                retries += 1
-                if retries >= self.max_retries:
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-                    break
-                else:
-                    print(
-                        f"Retrying {audio_file.name} for {self.__class__.__name__}..."
-                    )
-                    await asyncio.sleep(3)
-
-            except Exception as e:
-                _status = TranscriptionStatus.FAILED
-                asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-
-            finally:
-                self.concurrency_handler.put(concurr_token)
-
-        return audio_file.name, _status, asr_output
+        return status, asr_output
 
     async def result_to_rttm(self, asr_output: RevAIOutput) -> List[str]:
         """Convert the result to RTTM format."""
@@ -1012,104 +879,67 @@ class Speechmatics(ASRProvider):
         """The output format of the Speechmatics ASR provider."""
         return SpeechmaticsOutput
 
-    async def _launch(
+    async def get_transcription(
         self,
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
-    ) -> Tuple[str, TranscriptionStatus, SpeechmaticsOutput]:
+    ) -> Tuple[TranscriptionStatus, SpeechmaticsOutput]:
         """Call the API of the Speechmatics ASR provider."""
-        retries = 0
+        headers = {
+            "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
+        }
 
-        while retries < self.max_retries:
-            try:
-                headers = {
-                    "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
-                }
+        _url = f"{url}/jobs"
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            form = aiohttp.FormData()
+            form.add_field("data_file", f, filename=audio_file.name)
+            form.add_field("config", json.dumps(self.options, ensure_ascii=False))
 
-                concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
+            async with session.post(url=_url, data=form, headers=headers) as response:
+                content = (await response.text()).strip()
 
-                _url = f"{url}/jobs"
-                async with aiofiles.open(audio_file, mode="rb") as f:
-                    form = aiohttp.FormData()
-                    form.add_field("data_file", f, filename=audio_file.name)
-                    form.add_field(
-                        "config", json.dumps(self.options, ensure_ascii=False)
-                    )
+        body = json.loads(content)
+        if body.get("error") == "Forbidden":
+            status = TranscriptionStatus.FAILED
+            asr_output = Exception(body.get("detail"))
+        else:
+            job_id = body.get("id")
 
-                    async with session.post(
-                        url=_url, data=form, headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
+        await asyncio.sleep(1)  # Extra pause for Speechmatics
 
-                body = json.loads(content)
-                if body.get("error") == "Forbidden":
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = Exception(body.get("detail"))
-                    break
-                else:
-                    job_id = body.get("id")
+        while True:
+            async with session.get(url=f"{_url}/{job_id}", headers=headers) as response:
+                content = (await response.text()).strip()
 
-                await asyncio.sleep(1)  # Extra pause for Speechmatics
+            body = json.loads(content)
+            _job = body.get("job")
+            print(f"Retrieving the job status: {_job}")
 
-                while True:
-                    async with session.get(
-                        url=f"{_url}/{job_id}", headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
+            if _job.get("status") == "done":
+                status = TranscriptionStatus.COMPLETED
+                break
+            elif _job.get("status") == "rejected":
+                status = TranscriptionStatus.FAILED
+                break
+            else:
+                await asyncio.sleep(3)
 
-                    body = json.loads(content)
-                    _job = body.get("job")
-                    print(f"Retrieving the job status: {_job}")
+        if status == TranscriptionStatus.COMPLETED:
+            async with session.get(
+                url=f"{_url}/{job_id}/transcript?format=json-v2",
+                headers=headers,
+            ) as response:
+                content = (await response.text()).strip()
 
-                    if _job.get("status") == "done":
-                        _status = TranscriptionStatus.COMPLETED
-                        break
-                    elif _job.get("status") == "rejected":
-                        _status = TranscriptionStatus.FAILED
-                        break
-                    else:
-                        await asyncio.sleep(3)
+            body = json.loads(content)
+            asr_output = SpeechmaticsOutput.from_json(body)
 
-                if _status == TranscriptionStatus.COMPLETED:
-                    async with session.get(
-                        url=f"{_url}/{job_id}/transcript?format=json-v2",
-                        headers=headers,
-                    ) as response:
-                        content = (await response.text()).strip()
+        else:
+            _errors = body.get("errors")
+            asr_output = "\n".join([error.get("message") for error in _errors])
 
-                    body = json.loads(content)
-                    asr_output = SpeechmaticsOutput.from_json(body)
-
-                else:
-                    _errors = body.get("errors")
-                    asr_output = "\n".join([error.get("message") for error in _errors])
-
-                retries = self.max_retries  # To break the while loop
-
-            except (
-                aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError,
-            ) as e:
-                retries += 1
-                if retries >= self.max_retries:
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-                    break
-                else:
-                    print(
-                        f"Retrying {audio_file.name} for {self.__class__.__name__}..."
-                    )
-                    await asyncio.sleep(3)
-
-            except Exception as e:
-                _status = TranscriptionStatus.FAILED
-                asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-
-            finally:
-                self.concurrency_handler.put(concurr_token)
-
-        return audio_file.name, _status, asr_output
+        return status, asr_output
 
     async def result_to_rttm(self, asr_output: SpeechmaticsOutput) -> List[str]:
         """Convert the result to RTTM format."""
@@ -1147,91 +977,59 @@ class Wordcab(ASRProvider):
         """The output format of the Wordcab ASR provider."""
         return WordcabOutput
 
-    async def _launch(
+    async def get_transcription(
         self,
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
     ) -> Tuple[str, TranscriptionStatus, WordcabOutput]:
         """Run the Wordcab ASR provider."""
-        retries = 0
+        headers = {
+            "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
+            "Content-Disposition": f'attachment; filename="{audio_file.name}"',
+        }
 
-        while retries < self.max_retries:
-            try:
-                headers = {
-                    "Authorization": f"Bearer {self.config.api_key.get_secret_value()}",
-                    "Content-Disposition": f'attachment; filename="{audio_file.name}"',
-                }
+        _url = f"{url}/transcribe{build_query_string(self.options)}"
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            form = aiohttp.FormData()
+            form.add_field("file", f, filename=audio_file.name)
 
-                concurr_token: ConcurrencyToken = await self.concurrency_handler.get()
+            async with session.post(url=_url, data=form, headers=headers) as response:
+                content = (await response.text()).strip()
 
-                _url = f"{url}/transcribe{build_query_string(self.options)}"
-                async with aiofiles.open(audio_file, mode="rb") as f:
-                    form = aiohttp.FormData()
-                    form.add_field("file", f, filename=audio_file.name)
+        body = json.loads(content)
+        job_name = body.get("job_name")
+        transcript_id = body.get("transcript_id")
 
-                    async with session.post(
-                        url=_url, data=form, headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
+        while True:
+            async with session.get(
+                url=f"{url}/jobs/{job_name}", headers=headers
+            ) as response:
+                content = (await response.text()).strip()
 
-                body = json.loads(content)
-                job_name = body.get("job_name")
-                transcript_id = body.get("transcript_id")
+            body = json.loads(content)
+            if body.get("job_status") == "TranscriptComplete":
+                status = TranscriptionStatus.COMPLETED
+                break
+            elif body.get("job_status") == "Error":
+                status = TranscriptionStatus.FAILED
+                break
+            else:
+                await asyncio.sleep(3)
 
-                while True:
-                    async with session.get(
-                        url=f"{url}/jobs/{job_name}", headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
+        if status == TranscriptionStatus.COMPLETED:
+            async with session.get(
+                url=f"{url}/transcripts/{transcript_id}", headers=headers
+            ) as response:
+                content = (await response.text()).strip()
 
-                    body = json.loads(content)
-                    if body.get("job_status") == "TranscriptComplete":
-                        _status = TranscriptionStatus.COMPLETED
-                        break
-                    elif body.get("job_status") == "Error":
-                        _status = TranscriptionStatus.FAILED
-                        break
-                    else:
-                        await asyncio.sleep(3)
+            body = json.loads(content)
+            asr_output = WordcabOutput.from_json(body)
 
-                if _status == TranscriptionStatus.COMPLETED:
-                    async with session.get(
-                        url=f"{url}/transcripts/{transcript_id}", headers=headers
-                    ) as response:
-                        content = (await response.text()).strip()
+        else:
+            asr_output = body.get("error_message")
 
-                    body = json.loads(content)
-                    asr_output = WordcabOutput.from_json(body)
-
-                else:
-                    asr_output = body.get("error_message")
-
-                retries = self.max_retries  # To break the while loop
-
-            except (
-                aiohttp.client_exceptions.ClientOSError,
-                aiohttp.client_exceptions.ServerDisconnectedError,
-            ) as e:
-                retries += 1
-                if retries >= self.max_retries:
-                    _status = TranscriptionStatus.FAILED
-                    asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-                    break
-                else:
-                    print(
-                        f"Retrying {audio_file.name} for {self.__class__.__name__}..."
-                    )
-                    await asyncio.sleep(3)
-
-            except Exception as e:
-                _status = TranscriptionStatus.FAILED
-                asr_output = Exception(f"{e}\n{traceback.format_exc()}")
-
-            finally:
-                self.concurrency_handler.put(concurr_token)
-
-        return audio_file.name, _status, asr_output
+        return status, asr_output
 
     async def result_to_rttm(self, asr_output: WordcabOutput) -> List[str]:
         """Convert the result to RTTM format."""

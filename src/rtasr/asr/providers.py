@@ -929,7 +929,16 @@ class RevAI(ASRProvider):
 
     async def result_to_dialogue(self, asr_output: RevAIOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        monologues: List[RevAIMonologue] = asr_output.monologues
+
+        dialogue_lines: List[str] = []
+        for monologue in monologues:
+            elements: List[RevAIElement] = monologue.elements
+            text = "".join([element.value for element in elements])
+
+            dialogue_lines.append(text.strip())
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: RevAIOutput) -> List[str]:
         """Convert the result to RTTM format."""

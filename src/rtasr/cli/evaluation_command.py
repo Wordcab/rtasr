@@ -147,6 +147,14 @@ class EvaluationCommand:
             _dataset = self.dataset.lower()
             _metric = Metrics[self.metric.upper()]
 
+            if _metric not in DATASETS[_dataset]["metrics"]:
+                print(
+                    f"[bold red]Metric {_metric} not supported for dataset {_dataset}."
+                    " [/bold red]\nPlease check `rtasr list -t datasets` for more"
+                    " info."
+                )
+                exit(1)
+
             if self.dataset_dir is None:
                 dataset_dir = resolve_cache_dir() / "datasets" / _dataset
             else:

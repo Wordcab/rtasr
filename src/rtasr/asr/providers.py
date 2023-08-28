@@ -640,7 +640,17 @@ class AssemblyAI(ASRProvider):
 
     async def result_to_dialogue(self, asr_output: AssemblyAIOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        utterances: List[AssemblyAIUtterance] = asr_output.utterances
+
+        dialogue_lines: List[str] = []
+        if not utterances:  # This means there is only one speaker
+            words: List[AssemblyAIWord] = asr_output.words
+            dialogue_lines.append(" ".join([word.text for word in words]))
+        else:
+            for utterance in utterances:
+                dialogue_lines.append(utterance.text)
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: AssemblyAIOutput) -> List[str]:
         """Convert the result to RTTM format for DER."""
@@ -786,7 +796,13 @@ class Deepgram(ASRProvider):
 
     async def result_to_dialogue(self, asr_output: DeepgramOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        utterances: List[DeepgramUtterance] = asr_output.results.utterances
+
+        dialogue_lines: List[str] = []
+        for utterance in utterances:
+            dialogue_lines.append(utterance.transcript)
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: DeepgramOutput) -> List[str]:
         """Convert the result to RTTM format for DER."""
@@ -913,7 +929,16 @@ class RevAI(ASRProvider):
 
     async def result_to_dialogue(self, asr_output: RevAIOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        monologues: List[RevAIMonologue] = asr_output.monologues
+
+        dialogue_lines: List[str] = []
+        for monologue in monologues:
+            elements: List[RevAIElement] = monologue.elements
+            text = "".join([element.value for element in elements])
+
+            dialogue_lines.append(text.strip())
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: RevAIOutput) -> List[str]:
         """Convert the result to RTTM format."""
@@ -1030,7 +1055,25 @@ class Speechmatics(ASRProvider):
 
     async def result_to_dialogue(self, asr_output: SpeechmaticsOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        results: List[SpeechmaticsResult] = asr_output.results
+
+        dialogue_lines: List[str] = []
+        text = ""
+        for result in results:
+            _content = result.alternatives[0].content
+
+            if result.type == "word":
+                text += f" {_content}"
+
+            elif result.type == "punctuation":
+                if result.attaches_to == "previous":
+                    text += f"{_content}"
+                else:
+                    text += f" {_content}"
+
+        dialogue_lines.append(text.strip())
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: SpeechmaticsOutput) -> List[str]:
         """Convert the result to RTTM format for DER."""

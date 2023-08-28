@@ -184,7 +184,11 @@ class ASRProvider(ABC):
                     audio_file=AsyncPath(audio_file),
                     output_dir=AsyncPath(output_dir / split_name),
                 )
-                asr_output_exists, rttm_file_exists, dialogue_file_exists = _check_cache_task
+                (
+                    asr_output_exists,
+                    rttm_file_exists,
+                    dialogue_file_exists,
+                ) = _check_cache_task
 
                 if use_cache and asr_output_exists:
                     task_tracking[audio_file.name]["asr_output_cache"] = True
@@ -202,7 +206,9 @@ class ASRProvider(ABC):
                         ] = TranscriptionStatus.CACHED
 
                     task_tracking[audio_file.name]["rttm_cache"] = rttm_file_exists
-                    task_tracking[audio_file.name]["dialogue_cache"] = dialogue_file_exists
+                    task_tracking[audio_file.name][
+                        "dialogue_cache"
+                    ] = dialogue_file_exists
 
                 else:
                     task_tracking[audio_file.name]["asr_output_cache"] = False
@@ -1118,7 +1124,13 @@ class Wordcab(ASRProvider):
 
     async def result_to_dialogue(self, asr_output: WordcabOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        all_transcripts: List[WordcabTranscript] = asr_output.transcript
+
+        dialogue_lines: List[str] = []
+        for transcript in all_transcripts:
+            dialogue_lines.append(transcript.text)
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: WordcabOutput) -> List[str]:
         """Convert the result to RTTM format for DER."""

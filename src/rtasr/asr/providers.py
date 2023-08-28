@@ -1055,7 +1055,25 @@ class Speechmatics(ASRProvider):
 
     async def result_to_dialogue(self, asr_output: SpeechmaticsOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        results: List[SpeechmaticsResult] = asr_output.results
+
+        dialogue_lines: List[str] = []
+        text = ""
+        for result in results:
+            _content = result.alternatives[0].content
+
+            if result.type == "word":
+                text += f" {_content}"
+
+            elif result.type == "punctuation":
+                if result.attaches_to == "previous":
+                    text += f"{_content}"
+                else:
+                    text += f" {_content}"
+
+        dialogue_lines.append(text.strip())
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: SpeechmaticsOutput) -> List[str]:
         """Convert the result to RTTM format for DER."""

@@ -2,7 +2,6 @@
 
 import asyncio
 import importlib
-import json
 import sys
 import traceback
 from collections import Counter
@@ -24,8 +23,9 @@ from rtasr.evaluation.schemas import (
     ProviderResult,
     TaskStatus,
 )
+from rtasr.evaluation.utils import _store_evaluation_results
 from rtasr.speaker_map import AMISpeakerMap
-from rtasr.utils import _ami_speaker_list
+from rtasr.utils import _ami_speaker_list, _check_cache
 
 
 class DerEvalMode(tuple, Enum):
@@ -180,7 +180,7 @@ async def evaluate_der(
                     or status == EvaluationStatus.EVALUATED
                 ):
                     file_exists, file_path = await _check_cache(
-                        rttm_file=filename,
+                        file_name=filename,
                         evaluation_dir=evaluation_dir,
                         split=split_name,
                         provider=provider,
@@ -195,7 +195,7 @@ async def evaluate_der(
                             provider
                         ] = EvaluationStatus.EVALUATED
                         await _store_evaluation_results(
-                            results=task_result.scores[provider],
+                            results=task_result.scores[provider].model_dump(),
                             save_path=file_path,
                         )
 
@@ -463,54 +463,3 @@ async def _prepare_rttm_segments(
     ]
 
     return prepared_ref_rttm
-
-
-async def _store_evaluation_results(
-    results: ProviderComputeScore,
-    save_path: AsyncPath,
-) -> None:
-    """Store the DER results in a JSON file."""
-    data = results.model_dump()
-    data.pop("status")
-
-    await save_path.parent.mkdir(parents=True, exist_ok=True)
-
-    async with aiofiles.open(save_path, mode="w") as file:
-        await file.write(json.dumps(data, indent=4, ensure_ascii=False))
-
-
-async def _check_cache(
-    rttm_file: str,
-    evaluation_dir: AsyncPath,
-    split: str,
-    provider: str,
-) -> Tuple[bool, AsyncPath]:
-    """Check the cache for the results of the diarization evaluation.
-
-    This method check if the provider has already been evaluated for the given
-    audio file. If so, it returns True, otherwise it returns False.
-
-    Args:
-        rttm_file (Path):
-            The rttm file to check.
-        evaluation_dir (Path):
-            The evaluation directory where the results are saved, i.e. the cache.
-        split (str):
-            The split of the dataset.
-        provider (str):
-            The provider to check.
-
-    Returns:
-        Tuple[bool, Path]:
-            A tuple containing a boolean indicating whether the provider has
-            already been evaluated for the given audio file and the path to the
-            evaluation results.
-    """
-    _file_name = rttm_file.split(".")[0]
-    eval_output_file_path = AsyncPath(
-        evaluation_dir / split / provider / f"{_file_name}.json"
-    )
-
-    eval_output_exists = await eval_output_file_path.exists()
-
-    return eval_output_exists, eval_output_file_path

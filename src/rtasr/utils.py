@@ -1,6 +1,8 @@
 """Utils functions for rtasr."""
 
 import asyncio
+import re
+import string
 import urllib.parse
 import zipfile
 from pathlib import Path
@@ -8,6 +10,7 @@ from typing import Any, List, Mapping, Tuple, Union
 
 import aiohttp
 import dotenv
+from aiopath import AsyncPath
 from rich import print
 from rich.console import Group
 from rich.panel import Panel
@@ -18,6 +21,23 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
 )
+
+
+def attach_punctuation_to_last_word(sentence: str) -> str:
+    """
+    Attach punctuation to the last word of a sentence.
+
+    Args:
+        sentence (str):
+            Sentence to attach punctuation to.
+
+    Returns:
+        Sentence with punctuation attached to the last word.
+    """
+    if isinstance(sentence, str) and sentence[-1] in string.punctuation:
+        return sentence[:-2] + sentence[-1]
+
+    return sentence
 
 
 def build_query_string(params: Mapping[str, Any] = None) -> str:
@@ -220,6 +240,19 @@ async def unzip_file(zip_path: Path, output_dir: Path, use_cache: bool = True) -
     return unzip_path
 
 
+def remove_bracketed_text(sentence: str) -> str:
+    """
+    Remove bracketed text from a sentence.
+
+    Args:
+        sentence (str):
+            Sentence to remove bracketed text from.
+
+    Returns:
+        Sentence with bracketed text removed.
+    """
+    return re.sub(r'<[^>]+>', '', sentence)
+
 def resolve_cache_dir() -> Path:
     """Resolve the cache directory for rtasr."""
     return Path.home() / ".cache" / "rtasr"
@@ -246,6 +279,43 @@ def _ami_speaker_list(ami_rttm_segments: List[List[Union[str, float]]]) -> List[
             speaker_list.append(speaker)
 
     return speaker_list
+
+
+async def _check_cache(
+    file_name: str,
+    evaluation_dir: AsyncPath,
+    split: str,
+    provider: str,
+) -> Tuple[bool, AsyncPath]:
+    """Check the cache for the results of the diarization evaluation.
+
+    This method check if the provider has already been evaluated for the given
+    audio file. If so, it returns True, otherwise it returns False.
+
+    Args:
+        file_name (str):
+            The file name to check.
+        evaluation_dir (Path):
+            The evaluation directory where the results are saved, i.e. the cache.
+        split (str):
+            The split of the dataset.
+        provider (str):
+            The provider to check.
+
+    Returns:
+        Tuple[bool, Path]:
+            A tuple containing a boolean indicating whether the provider has
+            already been evaluated for the given audio file and the path to the
+            evaluation results.
+    """
+    _file_name = file_name.split(".")[0]
+    eval_output_file_path = AsyncPath(
+        evaluation_dir / split / provider / f"{_file_name}.json"
+    )
+
+    eval_output_exists = await eval_output_file_path.exists()
+
+    return eval_output_exists, eval_output_file_path
 
 
 def _filename_dots_filter(file_path: Path) -> Path:

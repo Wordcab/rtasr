@@ -1,16 +1,20 @@
 """Word Error Rate (WER) evaluation implementation."""
 
 import asyncio
+import json
 import sys
 import traceback
+from collections import Counter
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Tuple, Union
+from typing import Any, Callable, Dict, List, Union
 
+import aiofiles
 from aiopath import AsyncPath
 from jiwer import process_words
 from jiwer.transformations import wer_contiguous
 from pydantic import BaseModel
 from rich.progress import Progress, TaskID
+from typing_extensions import Literal
 
 from rtasr.constants import PROVIDERS
 from rtasr.evaluation.schemas import (
@@ -18,6 +22,12 @@ from rtasr.evaluation.schemas import (
     EvaluationStatus,
     ProviderResult,
     TaskStatus,
+)
+from rtasr.evaluation.utils import _store_evaluation_results
+from rtasr.utils import (
+    _check_cache,
+    attach_punctuation_to_last_word,
+    remove_bracketed_text,
 )
 
 
@@ -40,7 +50,6 @@ class ComputeScores(BaseModel):
 
 
 async def evaluate_wer(
-    dataset: str,
     split_name: str,
     split_dialogue_files: List[Path],
     evaluation_dir: Path,
@@ -73,7 +82,6 @@ async def evaluate_wer(
         }
         tasks.append(
             compute_score(
-                dataset=dataset,
                 ref_dialogue_path=dialogue_file,
                 providers=providers,
                 split=split_name,
@@ -86,9 +94,82 @@ async def evaluate_wer(
     for future in asyncio.as_completed(tasks):
         task_result: ComputeScores = await future
 
+        filename = task_result.filename
+        if task_result.error:
+            task_tracking[filename]["status"] = TaskStatus.ERROR
+            task_tracking[filename]["error"] = f"{filename} -> {task_result.error}"
+
+        else:
+            task_tracking[filename]["status"] = TaskStatus.DONE
+
+            for provider in task_result.scores:
+                status = task_result.scores[provider].status
+
+                if (
+                    status == EvaluationStatus.CACHED
+                    or status == EvaluationStatus.EVALUATED
+                ):
+                    file_exists, file_path = await _check_cache(
+                        file_name=filename,
+                        evaluation_dir=evaluation_dir,
+                        split=split_name,
+                        provider=provider,
+                    )
+
+                    if use_cache and file_exists:
+                        task_tracking[filename]["provider_results"][
+                            provider
+                        ] = EvaluationStatus.CACHED
+                    else:
+                        task_tracking[filename]["provider_results"][
+                            provider
+                        ] = EvaluationStatus.EVALUATED
+                        await _store_evaluation_results(
+                            results=task_result.scores[provider].model_dump(),
+                            save_path=file_path,
+                        )
+
+                else:
+                    task_tracking[filename]["provider_results"][
+                        provider
+                    ] = EvaluationStatus.NOT_FOUND
+
+        step_progress.advance(step_progress_task_id)
+
+    step_progress.update(step_progress_task_id, advance=len(split_dialogue_files))
+    split_progress.advance(split_progress_task_id)
+
+    results: List[ProviderResult] = []
+    for provider in providers:
+        counter = Counter(
+            [
+                task_tracking[dialogue_file.name]["provider_results"][provider]
+                for dialogue_file in split_dialogue_files
+            ]
+        )
+        results.append(
+            ProviderResult(
+                cached=counter[EvaluationStatus.CACHED],
+                evaluated=counter[EvaluationStatus.EVALUATED],
+                not_found=counter[EvaluationStatus.NOT_FOUND],
+                provider_name=provider,
+            )
+        )
+
+    errors: List[str] = [
+        task_tracking[dialogue_file.name]["error"]
+        for dialogue_file in split_dialogue_files
+        if task_tracking[dialogue_file.name]["status"] == TaskStatus.ERROR
+    ]
+
+    return EvaluationResult(
+        errors=errors,
+        split_name=split_name,
+        results=results,
+    )
+
 
 async def compute_score(
-    dataset: str,
     ref_dialogue_path: AsyncPath,
     providers: List[str],
     split: str,
@@ -106,15 +187,8 @@ async def compute_score(
     error = None
 
     try:
-        ref_dialogue_content: List[List[Union[str, float]]] = await _prepare_dialogue_content(
+        ref_dialogue: List[str] = await _prepare_dialogue_content(
             ref_dialogue_path, "dataset"
-        )
-        ref_dialogue: List[
-            Tuple[str, float, float]
-        ] = await _prepare_dialogue_str(
-            rttm_content=ref_dialogue_content,
-            target_name=dataset,
-            target_type="dataset",
         )
 
         scores: Dict[str, float] = {}
@@ -125,13 +199,8 @@ async def compute_score(
             )
 
             if await provider_rttm_path.exists():
-                hyp_dialogue_content = await _prepare_dialogue_content(
+                hyp_dialogue: List[str] = await _prepare_dialogue_content(
                     provider_rttm_path, "provider"
-                )
-                hyp_dialogue = await _prepare_dialogue_str(
-                    rttm_content=hyp_dialogue_content,
-                    target_name=provider,
-                    target_type="provider",
                 )
 
                 _score = process_words(
@@ -179,10 +248,69 @@ async def compute_score(
     )
 
 
-async def _prepare_dialogue_content() -> List[str]:
-    """"""
-    pass
+async def _prepare_dialogue_content(
+    dialogue_path: Union[str, Path, AsyncPath],
+    target_type: Literal["dataset", "provider"],
+) -> List[str]:
+    """
+    Prepare the dialogue content for evaluation.
 
-async def _prepare_dialogue_str() -> str:
-    """"""
-    pass
+    Args:
+        dialogue_path (Union[str, Path, AsyncPath]):
+            Path to the dialogue file.
+        target_type (Literal["dataset", "provider"]):
+            Type of the target. Either "dataset" or "provider".
+
+    Returns:
+        List[str]: The dialogue content as a list of strings.
+    """
+    if isinstance(dialogue_path, (str, Path)):
+        dialogue_path = AsyncPath(dialogue_path)
+
+    if target_type == "dataset":
+        async with aiofiles.open(dialogue_path, mode="r") as file:
+            content: str = await file.read()
+            data: dict = json.loads(content)
+
+        dialogue_content = _format_dialogue_content(dialogue_content=data)
+
+    elif target_type == "provider":
+        async with aiofiles.open(dialogue_path, mode="r") as file:
+            dialogue_content: List[str] = (await file.read()).splitlines()
+
+    return dialogue_content
+
+
+def _format_dialogue_content(dialogue_content: dict) -> List[str]:
+    """
+    Format the dialogue content to a list of strings.
+
+    Args:
+        dialogue_content (dict):
+            The dialogue content as a dictionary.
+
+    Returns:
+        List[str]: The dialogue content as a list of strings.
+    """
+    current_speaker: Union[str, None] = None
+    current_sentence: str = ""
+
+    formatted_dialogue: List[str] = []
+    for utterance in dialogue_content:
+        text = remove_bracketed_text(utterance["text"])
+        text = attach_punctuation_to_last_word(text)
+
+        if (
+            current_speaker != utterance["speaker"]
+            and current_speaker is not None
+        ):
+            formatted_dialogue.append(current_sentence)
+            current_sentence = ""
+        else:
+            current_sentence += " " + text
+
+        current_speaker = utterance["speaker"]
+
+    formatted_dialogue.append(current_sentence)
+
+    return formatted_dialogue

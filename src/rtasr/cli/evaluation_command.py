@@ -227,7 +227,10 @@ class EvaluationCommand:
                     )
 
                 func_to_run = self._run_der
-                func_args = {"rttm_filepaths": ref_rttm_filepaths}
+                func_args = {
+                    "rttm_filepaths": ref_rttm_filepaths,
+                    "dataset": _dataset,
+                }
 
             elif _metric == Metrics.WER:
                 ref_dialogue_filepaths: Dict[str, List[Path]] = {s: [] for s in splits}
@@ -254,7 +257,6 @@ class EvaluationCommand:
                 split_results: List[EvaluationResult] = asyncio.run(
                     func_to_run(
                         **func_args,
-                        dataset=_dataset,
                         evaluation_dir=evaluation_dir,
                         transcription_dir=transcription_dir,
                         splits_progress=splits_progress,
@@ -386,7 +388,6 @@ class EvaluationCommand:
     async def _run_wer(
         self,
         dialogue_filepaths: Dict[str, List[Path]],
-        dataset: str,
         evaluation_dir: Path,
         transcription_dir: Path,
         splits_progress: Progress,
@@ -397,7 +398,24 @@ class EvaluationCommand:
         """
         Run the evaluation for the Word Error Rate (WER).
 
-        TODO: Add docstrings
+        Args:
+            dialogue_filepaths (Dict[str, List[Path]]):
+                The dialogue filepaths for each split.
+            evaluation_dir (Path):
+                The path where to store the evaluation results.
+            transcription_dir (Path):
+                The path where the transcription files are stored.
+            splits_progress (Progress):
+                The progress bar for the splits.
+            step_progress (Progress):
+                The progress bar for the steps.
+            use_cache (bool):
+                Whether to use the cache or not.
+            debug (bool):
+                Whether to run in debug mode or not.
+
+        Returns:
+            List[EvaluationResult]: The evaluation results.
         """
         splits_progress_task_id = splits_progress.add_task(
             "",
@@ -406,7 +424,6 @@ class EvaluationCommand:
 
         tasks = [
             evaluate_wer(
-                dataset=dataset,
                 split_name=split,
                 split_rttm_files=dialogue_filepaths[split],
                 evaluation_dir=evaluation_dir,

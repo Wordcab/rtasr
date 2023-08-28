@@ -70,7 +70,8 @@ class ListItemsCommand:
                 for split, nb_files in DATASETS[dataset]["number_of_files"].items()
             ]
             print(
-                f"  - [bold]{dataset}[/bold]: {', '.join(splits_and_files)}",
+                f"  - [bold]{dataset}[/bold]: {', '.join(splits_and_files)}\n",
+                f"  compatible metrics -> {DATASETS[dataset]['metrics']}",
             )
 
     def _print_providers(self) -> None:

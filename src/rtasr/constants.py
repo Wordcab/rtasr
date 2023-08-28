@@ -27,6 +27,7 @@ DATASETS = OrderedDict(
                     "test": "test/rttm",
                     "train": "train/rttm",
                 },
+                "metrics": ["der", "wer"],
                 "number_of_files": {
                     "train": 134,
                     "dev": 18,
@@ -57,6 +58,7 @@ DATASETS = OrderedDict(
                     "dev": "rttm/voxconverse-master/dev",
                     "test": "rttm/voxconverse-master/test",
                 },
+                "metrics": ["der"],
                 "number_of_files": {
                     "dev": 216,
                     "test": 232,

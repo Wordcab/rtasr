@@ -38,6 +38,12 @@ class TestConstants:
             "test": "test/rttm",
             "train": "train/rttm",
         }
+        assert DATASETS["ami"]["metrics"] == ["der", "wer"]
+        assert DATASETS["ami"]["number_of_files"] == {
+            "train": 134,
+            "dev": 18,
+            "test": 16,
+        }
 
     def test_datasets_voxconverse(self) -> None:
         """Test VoxConverse dataset."""
@@ -62,6 +68,11 @@ class TestConstants:
         assert DATASETS["voxconverse"]["rttm_filepaths"] == {
             "dev": "rttm/voxconverse-master/dev",
             "test": "rttm/voxconverse-master/test",
+        }
+        assert DATASETS["voxconverse"]["metrics"] == ["der"]
+        assert DATASETS["voxconverse"]["number_of_files"] == {
+            "dev": 216,
+            "test": 232,
         }
 
     def test_providers(self) -> None:

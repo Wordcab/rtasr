@@ -22,7 +22,13 @@ from rich.progress import Progress, TaskID
 
 from rtasr.concurrency import ConcurrencyHandler, ConcurrencyToken
 from rtasr.constants import DATASETS
-from rtasr.utils import create_live_panel, download_file, get_files, resolve_cache_dir
+from rtasr.utils import (
+    create_live_panel,
+    download_file,
+    get_files,
+    resolve_cache_dir,
+    unzip_file,
+)
 
 concurrency_handler = ConcurrencyHandler(limit=DATASETS["ami"]["concurrency_limit"])
 
@@ -147,6 +153,35 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
             description="[bold green]Manifest files prepared.",
         )
 
+        current_progress_task_id = current_progress.add_task(
+            "Downloading dialogues for WER evaluation"
+        )
+        splits_progress_task_id = splits_progress.add_task("", total=1)
+
+        try:
+            async with aiohttp.ClientSession() as session:
+                await _download_dialogues_for_wer_evaluation(
+                    output_dir=output_dir,
+                    session=session,
+                    use_cache=use_cache,
+                )
+            _desc = "[bold green]Dialogues files downloaded.[/bold green]"
+        except Exception:
+            print(
+                "Download failed for dialogues for WER evaluation."
+                f"\n{traceback.format_exc()}"
+            )
+            _desc = (
+                "[bold red]Download failed for dialogues for WER evaluation.[/bold red]"
+            )
+        finally:
+            splits_progress.update(splits_progress_task_id, visible=False)
+            current_progress.stop_task(current_progress_task_id)
+            current_progress.update(
+                current_progress_task_id,
+                description=_desc,
+            )
+
     print("[bold green]Manifest files created:[/bold green]")
     for manifest_path in manifest_split_paths:
         print(f"  - {manifest_path}")
@@ -222,6 +257,36 @@ async def _download_ami_split(
     return step_task_id
 
 
+async def _download_dialogues_for_wer_evaluation(
+    output_dir: Path, session: aiohttp.ClientSession, use_cache: bool
+) -> None:
+    """Download dialogues for WER evaluation."""
+    concurr_token: ConcurrencyToken = await concurrency_handler.get()
+
+    zip_file = await download_file(
+        url="https://rtasr-ami-corpus.s3.us-east-2.amazonaws.com/ami-corpus.zip",
+        output_dir=output_dir,
+        session=session,
+        use_cache=use_cache,
+    )
+
+    unzipped_file = await unzip_file(zip_file, output_dir, use_cache=use_cache)
+
+    # Move the folder dialogueActs to the root of the dataset folder
+    dialogue_acts_dir = unzipped_file / "dialogueActs"
+
+    new_destination = output_dir / "dialogues"
+    if not new_destination.exists():
+        new_destination.mkdir(parents=True, exist_ok=True)
+
+    for file in dialogue_acts_dir.iterdir():
+        file.rename(new_destination / file.name)
+
+    dialogue_acts_dir.rmdir()
+
+    concurrency_handler.put(concurr_token)
+
+
 async def _download_file(
     url: str,
     output_dir: Path,
@@ -245,11 +310,11 @@ async def _prepare_ami_manifest_split(
 ) -> List[Path]:
     """Prepare a manifest file."""
     rttm_files = []
-    async for path in get_files(split_dir / "rttm"):
+    for path in get_files(split_dir / "rttm"):
         rttm_files.append(path)
 
     uem_files = []
-    async for path in get_files(split_dir / "uem"):
+    for path in get_files(split_dir / "uem"):
         uem_files.append(path)
 
     manifest_paths: List[Path] = []
@@ -257,7 +322,7 @@ async def _prepare_ami_manifest_split(
     for audio_type in audio_types:
         audio_type_path = split_dir / "audio" / audio_type
         audio_files = []
-        async for path in get_files(audio_type_path):
+        for path in get_files(audio_type_path):
             audio_files.append(path)
 
         audio_type_manifest_path = split_dir / f"manifest_{audio_type}.json"

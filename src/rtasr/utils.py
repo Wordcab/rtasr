@@ -201,15 +201,17 @@ async def unzip_file(zip_path: Path, output_dir: Path, use_cache: bool = True) -
             archive.extractall(extract_to)
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    if use_cache and (output_dir / zip_path.stem).exists():
-        return output_dir / zip_path.stem
+    unzip_path = output_dir / zip_path.stem
+
+    if use_cache and unzip_path.exists():
+        pass
     else:
-        (output_dir / zip_path.stem).unlink(missing_ok=True)
+        unzip_path.unlink(missing_ok=True)
 
         loop = asyncio.get_event_loop()
         await loop.run_in_executor(None, extract_zip_sync, zip_path, output_dir)
 
-    return output_dir / zip_path.stem
+    return unzip_path
 
 
 def resolve_cache_dir() -> Path:

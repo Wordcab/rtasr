@@ -196,11 +196,11 @@ async def _prepare_voxconverse_manifest_split(
 ) -> List[Path]:
     """Prepare a manifest file."""
     rttm_files = []
-    async for path in get_files(split_rttm):
+    for path in get_files(split_rttm):
         rttm_files.append(path)
 
     audio_files = []
-    async for path in get_files(split_audio):
+    for path in get_files(split_audio):
         audio_files.append(path)
 
     manifest_path = output_dir / f"{split}_manifest.json"

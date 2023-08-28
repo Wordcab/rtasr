@@ -156,9 +156,7 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
         current_progress_task_id = current_progress.add_task(
             "Downloading dialogues for WER evaluation"
         )
-        splits_progress_task_id = splits_progress.add_task(
-            "", total=1
-        )
+        splits_progress_task_id = splits_progress.add_task("", total=1)
 
         try:
             async with aiohttp.ClientSession() as session:
@@ -173,7 +171,9 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
                 "Download failed for dialogues for WER evaluation."
                 f"\n{traceback.format_exc()}"
             )
-            _desc = "[bold red]Download failed for dialogues for WER evaluation.[/bold red]"
+            _desc = (
+                "[bold red]Download failed for dialogues for WER evaluation.[/bold red]"
+            )
         finally:
             splits_progress.update(splits_progress_task_id, visible=False)
             current_progress.stop_task(current_progress_task_id)

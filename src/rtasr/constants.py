@@ -153,7 +153,7 @@ PROVIDERS = OrderedDict(
                 "engine": "Speechmatics",
                 "output": "SpeechmaticsOutput",
                 "speaker_map": "SpeechmaticsSpeakerMap",
-                "concurrency_limit": 1,
+                "concurrency_limit": 5,
                 "options": {
                     "type": "transcription",
                     "transcription_config": {

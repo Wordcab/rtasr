@@ -184,13 +184,16 @@ class ASRProvider(ABC):
                     audio_file=AsyncPath(audio_file),
                     output_dir=AsyncPath(output_dir / split_name),
                 )
-                asr_output_exists, rttm_file_exists = _check_cache_task
+                (
+                    asr_output_exists,
+                    rttm_file_exists,
+                    dialogue_file_exists,
+                ) = _check_cache_task
 
                 if use_cache and asr_output_exists:
                     task_tracking[audio_file.name]["asr_output_cache"] = True
 
-                    if not rttm_file_exists:
-                        task_tracking[audio_file.name]["rttm_cache"] = False
+                    if not rttm_file_exists or not dialogue_file_exists:
                         tasks.append(
                             self._get_asr_output_from_cache(
                                 audio_file=audio_file,
@@ -201,11 +204,16 @@ class ASRProvider(ABC):
                         task_tracking[audio_file.name][
                             "status"
                         ] = TranscriptionStatus.CACHED
-                        task_tracking[audio_file.name]["rttm_cache"] = True
+
+                    task_tracking[audio_file.name]["rttm_cache"] = rttm_file_exists
+                    task_tracking[audio_file.name][
+                        "dialogue_cache"
+                    ] = dialogue_file_exists
 
                 else:
                     task_tracking[audio_file.name]["asr_output_cache"] = False
                     task_tracking[audio_file.name]["rttm_cache"] = False
+                    task_tracking[audio_file.name]["dialogue_cache"] = False
                     tasks.append(
                         self._launch(
                             audio_file=audio_file,
@@ -239,6 +247,16 @@ class ASRProvider(ABC):
                             await self._save_rttm_files(
                                 audio_file_name=audio_file_name,
                                 rttm_lines=rttm_lines,
+                                output_dir=output_dir / _split,
+                            )
+
+                        if not task_tracking[audio_file_name]["dialogue_cache"]:
+                            dialogue_lines = await self.result_to_dialogue(
+                                asr_output=asr_output
+                            )
+                            await self._save_dialogue_files(
+                                audio_file_name=audio_file_name,
+                                dialogue_lines=dialogue_lines,
                                 output_dir=output_dir / _split,
                             )
 
@@ -339,7 +357,8 @@ class ASRProvider(ABC):
         """Check the cache for the audio file.
 
         This method check if the audio file has already been transcribed and is
-        in the cache. It will check the asr output file and the RTTM file.
+        in the cache. It will check the asr output file, the RTTM file for the
+        DER evaluation and the dialogue file for the WER evaluation.
 
         Args:
             audio_file (Path):
@@ -348,8 +367,9 @@ class ASRProvider(ABC):
                 The output directory where the results are saved, i.e. the cache.
 
         Returns:
-            bool:
-                Whether the audio file is already in the cache or not.
+            Tuple[bool, bool, bool]:
+                A tuple of booleans indicating if the asr output file, the RTTM
+                file and the dialogue file are in the cache.
         """
         _file_name = audio_file.name.split(".")[0]
         asr_output_file_path = (
@@ -364,11 +384,18 @@ class ASRProvider(ABC):
             / "rttm"
             / f"{_file_name}.rttm"
         )
+        dialogue_file_path = (
+            output_dir
+            / f"{self.__class__.__name__.lower()}"
+            / "dialogue"
+            / f"{_file_name}.txt"
+        )
 
         asr_output_exists = await asr_output_file_path.exists()
         rttm_exists = await rttm_file_path.exists()
+        dialogue_exists = await dialogue_file_path.exists()
 
-        return asr_output_exists, rttm_exists
+        return asr_output_exists, rttm_exists, dialogue_exists
 
     async def _get_asr_output_from_cache(
         self, audio_file: Path, output_dir: Path
@@ -457,6 +484,36 @@ class ASRProvider(ABC):
                 json.dumps(asr_output.model_dump(), indent=4, ensure_ascii=False)
             )
 
+    async def _save_dialogue_files(
+        self,
+        audio_file_name: str,
+        dialogue_lines: List[str],
+        output_dir: Path,
+    ) -> None:
+        """
+        Save the dialogue files to disk.
+
+        Args:
+            audio_file_name (str):
+                The name of the audio file.
+            dialogue_lines (List[str]):
+                The dialogue lines to save.
+            output_dir (Path):
+                The output directory where to save the results.
+        """
+        _file_name = audio_file_name.split(".")[0]
+        dialogue_file_path = AsyncPath(
+            output_dir
+            / f"{self.__class__.__name__.lower()}"
+            / "dialogue"
+            / f"{_file_name}.txt"
+        )
+        if not await dialogue_file_path.parent.exists():
+            await dialogue_file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        async with aiofiles.open(dialogue_file_path, mode="w") as f:
+            await f.write("\n".join(dialogue_lines))
+
     async def _save_rttm_files(
         self,
         audio_file_name: str,
@@ -500,8 +557,15 @@ class ASRProvider(ABC):
         )
 
     @abstractmethod
+    async def result_to_dialogue(self, asr_output: ASROutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        raise NotImplementedError(
+            "The ASR provider must implement the `result_to_dialogue` method."
+        )
+
+    @abstractmethod
     async def result_to_rttm(self, asr_output: ASROutput) -> List[str]:
-        """Convert the result to RTTM format."""
+        """Convert the result to RTTM format for DER."""
         raise NotImplementedError(
             "The ASR provider must implement the `result_to_rttm` method."
         )
@@ -574,8 +638,12 @@ class AssemblyAI(ASRProvider):
 
         return status, asr_output
 
+    async def result_to_dialogue(self, asr_output: AssemblyAIOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        pass
+
     async def result_to_rttm(self, asr_output: AssemblyAIOutput) -> List[str]:
-        """Convert the result to RTTM format."""
+        """Convert the result to RTTM format for DER."""
         utterances: List[AssemblyAIUtterance] = asr_output.utterances
 
         rttm_lines: List[str] = []
@@ -620,8 +688,12 @@ class Aws(ASRProvider):
         """Call the API of the AWS ASR provider."""
         raise NotImplementedError("Aws not implemented.")
 
+    async def result_to_dialogue(self, asr_output: AwsOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        pass
+
     async def result_to_rttm(self, asr_output: AwsOutput) -> List[str]:
-        """Convert the result to RTTM format."""
+        """Convert the result to RTTM format for DER."""
         pass
 
 
@@ -652,8 +724,12 @@ class Azure(ASRProvider):
         """Call the API of the Azure ASR provider."""
         raise NotImplementedError("Azure not implemented.")
 
+    async def result_to_dialogue(self, asr_output: AzureOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        pass
+
     async def result_to_rttm(self, asr_output: AzureOutput) -> List[str]:
-        """Convert the result to RTTM format."""
+        """Convert the result to RTTM format for DER."""
         pass
 
 
@@ -708,8 +784,12 @@ class Deepgram(ASRProvider):
 
         return status, asr_output
 
+    async def result_to_dialogue(self, asr_output: DeepgramOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        pass
+
     async def result_to_rttm(self, asr_output: DeepgramOutput) -> List[str]:
-        """Convert the result to RTTM format."""
+        """Convert the result to RTTM format for DER."""
         utterances: List[DeepgramUtterance] = asr_output.results.utterances
 
         rttm_lines: List[str] = []
@@ -750,8 +830,12 @@ class Google(ASRProvider):
         """Run the ASR provider."""
         raise NotImplementedError("Google not implemented.")
 
+    async def result_to_dialogue(self, asr_output: GoogleOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        pass
+
     async def result_to_rttm(self, asr_output: GoogleOutput) -> List[str]:
-        """Convert the result to RTTM format."""
+        """Convert the result to RTTM format for DER."""
         pass
 
 
@@ -826,6 +910,10 @@ class RevAI(ASRProvider):
             asr_output = body.get("failure_detail")
 
         return status, asr_output
+
+    async def result_to_dialogue(self, asr_output: RevAIOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        pass
 
     async def result_to_rttm(self, asr_output: RevAIOutput) -> List[str]:
         """Convert the result to RTTM format."""
@@ -940,8 +1028,12 @@ class Speechmatics(ASRProvider):
 
         return status, asr_output
 
+    async def result_to_dialogue(self, asr_output: SpeechmaticsOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        pass
+
     async def result_to_rttm(self, asr_output: SpeechmaticsOutput) -> List[str]:
-        """Convert the result to RTTM format."""
+        """Convert the result to RTTM format for DER."""
         results: List[SpeechmaticsResult] = asr_output.results
 
         rttm_lines: List[str] = []
@@ -1030,8 +1122,18 @@ class Wordcab(ASRProvider):
 
         return status, asr_output
 
+    async def result_to_dialogue(self, asr_output: WordcabOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        all_transcripts: List[WordcabTranscript] = asr_output.transcript
+
+        dialogue_lines: List[str] = []
+        for transcript in all_transcripts:
+            dialogue_lines.append(transcript.text)
+
+        return dialogue_lines
+
     async def result_to_rttm(self, asr_output: WordcabOutput) -> List[str]:
-        """Convert the result to RTTM format."""
+        """Convert the result to RTTM format for DER."""
         all_transcripts: List[WordcabTranscript] = asr_output.transcript
 
         rttm_lines: List[str] = []

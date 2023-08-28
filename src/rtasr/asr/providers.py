@@ -914,7 +914,6 @@ class Speechmatics(ASRProvider):
 
             body = json.loads(content)
             _job = body.get("job")
-            print(f"Retrieving the job status: {_job}")
 
             if _job.get("status") == "done":
                 status = TranscriptionStatus.COMPLETED

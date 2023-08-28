@@ -127,9 +127,7 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
         split_tasks = []
         for split in dataset_metadata["splits"]:
             split_dir = output_dir / split
-            split_tasks.append(
-                _prepare_ami_manifest_split(split_dir, use_cache)
-            )
+            split_tasks.append(_prepare_ami_manifest_split(split_dir, use_cache))
 
         for future in asyncio.as_completed(split_tasks):
             try:
@@ -296,9 +294,7 @@ async def _download_file(
     """Wrapper around the utils download_file function to add concurrency."""
     concurr_token: ConcurrencyToken = await concurrency_handler.get()
 
-    file_path = await download_file(
-        url, output_dir, session, use_cache, target_name
-    )
+    file_path = await download_file(url, output_dir, session, use_cache, target_name)
 
     concurrency_handler.put(concurr_token)
 
@@ -306,7 +302,8 @@ async def _download_file(
 
 
 async def _prepare_ami_manifest_split(
-    split_dir: Path, use_cache: bool,
+    split_dir: Path,
+    use_cache: bool,
 ) -> List[Path]:
     """Prepare a manifest file."""
     rttm_files = []

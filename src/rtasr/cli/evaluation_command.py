@@ -13,7 +13,7 @@ from rich.progress import Progress
 
 from rtasr.cli_messages import error_message
 from rtasr.constants import DATASETS, Metrics
-from rtasr.evaluation import DerResult, evaluate_der
+from rtasr.evaluation import EvaluationResult, evaluate_der, evaluate_wer
 from rtasr.utils import create_live_panel, get_files, resolve_cache_dir
 
 
@@ -135,6 +135,8 @@ class EvaluationCommand:
                 print("".join([f"  - [bold]{d}[bold]\n" for d in DATASETS.keys()]))
                 exit(1)
 
+            _dataset = self.dataset.lower()
+
             if self.metric.upper() not in Metrics.__members__.keys():
                 print(error_message.format(input_type="metric", user_input=self.metric))
                 print(
@@ -144,10 +146,9 @@ class EvaluationCommand:
                 )
                 exit(1)
 
-            _dataset = self.dataset.lower()
             _metric = Metrics[self.metric.upper()]
 
-            if _metric not in DATASETS[_dataset]["metrics"]:
+            if self.metric.lower() not in DATASETS[_dataset]["metrics"]:
                 print(
                     f"[bold red]Metric {_metric} not supported for dataset {_dataset}."
                     " [/bold red]\nPlease check `rtasr list -t datasets` for more"
@@ -229,11 +230,15 @@ class EvaluationCommand:
                 func_args = {"rttm_filepaths": ref_rttm_filepaths}
 
             elif _metric == Metrics.WER:
-                func_to_run = self._run_wer
-                func_args = {}
+                ref_dialogue_filepaths: Dict[str, List[Path]] = {s: [] for s in splits}
+                for split in splits:
+                    _path = dataset_dir / "dialogues" / split
+                    ref_dialogue_filepaths[split].extend(
+                        [Path(f) for f in get_files(_path) if f.suffix == ".txt"]
+                    )
 
-                print("🚧 WER not implemented yet.")
-                exit(1)
+                func_to_run = self._run_wer
+                func_args = {"dialogues_filepaths": ref_dialogue_filepaths}
 
             (
                 current_progress,
@@ -246,7 +251,7 @@ class EvaluationCommand:
                 current_progress_task_id = current_progress.add_task(
                     f"Running evaluation {_metric} over the `{_dataset}` dataset"
                 )
-                split_results: List[DerResult] = asyncio.run(
+                split_results: List[EvaluationResult] = asyncio.run(
                     func_to_run(
                         **func_args,
                         dataset=_dataset,
@@ -288,6 +293,7 @@ class EvaluationCommand:
                         errors_to_save.append(
                             {
                                 "date": time.strftime("%Y-%m-%d %H:%M:%S"),
+                                "metric": _metric,
                                 split.split_name: split.errors,
                             }
                         )
@@ -326,7 +332,7 @@ class EvaluationCommand:
         step_progress: Progress,
         use_cache: bool,
         debug: bool,
-    ) -> List[DerResult]:
+    ) -> List[EvaluationResult]:
         """
         Run the evaluation for the Diarization Error Rate (DER).
 
@@ -349,7 +355,7 @@ class EvaluationCommand:
                 Whether to run in debug mode or not.
 
         Returns:
-            List[DerResult]: The evaluation results.
+            List[EvaluationResult]: The evaluation results.
         """
         splits_progress_task_id = splits_progress.add_task(
             "",
@@ -371,7 +377,7 @@ class EvaluationCommand:
             )
             for split in rttm_filepaths.keys()
         ]
-        results: List[DerResult] = await asyncio.gather(*tasks, return_exceptions=True)
+        results: List[EvaluationResult] = await asyncio.gather(*tasks, return_exceptions=True)
 
         splits_progress.update(splits_progress_task_id, visible=False)
 
@@ -379,6 +385,7 @@ class EvaluationCommand:
 
     async def _run_wer(
         self,
+        dialogue_filepaths: Dict[str, List[Path]],
         dataset: str,
         evaluation_dir: Path,
         transcription_dir: Path,
@@ -386,11 +393,35 @@ class EvaluationCommand:
         step_progress: Progress,
         use_cache: bool,
         debug: bool,
-    ) -> None:
+    ) -> List[EvaluationResult]:
         """
         Run the evaluation for the Word Error Rate (WER).
 
         TODO: Add docstrings
         TODO: Add return type
         """
-        pass
+        splits_progress_task_id = splits_progress.add_task(
+            "",
+            total=len(dialogue_filepaths),
+        )
+
+        tasks = [
+            evaluate_wer(
+                dataset=dataset,
+                split_name=split,
+                split_rttm_files=dialogue_filepaths[split],
+                evaluation_dir=evaluation_dir,
+                transcription_dir=transcription_dir,
+                split_progress=splits_progress,
+                split_progress_task_id=splits_progress_task_id,
+                step_progress=step_progress,
+                use_cache=use_cache,
+                debug=debug,
+            )
+            for split in dialogue_filepaths.keys()
+        ]
+        results: List[EvaluationResult] = await asyncio.gather(*tasks, return_exceptions=True)
+
+        splits_progress.update(splits_progress_task_id, visible=False)
+
+        return results

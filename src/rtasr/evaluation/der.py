@@ -18,7 +18,12 @@ from rich.progress import Progress, TaskID
 from typing_extensions import Literal
 
 from rtasr.constants import DATASETS, PROVIDERS
-from rtasr.evaluation.schemas import EvaluationResult, EvaluationStatus, ProviderResult
+from rtasr.evaluation.schemas import (
+    EvaluationResult,
+    EvaluationStatus,
+    ProviderResult,
+    TaskStatus,
+)
 from rtasr.speaker_map import AMISpeakerMap
 from rtasr.utils import _ami_speaker_list
 
@@ -51,14 +56,6 @@ class DerEvalMode(tuple, Enum):
     FULL = (0.0, False)
     FAIR = (0.25, False)
     FORGIVING = (0.25, True)
-
-
-class DerTaskStatus(str, Enum):
-    """Status of a DER evaluation task."""
-
-    DONE = "DONE"
-    ERROR = "ERROR"
-    IN_PROGRESS = "IN_PROGRESS"
 
 
 class ProviderComputeScore(BaseModel):
@@ -149,7 +146,7 @@ async def evaluate_der(
     for rttm_file in split_rttm_files:
         task_tracking[rttm_file.name] = {
             "rttm_file_name": rttm_file.name,
-            "status": DerTaskStatus.IN_PROGRESS,
+            "status": TaskStatus.IN_PROGRESS,
             "provider_results": {provider: None for provider in providers},
         }
         tasks.append(
@@ -169,11 +166,11 @@ async def evaluate_der(
 
         filename = task_result.filename
         if task_result.error:
-            task_tracking[filename]["status"] = DerTaskStatus.ERROR
+            task_tracking[filename]["status"] = TaskStatus.ERROR
             task_tracking[filename]["error"] = f"{filename} -> {task_result.error}"
 
         else:
-            task_tracking[filename]["status"] = DerTaskStatus.DONE
+            task_tracking[filename]["status"] = TaskStatus.DONE
 
             for provider in task_result.scores:
                 status = task_result.scores[provider].status
@@ -232,7 +229,7 @@ async def evaluate_der(
     errors: List[str] = [
         task_tracking[rttm_file.name]["error"]
         for rttm_file in split_rttm_files
-        if task_tracking[rttm_file.name]["status"] == DerTaskStatus.ERROR
+        if task_tracking[rttm_file.name]["status"] == TaskStatus.ERROR
     ]
 
     return EvaluationResult(
@@ -312,7 +309,7 @@ async def compute_score(
         )
         ref_rttm: List[
             Tuple[str, float, float]
-        ] = await _prepare_provider_rttm_segments(
+        ] = await _prepare_rttm_segments(
             rttm_content=ref_rttm_content,
             target_name=dataset,
             target_type="dataset",
@@ -329,7 +326,7 @@ async def compute_score(
                 hyp_rttm_content = await _prepare_rttm_content(
                     provider_rttm_path, "provider"
                 )
-                hyp_rttm = await _prepare_provider_rttm_segments(
+                hyp_rttm = await _prepare_rttm_segments(
                     rttm_content=hyp_rttm_content,
                     target_name=provider,
                     target_type="provider",
@@ -430,7 +427,7 @@ async def _iter_provider_rttm(raw_content: List[str]) -> List[List[Union[str, fl
     return rttm_content
 
 
-async def _prepare_provider_rttm_segments(
+async def _prepare_rttm_segments(
     rttm_content: List[List[Union[str, float]]],
     target_name: str,
     target_type: Literal["dataset", "provider"],

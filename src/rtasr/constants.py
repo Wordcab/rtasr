@@ -9,7 +9,6 @@ DATASETS = OrderedDict(
             "ami",
             {
                 "splits": ["train", "dev", "test"],
-                "audio_types": ["Array1-01"],
                 "concurrency_limit": 1,
                 "speaker_map": "AMISpeakerMap",
                 "urls": {
@@ -19,18 +18,9 @@ DATASETS = OrderedDict(
                 },
                 "exclude_ids": ["IS1007d", "IS1003b"],
                 "manifest_filepaths": {
-                    "test": [
-                        "test/manifest_Array1-01.json",
-                        "test/manifest_Mix-Headset.json",
-                    ],
-                    "dev": [
-                        "dev/manifest_Array1-01.json",
-                        "dev/manifest_Mix-Headset.json",
-                    ],
-                    "train": [
-                        "train/manifest_Array1-01.json",
-                        "train/manifest_Mix-Headset.json",
-                    ],
+                    "test": "test/manifest.json",
+                    "dev": "dev/manifest.json",
+                    "train": "train/manifest.json",
                 },
                 "rttm_filepaths": {
                     "dev": "dev/rttm",
@@ -60,8 +50,8 @@ DATASETS = OrderedDict(
                     "rttm": "rttm/voxconverse-master",
                 },
                 "manifest_filepaths": {
-                    "dev": ["dev_manifest.json"],
-                    "test": ["test_manifest.json"],
+                    "dev": "dev_manifest.json",
+                    "test": "test_manifest.json",
                 },
                 "rttm_filepaths": {
                     "dev": "rttm/voxconverse-master/dev",

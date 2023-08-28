@@ -20,8 +20,7 @@ class TestConstants:
     def test_datasets_ami(self) -> None:
         """Test AMI dataset."""
         assert DATASETS["ami"]["splits"] == ["train", "dev", "test"]
-        assert DATASETS["ami"]["audio_types"] == ["Mix-Headset", "Array1-01"]
-        assert DATASETS["ami"]["concurrency_limit"] == 5
+        assert DATASETS["ami"]["concurrency_limit"] == 1
         assert DATASETS["ami"]["speaker_map"] == "AMISpeakerMap"
         assert DATASETS["ami"]["exclude_ids"] == ["IS1007d", "IS1003b"]
         assert DATASETS["ami"]["urls"] == {
@@ -30,18 +29,9 @@ class TestConstants:
             "list": "https://raw.githubusercontent.com/BUTSpeechFIT/AMI-diarization-setup/main/lists/{}.meetings.txt",
         }
         assert DATASETS["ami"]["manifest_filepaths"] == {
-            "test": [
-                "test/manifest_Array1-01.json",
-                "test/manifest_Mix-Headset.json",
-            ],
-            "dev": [
-                "dev/manifest_Array1-01.json",
-                "dev/manifest_Mix-Headset.json",
-            ],
-            "train": [
-                "train/manifest_Array1-01.json",
-                "train/manifest_Mix-Headset.json",
-            ],
+            "test": "test/manifest.json",
+            "dev": "dev/manifest.json",
+            "train": "train/manifest.json",
         }
         assert DATASETS["ami"]["rttm_filepaths"] == {
             "dev": "dev/rttm",
@@ -66,8 +56,8 @@ class TestConstants:
             "rttm": "rttm/voxconverse-master",
         }
         assert DATASETS["voxconverse"]["manifest_filepaths"] == {
-            "dev": ["dev_manifest.json"],
-            "test": ["test_manifest.json"],
+            "dev": "dev_manifest.json",
+            "test": "test_manifest.json",
         }
         assert DATASETS["voxconverse"]["rttm_filepaths"] == {
             "dev": "rttm/voxconverse-master/dev",

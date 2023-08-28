@@ -208,19 +208,18 @@ class TranscriptionASRCommand:
 
             selected_manifest_filepaths: List[Tuple[str, Path]] = []
             for split in splits:
-                for filepath in all_manifest_filepaths[split]:
-                    manifest_filepath = dataset_dir / filepath
+                manifest_filepath = dataset_dir / all_manifest_filepaths[split]
 
-                    if not manifest_filepath.exists():
-                        print(
-                            "Manifest file does not exist:"
-                            f" {manifest_filepath.resolve()}\nPlease run `rtasr"
-                            f" download -d {_dataset} --no-cache` to download the"
-                            " dataset."
-                        )
-                        exit(1)
-                    else:
-                        selected_manifest_filepaths.append((split, manifest_filepath))
+                if not manifest_filepath.exists():
+                    print(
+                        "Manifest file does not exist:"
+                        f" {manifest_filepath.resolve()}\nPlease run `rtasr"
+                        f" download -d {_dataset} --no-cache` to download the"
+                        " dataset."
+                    )
+                    exit(1)
+                else:
+                    selected_manifest_filepaths.append((split, manifest_filepath))
 
             print(
                 f"Manifest filepaths: {len(selected_manifest_filepaths)} files found."

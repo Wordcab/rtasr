@@ -218,8 +218,8 @@ async def _download_ami_split(
         for audio_type in audio_types:
             file_download_results.append(
                 _download_file(
-                    url=f"https://groups.inf.ed.ac.uk/ami/AMICorpusMirror//amicorpus/{file_id}/audio/{file_id}.{audio_type}.wav",
-                    output_dir=split_dir / "audio" / audio_type,
+                    url=f"https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/{file_id}/audio/{file_id}.{audio_type}.wav",
+                    output_dir=split_dir / "audio",
                     session=session,
                     use_cache=use_cache,
                 )

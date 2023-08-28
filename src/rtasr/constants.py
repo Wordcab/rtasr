@@ -9,8 +9,8 @@ DATASETS = OrderedDict(
             "ami",
             {
                 "splits": ["train", "dev", "test"],
-                "audio_types": ["Mix-Headset", "Array1-01"],
-                "concurrency_limit": 5,
+                "audio_types": ["Array1-01"],
+                "concurrency_limit": 1,
                 "speaker_map": "AMISpeakerMap",
                 "urls": {
                     "rttm": "https://raw.githubusercontent.com/BUTSpeechFIT/AMI-diarization-setup/main/only_words/rttms/{}/{}.rttm",

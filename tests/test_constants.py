@@ -159,7 +159,7 @@ class TestConstants:
         assert PROVIDERS["speechmatics"]["engine"] == "Speechmatics"
         assert PROVIDERS["speechmatics"]["output"] == "SpeechmaticsOutput"
         assert PROVIDERS["speechmatics"]["speaker_map"] == "SpeechmaticsSpeakerMap"
-        assert PROVIDERS["speechmatics"]["concurrency_limit"] == 1
+        assert PROVIDERS["speechmatics"]["concurrency_limit"] == 5
         assert PROVIDERS["speechmatics"]["options"] == {
             "type": "transcription",
             "transcription_config": {
@@ -175,7 +175,7 @@ class TestConstants:
         assert PROVIDERS["wordcab"]["engine"] == "Wordcab"
         assert PROVIDERS["wordcab"]["output"] == "WordcabOutput"
         assert PROVIDERS["wordcab"]["speaker_map"] == "WordcabSpeakerMap"
-        assert PROVIDERS["wordcab"]["concurrency_limit"] == 10
+        assert PROVIDERS["wordcab"]["concurrency_limit"] == 5
         assert PROVIDERS["wordcab"]["options"] == {
             "alignment": False,
             "diarize": True,

@@ -2,7 +2,6 @@
 
 import asyncio
 import importlib
-import json
 import sys
 import traceback
 from collections import Counter
@@ -18,8 +17,14 @@ from rich.progress import Progress, TaskID
 from typing_extensions import Literal
 
 from rtasr.constants import DATASETS, PROVIDERS
+from rtasr.evaluation.schemas import (
+    EvaluationResult,
+    EvaluationStatus,
+    ProviderResult,
+    TaskStatus,
+)
 from rtasr.speaker_map import AMISpeakerMap
-from rtasr.utils import _ami_speaker_list
+from rtasr.utils import _ami_speaker_list, _check_cache, store_evaluation_results
 
 
 class DerEvalMode(tuple, Enum):
@@ -52,31 +57,6 @@ class DerEvalMode(tuple, Enum):
     FORGIVING = (0.25, True)
 
 
-class EvaluationStatus(str, Enum):
-    """Status of the evaluation."""
-
-    CACHED = "CACHED"
-    EVALUATED = "EVALUATED"
-    NOT_FOUND = "NOT_FOUND"
-
-
-class DerTaskStatus(str, Enum):
-    """Status of a DER evaluation task."""
-
-    DONE = "DONE"
-    ERROR = "ERROR"
-    IN_PROGRESS = "IN_PROGRESS"
-
-
-class ProviderDerResult(BaseModel):
-    """The DER evaluation result for a provider."""
-
-    cached: int
-    evaluated: int
-    not_found: int
-    provider_name: str
-
-
 class ProviderComputeScore(BaseModel):
     """The score computed for a provider."""
 
@@ -95,14 +75,6 @@ class ComputeScores(BaseModel):
     scores: Union[Dict[str, ProviderComputeScore], None]
 
 
-class DerResult(BaseModel):
-    """The DER evaluation result."""
-
-    errors: List[str]
-    split_name: str
-    results: List[ProviderDerResult]
-
-
 async def evaluate_der(
     dataset: str,
     split_name: str,
@@ -114,7 +86,7 @@ async def evaluate_der(
     step_progress: Progress,
     use_cache: bool,
     debug: bool,
-) -> DerResult:
+) -> EvaluationResult:
     """Evaluate the Diarization Error Rate (DER).
 
     The Diarization Error Rate (DER) is the sum of the false alarm (FA),
@@ -147,7 +119,7 @@ async def evaluate_der(
             file of the split is evaluated. This is useful for debugging.
 
     Returns:
-        DerResult:
+        EvaluationResult:
             The result of the DER evaluation. It contains the errors, the name
             of the split and the results for each provider in the form of a
             list:
@@ -173,7 +145,7 @@ async def evaluate_der(
     for rttm_file in split_rttm_files:
         task_tracking[rttm_file.name] = {
             "rttm_file_name": rttm_file.name,
-            "status": DerTaskStatus.IN_PROGRESS,
+            "status": TaskStatus.IN_PROGRESS,
             "provider_results": {provider: None for provider in providers},
         }
         tasks.append(
@@ -193,11 +165,11 @@ async def evaluate_der(
 
         filename = task_result.filename
         if task_result.error:
-            task_tracking[filename]["status"] = DerTaskStatus.ERROR
+            task_tracking[filename]["status"] = TaskStatus.ERROR
             task_tracking[filename]["error"] = f"{filename} -> {task_result.error}"
 
         else:
-            task_tracking[filename]["status"] = DerTaskStatus.DONE
+            task_tracking[filename]["status"] = TaskStatus.DONE
 
             for provider in task_result.scores:
                 status = task_result.scores[provider].status
@@ -207,10 +179,11 @@ async def evaluate_der(
                     or status == EvaluationStatus.EVALUATED
                 ):
                     file_exists, file_path = await _check_cache(
-                        rttm_file=filename,
+                        file_name=filename,
                         evaluation_dir=evaluation_dir,
                         split=split_name,
                         provider=provider,
+                        metric="der",
                     )
 
                     if use_cache and file_exists:
@@ -221,8 +194,8 @@ async def evaluate_der(
                         task_tracking[filename]["provider_results"][
                             provider
                         ] = EvaluationStatus.EVALUATED
-                        await _store_evaluation_results(
-                            results=task_result.scores[provider],
+                        await store_evaluation_results(
+                            results=task_result.scores[provider].model_dump(),
                             save_path=file_path,
                         )
 
@@ -236,7 +209,7 @@ async def evaluate_der(
     step_progress.update(step_progress_task_id, advance=len(split_rttm_files))
     split_progress.advance(split_progress_task_id)
 
-    results: List[ProviderDerResult] = []
+    results: List[ProviderResult] = []
     for provider in providers:
         counter = Counter(
             [
@@ -245,7 +218,7 @@ async def evaluate_der(
             ]
         )
         results.append(
-            ProviderDerResult(
+            ProviderResult(
                 cached=counter[EvaluationStatus.CACHED],
                 evaluated=counter[EvaluationStatus.EVALUATED],
                 not_found=counter[EvaluationStatus.NOT_FOUND],
@@ -256,10 +229,10 @@ async def evaluate_der(
     errors: List[str] = [
         task_tracking[rttm_file.name]["error"]
         for rttm_file in split_rttm_files
-        if task_tracking[rttm_file.name]["status"] == DerTaskStatus.ERROR
+        if task_tracking[rttm_file.name]["status"] == TaskStatus.ERROR
     ]
 
-    return DerResult(
+    return EvaluationResult(
         errors=errors,
         split_name=split_name,
         results=results,
@@ -334,9 +307,7 @@ async def compute_score(
         ref_rttm_content: List[List[Union[str, float]]] = await _prepare_rttm_content(
             ref_rttm_path, "dataset"
         )
-        ref_rttm: List[
-            Tuple[str, float, float]
-        ] = await _prepare_provider_rttm_segments(
+        ref_rttm: List[Tuple[str, float, float]] = await _prepare_rttm_segments(
             rttm_content=ref_rttm_content,
             target_name=dataset,
             target_type="dataset",
@@ -353,7 +324,7 @@ async def compute_score(
                 hyp_rttm_content = await _prepare_rttm_content(
                     provider_rttm_path, "provider"
                 )
-                hyp_rttm = await _prepare_provider_rttm_segments(
+                hyp_rttm = await _prepare_rttm_segments(
                     rttm_content=hyp_rttm_content,
                     target_name=provider,
                     target_type="provider",
@@ -454,7 +425,7 @@ async def _iter_provider_rttm(raw_content: List[str]) -> List[List[Union[str, fl
     return rttm_content
 
 
-async def _prepare_provider_rttm_segments(
+async def _prepare_rttm_segments(
     rttm_content: List[List[Union[str, float]]],
     target_name: str,
     target_type: Literal["dataset", "provider"],
@@ -490,54 +461,3 @@ async def _prepare_provider_rttm_segments(
     ]
 
     return prepared_ref_rttm
-
-
-async def _store_evaluation_results(
-    results: ProviderComputeScore,
-    save_path: AsyncPath,
-) -> None:
-    """Store the DER results in a JSON file."""
-    data = results.model_dump()
-    data.pop("status")
-
-    await save_path.parent.mkdir(parents=True, exist_ok=True)
-
-    async with aiofiles.open(save_path, mode="w") as file:
-        await file.write(json.dumps(data, indent=4, ensure_ascii=False))
-
-
-async def _check_cache(
-    rttm_file: str,
-    evaluation_dir: AsyncPath,
-    split: str,
-    provider: str,
-) -> Tuple[bool, AsyncPath]:
-    """Check the cache for the results of the diarization evaluation.
-
-    This method check if the provider has already been evaluated for the given
-    audio file. If so, it returns True, otherwise it returns False.
-
-    Args:
-        rttm_file (Path):
-            The rttm file to check.
-        evaluation_dir (Path):
-            The evaluation directory where the results are saved, i.e. the cache.
-        split (str):
-            The split of the dataset.
-        provider (str):
-            The provider to check.
-
-    Returns:
-        Tuple[bool, Path]:
-            A tuple containing a boolean indicating whether the provider has
-            already been evaluated for the given audio file and the path to the
-            evaluation results.
-    """
-    _file_name = rttm_file.split(".")[0]
-    eval_output_file_path = AsyncPath(
-        evaluation_dir / split / provider / f"{_file_name}.json"
-    )
-
-    eval_output_exists = await eval_output_file_path.exists()
-
-    return eval_output_exists, eval_output_file_path

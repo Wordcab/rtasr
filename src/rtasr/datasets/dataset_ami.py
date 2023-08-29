@@ -158,10 +158,15 @@ async def prepare_ami_dataset(output_dir: str = None, use_cache: bool = True) ->
 
         try:
             async with aiohttp.ClientSession() as session:
-                await _download_dialogues_for_wer_evaluation(
+                dialogues_dir = await _download_dialogues_for_wer_evaluation(
                     output_dir=output_dir,
                     session=session,
                     use_cache=use_cache,
+                )
+                await _move_dialogues_files_to_split_folders(
+                    splits=dataset_metadata["splits"],
+                    dialogues_dir=dialogues_dir,
+                    output_dir=output_dir,
                 )
             _desc = "[bold green]Dialogues files downloaded.[/bold green]"
         except Exception:
@@ -256,7 +261,7 @@ async def _download_ami_split(
 
 async def _download_dialogues_for_wer_evaluation(
     output_dir: Path, session: aiohttp.ClientSession, use_cache: bool
-) -> None:
+) -> Path:
     """Download dialogues for WER evaluation."""
     concurr_token: ConcurrencyToken = await concurrency_handler.get()
 
@@ -272,16 +277,16 @@ async def _download_dialogues_for_wer_evaluation(
     # Move the folder dialogueActs to the root of the dataset folder
     dialogue_acts_dir = unzipped_file / "dialogueActs"
 
-    new_destination = output_dir / "dialogues"
-    if not new_destination.exists():
-        new_destination.mkdir(parents=True, exist_ok=True)
+    dialogues_dir = output_dir / "dialogues"
+    if not dialogues_dir.exists():
+        dialogues_dir.mkdir(parents=True, exist_ok=True)
 
     for file in dialogue_acts_dir.iterdir():
-        file.rename(new_destination / file.name)
-
-    dialogue_acts_dir.rmdir()
+        file.rename(dialogues_dir / file.name)
 
     concurrency_handler.put(concurr_token)
+
+    return dialogues_dir
 
 
 async def _download_file(
@@ -386,3 +391,23 @@ async def _create_manifest(
         await f.write(json.dumps(manifest_file_content, indent=4))
 
     return manifest_filepath
+
+
+async def _move_dialogues_files_to_split_folders(
+    splits: List[str],
+    dialogues_dir: Path,
+    output_dir: Path,
+) -> None:
+    """Move the dialogue files to the split folders."""
+    for split in splits:
+        audio_split_dir = output_dir / split / "audio"
+        dialogue_split_dir = dialogues_dir / split
+        dialogue_split_dir.mkdir(parents=True, exist_ok=True)
+
+        audio_files = [f for f in get_files(audio_split_dir) if f.suffix == ".wav"]
+        file_stems = [f.stem.split(".")[0] for f in audio_files]
+
+        for file_stem in file_stems:
+            dialogue_file = dialogues_dir / f"{file_stem}.json"
+            if dialogue_file.exists():
+                dialogue_file.rename(dialogue_split_dir / dialogue_file.name)

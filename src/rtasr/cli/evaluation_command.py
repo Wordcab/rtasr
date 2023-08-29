@@ -241,7 +241,7 @@ class EvaluationCommand:
                     )
 
                 func_to_run = self._run_wer
-                func_args = {"dialogues_filepaths": ref_dialogue_filepaths}
+                func_args = {"dialogue_filepaths": ref_dialogue_filepaths}
 
             (
                 current_progress,
@@ -427,7 +427,7 @@ class EvaluationCommand:
         tasks = [
             evaluate_wer(
                 split_name=split,
-                split_rttm_files=dialogue_filepaths[split],
+                split_dialogue_files=dialogue_filepaths[split],
                 evaluation_dir=evaluation_dir,
                 transcription_dir=transcription_dir,
                 split_progress=splits_progress,

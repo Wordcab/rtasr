@@ -7,10 +7,9 @@ from typing import List, Union
 from rich import print
 
 from rtasr.cli_messages import error_message
-from rtasr.constants import DATASETS, PROVIDERS, Metrics
+from rtasr.constants import DATASETS, Metrics
 from rtasr.plots import (
     DataPoint,
-    get_metric_names,
     load_data_from_cache,
     plot_data_point_distribution,
 )
@@ -156,10 +155,18 @@ class PlotCommand:
                     )
                 )
 
-            metric_names = get_metric_names(data)
-            print(metric_names)
+            if len(data) == 0:
+                print(
+                    f"[bold red]No data found for metric {_metric} and dataset"
+                    f" {_dataset}.[/bold red]"
+                )
+                exit(1)
 
-            plot_data_point_distribution(data=data)
+            save_path = plot_data_point_distribution(
+                data=data, metric=_metric, dataset=_dataset, output_dir=self.output_dir
+            )
+
+            print(f"Plot saved to [bold]{save_path}[/bold].")
 
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")

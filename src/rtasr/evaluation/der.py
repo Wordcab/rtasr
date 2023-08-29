@@ -23,9 +23,8 @@ from rtasr.evaluation.schemas import (
     ProviderResult,
     TaskStatus,
 )
-from rtasr.evaluation.utils import _store_evaluation_results
 from rtasr.speaker_map import AMISpeakerMap
-from rtasr.utils import _ami_speaker_list, _check_cache
+from rtasr.utils import _ami_speaker_list, _check_cache, store_evaluation_results
 
 
 class DerEvalMode(tuple, Enum):
@@ -194,7 +193,7 @@ async def evaluate_der(
                         task_tracking[filename]["provider_results"][
                             provider
                         ] = EvaluationStatus.EVALUATED
-                        await _store_evaluation_results(
+                        await store_evaluation_results(
                             results=task_result.scores[provider].model_dump(),
                             save_path=file_path,
                         )
@@ -307,9 +306,7 @@ async def compute_score(
         ref_rttm_content: List[List[Union[str, float]]] = await _prepare_rttm_content(
             ref_rttm_path, "dataset"
         )
-        ref_rttm: List[
-            Tuple[str, float, float]
-        ] = await _prepare_rttm_segments(
+        ref_rttm: List[Tuple[str, float, float]] = await _prepare_rttm_segments(
             rttm_content=ref_rttm_content,
             target_name=dataset,
             target_type="dataset",

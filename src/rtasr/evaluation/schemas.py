@@ -3,7 +3,7 @@
 from enum import Enum
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, NonNegativeInt
 
 
 class EvaluationStatus(str, Enum):
@@ -25,9 +25,9 @@ class TaskStatus(str, Enum):
 class ProviderResult(BaseModel):
     """The evaluation result for a provider."""
 
-    cached: int
-    evaluated: int
-    not_found: int
+    cached: NonNegativeInt
+    evaluated: NonNegativeInt
+    not_found: NonNegativeInt
     provider_name: str
 
 

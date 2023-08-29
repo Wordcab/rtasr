@@ -379,7 +379,9 @@ class EvaluationCommand:
             )
             for split in rttm_filepaths.keys()
         ]
-        results: List[EvaluationResult] = await asyncio.gather(*tasks, return_exceptions=True)
+        results: List[EvaluationResult] = await asyncio.gather(
+            *tasks, return_exceptions=True
+        )
 
         splits_progress.update(splits_progress_task_id, visible=False)
 
@@ -436,7 +438,9 @@ class EvaluationCommand:
             )
             for split in dialogue_filepaths.keys()
         ]
-        results: List[EvaluationResult] = await asyncio.gather(*tasks, return_exceptions=True)
+        results: List[EvaluationResult] = await asyncio.gather(
+            *tasks, return_exceptions=True
+        )
 
         splits_progress.update(splits_progress_task_id, visible=False)
 

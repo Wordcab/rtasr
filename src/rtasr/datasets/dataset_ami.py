@@ -392,8 +392,11 @@ async def _create_manifest(
 
     return manifest_filepath
 
+
 async def _move_dialogues_files_to_split_folders(
-    splits: List[str], dialogues_dir: Path, output_dir: Path,
+    splits: List[str],
+    dialogues_dir: Path,
+    output_dir: Path,
 ) -> None:
     """Move the dialogue files to the split folders."""
     for split in splits:

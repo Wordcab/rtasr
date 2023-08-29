@@ -1,6 +1,7 @@
 """Utils functions for rtasr."""
 
 import asyncio
+import json
 import re
 import string
 import urllib.parse
@@ -8,6 +9,7 @@ import zipfile
 from pathlib import Path
 from typing import Any, List, Mapping, Tuple, Union
 
+import aiofiles
 import aiohttp
 import dotenv
 from aiopath import AsyncPath
@@ -251,11 +253,25 @@ def remove_bracketed_text(sentence: str) -> str:
     Returns:
         Sentence with bracketed text removed.
     """
-    return re.sub(r'<[^>]+>', '', sentence)
+    return re.sub(r"<[^>]+>", "", sentence)
+
 
 def resolve_cache_dir() -> Path:
     """Resolve the cache directory for rtasr."""
     return Path.home() / ".cache" / "rtasr"
+
+
+async def store_evaluation_results(
+    results: dict,
+    save_path: AsyncPath,
+) -> None:
+    """Store the evaluation results in a JSON file."""
+    results.pop("status")
+
+    await save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    async with aiofiles.open(save_path, mode="w") as file:
+        await file.write(json.dumps(results, indent=4, ensure_ascii=False))
 
 
 def _ami_speaker_list(ami_rttm_segments: List[List[Union[str, float]]]) -> List[str]:

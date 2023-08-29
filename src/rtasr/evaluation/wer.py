@@ -23,11 +23,11 @@ from rtasr.evaluation.schemas import (
     ProviderResult,
     TaskStatus,
 )
-from rtasr.evaluation.utils import _store_evaluation_results
 from rtasr.utils import (
     _check_cache,
     attach_punctuation_to_last_word,
     remove_bracketed_text,
+    store_evaluation_results,
 )
 
 
@@ -124,7 +124,7 @@ async def evaluate_wer(
                         task_tracking[filename]["provider_results"][
                             provider
                         ] = EvaluationStatus.EVALUATED
-                        await _store_evaluation_results(
+                        await store_evaluation_results(
                             results=task_result.scores[provider].model_dump(),
                             save_path=file_path,
                         )
@@ -195,7 +195,11 @@ async def compute_score(
         for provider in providers:
             current_provider = provider
             provider_rttm_path = AsyncPath(
-                transcription_dir / split / provider / "dialogue" / ref_dialogue_path.name
+                transcription_dir
+                / split
+                / provider
+                / "dialogue"
+                / ref_dialogue_path.name
             )
 
             if await provider_rttm_path.exists():
@@ -300,10 +304,7 @@ def _format_dialogue_content(dialogue_content: dict) -> List[str]:
         text = remove_bracketed_text(utterance["text"])
         text = attach_punctuation_to_last_word(text)
 
-        if (
-            current_speaker != utterance["speaker"]
-            and current_speaker is not None
-        ):
+        if current_speaker != utterance["speaker"] and current_speaker is not None:
             formatted_dialogue.append(current_sentence)
             current_sentence = ""
         else:

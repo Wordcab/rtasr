@@ -237,7 +237,7 @@ class EvaluationCommand:
                 for split in splits:
                     _path = dataset_dir / "dialogues" / split
                     ref_dialogue_filepaths[split].extend(
-                        [Path(f) for f in get_files(_path) if f.suffix == ".txt"]
+                        [Path(f) for f in get_files(_path) if f.suffix == ".json"]
                     )
 
                 func_to_run = self._run_wer

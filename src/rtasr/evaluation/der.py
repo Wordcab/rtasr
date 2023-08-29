@@ -183,6 +183,7 @@ async def evaluate_der(
                         evaluation_dir=evaluation_dir,
                         split=split_name,
                         provider=provider,
+                        metric="der",
                     )
 
                     if use_cache and file_exists:

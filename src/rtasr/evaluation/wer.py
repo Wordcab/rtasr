@@ -26,6 +26,7 @@ from rtasr.evaluation.schemas import (
 from rtasr.utils import (
     _check_cache,
     attach_punctuation_to_last_word,
+    reconstruct_acronym,
     remove_bracketed_text,
     store_evaluation_results,
 )
@@ -114,6 +115,7 @@ async def evaluate_wer(
                         evaluation_dir=evaluation_dir,
                         split=split_name,
                         provider=provider,
+                        metric="wer",
                     )
 
                     if use_cache and file_exists:
@@ -194,17 +196,17 @@ async def compute_score(
         scores: Dict[str, float] = {}
         for provider in providers:
             current_provider = provider
-            provider_rttm_path = AsyncPath(
+            provider_dialogue_path = AsyncPath(
                 transcription_dir
                 / split
                 / provider
                 / "dialogue"
-                / ref_dialogue_path.name
+                / f"{ref_dialogue_path.stem}.txt"
             )
 
-            if await provider_rttm_path.exists():
+            if await provider_dialogue_path.exists():
                 hyp_dialogue: List[str] = await _prepare_dialogue_content(
-                    provider_rttm_path, "provider"
+                    provider_dialogue_path, "provider"
                 )
 
                 _score = process_words(
@@ -302,7 +304,11 @@ def _format_dialogue_content(dialogue_content: dict) -> List[str]:
     formatted_dialogue: List[str] = []
     for utterance in dialogue_content:
         text = remove_bracketed_text(utterance["text"])
+        text = reconstruct_acronym(text)
         text = attach_punctuation_to_last_word(text)
+
+        if text == "":
+            continue
 
         if current_speaker != utterance["speaker"] and current_speaker is not None:
             formatted_dialogue.append(current_sentence)
@@ -314,4 +320,4 @@ def _format_dialogue_content(dialogue_content: dict) -> List[str]:
 
     formatted_dialogue.append(current_sentence)
 
-    return formatted_dialogue
+    return [sentence.strip() for sentence in formatted_dialogue if sentence != ""]

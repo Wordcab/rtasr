@@ -36,10 +36,17 @@ def attach_punctuation_to_last_word(sentence: str) -> str:
     Returns:
         Sentence with punctuation attached to the last word.
     """
-    if isinstance(sentence, str) and sentence[-1] in string.punctuation:
-        return sentence[:-2] + sentence[-1]
+    if isinstance(sentence, str) and sentence != "":
+        words = sentence.split()
 
-    return sentence
+        sentence = ""
+        for word in words:
+            if word in string.punctuation:
+                sentence += word
+            else:
+                sentence += " " + word
+
+    return sentence.strip()
 
 
 def build_query_string(params: Mapping[str, Any] = None) -> str:
@@ -242,6 +249,23 @@ async def unzip_file(zip_path: Path, output_dir: Path, use_cache: bool = True) -
     return unzip_path
 
 
+def reconstruct_acronym(text: str) -> str:
+    """
+    Reconstruct an acronym by removing the underscores
+
+    Args:
+        text (str):
+            Text to reconstruct.
+
+    Returns:
+        Reconstructed text.
+    """
+    pattern = r"(?<=[A-Z])_(?=[A-Z]|[a-z]| )"
+    result = re.sub(pattern, "", text)
+
+    return result
+
+
 def remove_bracketed_text(sentence: str) -> str:
     """
     Remove bracketed text from a sentence.
@@ -302,6 +326,7 @@ async def _check_cache(
     evaluation_dir: AsyncPath,
     split: str,
     provider: str,
+    metric: str,
 ) -> Tuple[bool, AsyncPath]:
     """Check the cache for the results of the diarization evaluation.
 
@@ -317,6 +342,8 @@ async def _check_cache(
             The split of the dataset.
         provider (str):
             The provider to check.
+        metric (str):
+            The metric to check.
 
     Returns:
         Tuple[bool, Path]:
@@ -326,7 +353,7 @@ async def _check_cache(
     """
     _file_name = file_name.split(".")[0]
     eval_output_file_path = AsyncPath(
-        evaluation_dir / split / provider / f"{_file_name}.json"
+        evaluation_dir / split / provider / metric / f"{_file_name}.json"
     )
 
     eval_output_exists = await eval_output_file_path.exists()

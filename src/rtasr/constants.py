@@ -171,7 +171,7 @@ PROVIDERS = OrderedDict(
                 "engine": "Wordcab",
                 "output": "WordcabOutput",
                 "speaker_map": "WordcabSpeakerMap",
-                "concurrency_limit": 10,
+                "concurrency_limit": 5,
                 "options": {
                     "alignment": False,
                     "diarize": True,

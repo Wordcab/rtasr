@@ -30,6 +30,7 @@ dependencies = [
   "python-dotenv>=1.0.0",
   "rich>=13.5.2",
   "rich-argparse>=1.2.0",
+  "seaborn>=0.12.2",
   "spy-der>=0.4.0",
 ]
 description = "🏆 Run benchmarks against the most common ASR tools on the market."

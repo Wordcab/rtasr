@@ -148,16 +148,52 @@ Use the `--debug` flag to run only one file by split for each provider.
 rtasr transcription -d <dataset> -p <provider> --debug
 ```
 
-### Evaluation (🚧 WIP)
+### Evaluation
 
 The `evaluation` command allows you to run an evaluation on the transcription results.
 
-#### Run DER evaluation
+If you don't specify the split, the evaluation will be run on the whole dataset.
 
-Specify the dataset to use:
+#### Run DER evaluation
 
 ```bash
 rtasr evaluation -m der -d <dataset> -s <split>
+```
+
+#### Run WER evaluation
+
+```bash
+rtasr evaluation -m wer -d <dataset> -s <split>
+```
+
+### Plot results
+
+To get the plots of the evaluation results, use the `plot` command.
+
+If you don't specify the split, the plots will be generated for all the available splits.
+
+#### Plot DER results
+
+```bash
+rtasr plot -m der -d <dataset> -s <split>
+```
+
+#### Plot WER results
+
+```bash
+rtasr plot -m wer -d <dataset> -s <split>
+```
+
+### Dataset length
+
+To get the total length of a dataset, use the `audio-length` command.
+This command allow you to get the number of minutes of audio for each split of a dataset.
+
+If you don't specify the split, the total length of the dataset will be returned
+for all the available splits.
+
+```bash
+rtasr audio-length -d <dataset> -s <split>
 ```
 
 ## Contributing

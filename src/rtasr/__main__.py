@@ -7,6 +7,7 @@ from rich.traceback import install
 from rich_argparse import RichHelpFormatter
 
 from rtasr.cli import (
+    AudioLengthCommand,
     DownloadDatasetCommand,
     EvaluationCommand,
     ListItemsCommand,
@@ -29,6 +30,7 @@ def parse_arguments() -> argparse.Namespace:
     commands_parser = parser.add_subparsers(dest="command")
 
     # Register subcommands
+    AudioLengthCommand.register_subcommand(commands_parser)
     DownloadDatasetCommand.register_subcommand(commands_parser)
     EvaluationCommand.register_subcommand(commands_parser)
     ListItemsCommand.register_subcommand(commands_parser)

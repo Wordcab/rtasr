@@ -10,6 +10,7 @@ from rtasr.cli import (
     DownloadDatasetCommand,
     EvaluationCommand,
     ListItemsCommand,
+    PlotCommand,
     TranscriptionASRCommand,
 )
 from rtasr.cli_messages import ascii_art
@@ -31,6 +32,7 @@ def parse_arguments() -> argparse.Namespace:
     DownloadDatasetCommand.register_subcommand(commands_parser)
     EvaluationCommand.register_subcommand(commands_parser)
     ListItemsCommand.register_subcommand(commands_parser)
+    PlotCommand.register_subcommand(commands_parser)
     TranscriptionASRCommand.register_subcommand(commands_parser)
 
     return parser.parse_args()

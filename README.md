@@ -26,13 +26,13 @@
 
 ### DER
 
-As a first evaluation, we ran the `der` metric on the `voxconverse` dataset using only the `test` split.
+* Dataset: [AMI Corpus](http://groups.inf.ed.ac.uk/ami/corpus/)
 
-__AssemblyAI__, __Deepgram__, and __Wordcab__ were evaluated almost on the whole split (224 files) while __RevAI__ and __Speechmatics__ were evaluated respectively on 29 and 7 files, due to respective API limitations and issues for Speechmatics...
+![DER evaluation](./assets/der_evaluation_ami.png)
 
-Here are the results:
+* Dataset: [VoxConverse](https://www.robots.ox.ac.uk/~vgg/data/voxconverse/)
 
-![DER evaluation](./assets/der_first_evaluation.png)
+![DER evaluation](./assets/der_evaluation_voxconverse.png)
 
 ### WER
 

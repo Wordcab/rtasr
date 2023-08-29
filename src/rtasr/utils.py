@@ -5,6 +5,7 @@ import json
 import re
 import string
 import urllib.parse
+import wave
 import zipfile
 from pathlib import Path
 from typing import Any, List, Mapping, Tuple, Union
@@ -12,6 +13,7 @@ from typing import Any, List, Mapping, Tuple, Union
 import aiofiles
 import aiohttp
 import dotenv
+import numpy as np
 from aiopath import AsyncPath
 from rich import print
 from rich.console import Group
@@ -196,6 +198,43 @@ def get_api_key(provider: str) -> Union[str, None]:
         return None
 
     return key
+
+
+def get_audio_duration(filename: Path) -> float:
+    """
+    Get the duration of an audio file in seconds.
+
+    Args:
+        filename (Path):
+            Path to audio file.
+
+    Returns:
+        Duration of audio file in seconds.
+    """
+    with wave.open(str(filename), "rb") as audio_file:
+        num_frames = audio_file.getnframes()
+        frame_rate = audio_file.getframerate()
+
+    return num_frames / frame_rate
+
+
+def get_human_readable_duration(seconds: Union[float, List[float]]) -> str:
+    """
+    Convert seconds to human readable duration.
+
+    Args:
+        seconds (Union[float, List[float]]):
+            Duration in seconds or list of durations in seconds.
+
+    Returns:
+        Human readable duration.
+    """
+    if isinstance(seconds, list):
+        seconds = np.sum(seconds)
+
+    m, s = divmod(seconds, 60)
+
+    return f"{int(m):02d}:{int(s):02d}"
 
 
 def get_files(path: Path) -> Path:

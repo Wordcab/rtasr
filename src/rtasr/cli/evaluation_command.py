@@ -233,15 +233,19 @@ class EvaluationCommand:
                 }
 
             elif _metric == Metrics.WER:
-                ref_dialogue_filepaths: Dict[str, List[Path]] = {s: [] for s in splits}
+                ref_dialogues: Dict[str, List[str]] = {s: [] for s in splits}
                 for split in splits:
                     _path = dataset_dir / "dialogues" / split
-                    ref_dialogue_filepaths[split].extend(
-                        [Path(f) for f in get_files(_path) if f.suffix == ".json"]
+                    ref_dialogues[split].extend(
+                        [
+                            Path(f)
+                            for f in get_files(_path)
+                            if f.suffix == ".txt" or f.suffix == ".json"
+                        ]
                     )
 
                 func_to_run = self._run_wer
-                func_args = {"dialogue_filepaths": ref_dialogue_filepaths}
+                func_args = {"ref_dialogues": ref_dialogues}
 
             (
                 current_progress,
@@ -389,7 +393,7 @@ class EvaluationCommand:
 
     async def _run_wer(
         self,
-        dialogue_filepaths: Dict[str, List[Path]],
+        ref_dialogues: Dict[str, List[Path]],
         evaluation_dir: Path,
         transcription_dir: Path,
         splits_progress: Progress,
@@ -401,8 +405,8 @@ class EvaluationCommand:
         Run the evaluation for the Word Error Rate (WER).
 
         Args:
-            dialogue_filepaths (Dict[str, List[Path]]):
-                The dialogue filepaths for each split.
+            ref_dialogues (Dict[str, List[Path]]):
+                The reference dialogue paths for each split.
             evaluation_dir (Path):
                 The path where to store the evaluation results.
             transcription_dir (Path):
@@ -421,13 +425,13 @@ class EvaluationCommand:
         """
         splits_progress_task_id = splits_progress.add_task(
             "",
-            total=len(dialogue_filepaths),
+            total=len(ref_dialogues),
         )
 
         tasks = [
             evaluate_wer(
                 split_name=split,
-                split_dialogue_files=dialogue_filepaths[split],
+                split_dialogue_files=ref_dialogues[split],
                 evaluation_dir=evaluation_dir,
                 transcription_dir=transcription_dir,
                 split_progress=splits_progress,
@@ -436,7 +440,7 @@ class EvaluationCommand:
                 use_cache=use_cache,
                 debug=debug,
             )
-            for split in dialogue_filepaths.keys()
+            for split in ref_dialogues.keys()
         ]
         results: List[EvaluationResult] = await asyncio.gather(
             *tasks, return_exceptions=True

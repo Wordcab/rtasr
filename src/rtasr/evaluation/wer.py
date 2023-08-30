@@ -276,9 +276,12 @@ async def _prepare_dialogue_content(
     if target_type == "dataset":
         async with aiofiles.open(dialogue_path, mode="r") as file:
             content: str = await file.read()
-            data: dict = json.loads(content)
 
-        dialogue_content = _format_dialogue_content(dialogue_content=data)
+        if dialogue_path.suffix == ".json":
+            data: dict = json.loads(content)
+            dialogue_content = _format_dialogue_content(dialogue_content=data)
+        else:
+            dialogue_content = content.splitlines()
 
     elif target_type == "provider":
         async with aiofiles.open(dialogue_path, mode="r") as file:

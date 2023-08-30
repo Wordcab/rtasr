@@ -1,14 +1,20 @@
 """The audio-length command."""
 
 import argparse
+import os
 from pathlib import Path
 from typing import List
 
+from datasets import load_dataset
 from rich import print
 
 from rtasr.cli_messages import error_message
 from rtasr.constants import DATASETS
-from rtasr.utils import get_audio_duration, get_human_readable_duration
+from rtasr.utils import (
+    get_audio_duration_from_file,
+    get_audio_duration_from_samples,
+    get_human_readable_duration,
+)
 
 
 def audio_length_command_factory(args: argparse.Namespace):
@@ -100,9 +106,34 @@ class AudioLengthCommand:
 
             audio_durations = []
             for split in splits:
-                split_dir = dataset_dir / _dataset / split / "audio"
-                for audio_file in split_dir.glob("**/*.wav"):
-                    audio_durations.append(get_audio_duration(audio_file))
+                if _dataset == "fleurs":
+                    os.environ["HF_DATASETS_OFFLINE"] = "1"
+                    try:
+                        hf_dataset = load_dataset(
+                            "google/fleurs",
+                            "en_us",
+                            cache_dir=str(dataset_dir / "fleurs"),
+                        )
+                    except Exception:
+                        print(
+                            "Failed to load dataset from"
+                            f" {dataset_dir.resolve()}.\nPlease run `rtasr download -d"
+                            " fleurs --no-cache` to download the dataset."
+                        )
+                        exit(1)
+
+                    for audio_file in hf_dataset[split]:
+                        audio_durations.append(
+                            get_audio_duration_from_samples(
+                                samples=audio_file["num_samples"],
+                                sample_rate=audio_file["audio"]["sampling_rate"],
+                            )
+                        )
+
+                else:
+                    split_dir = dataset_dir / _dataset / split / "audio"
+                    for audio_file in split_dir.glob("**/*.wav"):
+                        audio_durations.append(get_audio_duration_from_file(audio_file))
 
             if len(audio_durations) == 0:
                 print("[bold red]No audio files found.[/bold red]")

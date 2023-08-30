@@ -13,8 +13,10 @@ class TestConstants:
     def test_datasets(self) -> None:
         """Test DATASETS constant."""
         assert isinstance(DATASETS, OrderedDict)
+        assert len(DATASETS) == 3
 
         assert "ami" in DATASETS
+        assert "fleurs" in DATASETS
         assert "voxconverse" in DATASETS
 
     def test_datasets_ami(self) -> None:
@@ -43,6 +45,16 @@ class TestConstants:
             "train": 134,
             "dev": 18,
             "test": 16,
+        }
+
+    def test_datasets_fleurs(self) -> None:
+        """Test Fleurs dataset."""
+        assert DATASETS["fleurs"]["splits"] == ["train", "validation", "test"]
+        assert DATASETS["fleurs"]["metrics"] == ["wer"]
+        assert DATASETS["fleurs"]["number_of_files"] == {
+            "train": 2602,
+            "validation": 394,
+            "test": 647,
         }
 
     def test_datasets_voxconverse(self) -> None:

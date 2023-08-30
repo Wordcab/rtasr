@@ -36,6 +36,18 @@ DATASETS = OrderedDict(
             },
         ),
         (
+            "fleurs",
+            {
+                "splits": ["train", "validation", "test"],
+                "metrics": ["wer"],
+                "number_of_files": {
+                    "train": 2602,
+                    "validation": 394,
+                    "test": 647,
+                },
+            },
+        ),
+        (
             "voxconverse",
             {
                 "splits": ["dev", "test"],

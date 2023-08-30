@@ -8,6 +8,11 @@ from rich import print
 
 from rtasr.cli_messages import error_message
 from rtasr.constants import DATASETS
+from rtasr.datasets import (
+    prepare_ami_dataset,
+    prepare_fleurs_dataset,
+    prepare_voxconverse_dataset,
+)
 
 
 def download_dataset_command_factory(args: argparse.Namespace):
@@ -61,13 +66,12 @@ class DownloadDatasetCommand:
         """Run the command."""
         try:
             if self.dataset.lower() == "ami":
-                from rtasr.datasets import prepare_ami_dataset
-
                 asyncio.run(prepare_ami_dataset(self.output_dir, self.use_cache))
 
-            elif self.dataset.lower() == "voxconverse":
-                from rtasr.datasets import prepare_voxconverse_dataset
+            elif self.dataset.lower() == "fleurs":
+                prepare_fleurs_dataset(self.output_dir, self.use_cache)
 
+            elif self.dataset.lower() == "voxconverse":
                 asyncio.run(
                     prepare_voxconverse_dataset(self.output_dir, self.use_cache)
                 )

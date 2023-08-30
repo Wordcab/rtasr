@@ -200,7 +200,30 @@ def get_api_key(provider: str) -> Union[str, None]:
     return key
 
 
-def get_audio_duration(filename: Path) -> float:
+def get_audio_duration_from_samples(
+    samples: Union[int, np.ndarray], sample_rate: int
+) -> float:
+    """
+    Get the duration of an audio file in seconds.
+
+    Args:
+        samples (Union[int, np.ndarray]):
+            Samples of audio file.
+        sample_rate (int):
+            Sample rate of audio file.
+
+    Returns:
+        Duration of audio file in seconds.
+    """
+    if isinstance(samples, np.ndarray):
+        _samples = len(samples)
+    elif isinstance(samples, int):
+        _samples = samples
+
+    return _samples / sample_rate
+
+
+def get_audio_duration_from_file(filename: Path) -> float:
     """
     Get the duration of an audio file in seconds.
 

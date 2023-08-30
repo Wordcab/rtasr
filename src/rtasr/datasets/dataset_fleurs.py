@@ -6,18 +6,106 @@ https://huggingface.co/datasets/google/fleurs
 We use only the `en_us` subset of the dataset.
 """
 
-import multiprocessing
-import unittest.mock as mock
 from pathlib import Path
-from typing import Any, Dict
 
 from datasets import DownloadMode, load_dataset
-from datasets.utils.logging import tqdm
+from datasets.utils import logging
 from rich import print
-from tqdm.rich import tqdm as rich_tqdm
+from rich.console import Console
+from rich.progress import (
+    BarColumn,
+    Progress,
+    TimeElapsedColumn,
+    TimeRemainingColumn,
+)
+from tqdm.rich import FractionColumn, RateColumn
+from tqdm.std import tqdm as std_tqdm
 
-from rtasr.constants import DATASETS
 from rtasr.utils import resolve_cache_dir
+
+
+# From tqdm.rich.py: https://github.com/tqdm/tqdm/blob/master/tqdm/rich.py
+class tqdm_rich(std_tqdm):  # pragma: no cover
+    """Experimental rich.progress GUI version of tqdm!"""
+
+    _shared_prog = None
+    console = Console()
+
+    @classmethod
+    def get_or_create_progress(cls, *progress_args, **progress_kwargs):
+        """Get the shared Progress instance or create one if it doesn't exist."""
+        if cls._shared_prog is None:
+            cls._shared_prog = Progress(*progress_args, console=cls.console, **progress_kwargs)
+            cls._shared_prog.__enter__()
+
+        return cls._shared_prog
+
+
+    def __init__(self, *args, **kwargs):
+        """
+        This class accepts the following parameters *in addition* to
+        the parameters accepted by `tqdm`.
+
+        Parameters
+        ----------
+        progress  : tuple, optional
+            arguments for `rich.progress.Progress()`.
+        options  : dict, optional
+            keyword arguments for `rich.progress.Progress()`.
+        """
+        kwargs = kwargs.copy()
+        kwargs['gui'] = True
+        kwargs['disable'] = bool(kwargs.get('disable', False))
+        progress = kwargs.pop('progress', None)
+        options = kwargs.pop('options', {}).copy()
+
+        super(tqdm_rich, self).__init__(*args, **kwargs)
+
+        if self.disable:
+            return
+
+        d = self.format_dict
+        if progress is None:
+            progress = (
+                "[progress.description]{task.description}"
+                "[progress.percentage]{task.percentage:>4.0f}%",
+                BarColumn(bar_width=None),
+                FractionColumn(
+                    unit_scale=d['unit_scale'], unit_divisor=d['unit_divisor']),
+                "[", TimeElapsedColumn(), "<", TimeRemainingColumn(),
+                ",", RateColumn(unit=d['unit'], unit_scale=d['unit_scale'],
+                                unit_divisor=d['unit_divisor']), "]"
+            )
+        options.setdefault('transient', not self.leave)
+
+        self._prog = self.get_or_create_progress(*progress, **options)
+        self._task_id = self._prog.add_task(self.desc or "", **d)
+
+    def close(self):
+        if self.disable:
+            return
+        super(tqdm_rich, self).close()
+        self._prog.__exit__(None, None, None)
+
+    def clear(self, *_, **__):
+        pass
+
+    def display(self, *_, **__):
+        if not hasattr(self, '_prog'):
+            return
+        self._prog.update(self._task_id, completed=self.n, description=self.desc)
+
+    def reset(self, total=None):
+        """
+        Resets to 0 iterations for repeated use.
+
+        Parameters
+        ----------
+        total  : int or float, optional. Total to use for the new bar.
+        """
+        if hasattr(self, '_prog'):
+            self._prog.reset(total=total)
+        super(tqdm_rich, self).reset(total=total)
 
 
 class rich_tqdm_cls:
@@ -25,16 +113,21 @@ class rich_tqdm_cls:
 
     def __call__(self, *args, disable=False, **kwargs):
         """Return a tqdm instance."""
-        return rich_tqdm(*args, **kwargs)
+        if kwargs:
+            _total = kwargs.get("total", None)
+            if _total is None:
+                disable = True
+
+        return tqdm_rich(*args, disable=disable, **kwargs)
 
     def set_lock(self, *args, **kwargs):
         """Set the lock for the tqdm progress bar."""
         self._lock = None
-        tqdm.set_lock(*args, **kwargs)
+        tqdm_rich.set_lock(*args, **kwargs)
 
     def get_lock(self):
         """Get the lock for the tqdm progress bar."""
-        tqdm.get_lock()
+        tqdm_rich.get_lock()
 
     def __delattr__(self, attr):
         """fix for https://github.com/huggingface/datasets/issues/6066"""
@@ -44,7 +137,8 @@ class rich_tqdm_cls:
             if attr != "_lock":
                 raise AttributeError(attr) from e
 
-tqdm = rich_tqdm_cls()  # noqa: F811
+# Overwrite the tqdm reference in datasets.utils.logging
+logging.tqdm = rich_tqdm_cls()
 
 
 def prepare_fleurs_dataset(output_dir: str = None, use_cache: bool = True) -> None:
@@ -63,18 +157,10 @@ def prepare_fleurs_dataset(output_dir: str = None, use_cache: bool = True) -> No
     else:
         download_mode = DownloadMode.FORCE_REDOWNLOAD
 
-    dataset_metadata: Dict[str, Any] = DATASETS["fleurs"]
+    load_dataset(
+        "google/fleurs", "en_us",
+        cache_dir=str(output_dir),
+        download_mode=download_mode,
+    )
 
-    num_cpus = multiprocessing.cpu_count()
-    print(f"Using {num_cpus} CPUs for downloading the dataset.")
-
-    for split in dataset_metadata["splits"]:
-        load_dataset(
-            "google/fleurs", "en_us",
-            split=split,
-            cache_dir=str(output_dir),
-            num_proc=num_cpus,
-            download_mode=download_mode,
-        )
-
-        print(f"✅ Downloaded {split} split of the dataset.")
+    print("🌸 Downloaded all splits")

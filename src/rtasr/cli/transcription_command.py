@@ -4,10 +4,12 @@ import argparse
 import asyncio
 import importlib
 import json
+import os
 from pathlib import Path
 from typing import Dict, List, Tuple, Union
 
 import aiohttp
+from datasets import load_dataset
 from rich import print
 from rich.live import Live
 from rich.progress import Progress
@@ -204,35 +206,61 @@ class TranscriptionASRCommand:
 
             print(f"Using splits: {splits}")
 
-            all_manifest_filepaths = DATASETS[_dataset]["manifest_filepaths"]
-
-            selected_manifest_filepaths: List[Tuple[str, Path]] = []
-            for split in splits:
-                manifest_filepath = dataset_dir / all_manifest_filepaths[split]
-
-                if not manifest_filepath.exists():
+            if _dataset == "fleurs":
+                os.environ["HF_DATASETS_OFFLINE"] = "1"
+                try:
+                    hf_dataset = load_dataset(
+                        "google/fleurs",
+                        "en_us",
+                        cache_dir=str(dataset_dir),
+                    )
+                except Exception:
                     print(
-                        "Manifest file does not exist:"
-                        f" {manifest_filepath.resolve()}\nPlease run `rtasr"
-                        f" download -d {_dataset} --no-cache` to download the"
-                        " dataset."
+                        f"Failed to load dataset from {dataset_dir.resolve()}.\n"
+                        "Please run `rtasr download -d fleurs --no-cache` to download"
+                        " the dataset."
                     )
                     exit(1)
-                else:
-                    selected_manifest_filepaths.append((split, manifest_filepath))
 
-            print(
-                f"Manifest filepaths: {len(selected_manifest_filepaths)} files found."
-            )
+                audio_filepaths: Dict[str, List[Path]] = {s: [] for s in splits}
+                for split in splits:
+                    split_data = hf_dataset[split]
+                    for data_item in split_data:
+                        _path = Path(data_item["path"])
+                        audio_path = _path.parent / split / _path.name
+                        audio_filepaths[split].append(audio_path)
 
-            audio_filepaths: Dict[str, List[Path]] = {s: [] for s in splits}
-            for split, manifest_filepath in selected_manifest_filepaths:
-                with open(manifest_filepath, "r") as f:
-                    manifest = json.load(f)
+            else:
+                all_manifest_filepaths = DATASETS[_dataset]["manifest_filepaths"]
 
-                audio_filepaths[split].extend(
-                    [Path(m["audio_filepath"]) for m in manifest]
+                selected_manifest_filepaths: List[Tuple[str, Path]] = []
+                for split in splits:
+                    manifest_filepath = dataset_dir / all_manifest_filepaths[split]
+
+                    if not manifest_filepath.exists():
+                        print(
+                            "Manifest file does not exist:"
+                            f" {manifest_filepath.resolve()}\nPlease run `rtasr"
+                            f" download -d {_dataset} --no-cache` to download the"
+                            " dataset."
+                        )
+                        exit(1)
+                    else:
+                        selected_manifest_filepaths.append((split, manifest_filepath))
+
+                print(
+                    f"Manifest filepaths: {len(selected_manifest_filepaths)} files"
+                    " found."
                 )
+
+                audio_filepaths: Dict[str, List[Path]] = {s: [] for s in splits}
+                for split, manifest_filepath in selected_manifest_filepaths:
+                    with open(manifest_filepath, "r") as f:
+                        manifest = json.load(f)
+
+                    audio_filepaths[split].extend(
+                        [Path(m["audio_filepath"]) for m in manifest]
+                    )
 
             verified_audio_filepaths: Dict[str, List[Path]] = {s: [] for s in splits}
             for split, filepaths in audio_filepaths.items():

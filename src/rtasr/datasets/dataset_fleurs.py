@@ -21,6 +21,7 @@ from rich.progress import (
 from tqdm.rich import FractionColumn, RateColumn
 from tqdm.std import tqdm as std_tqdm
 
+from rtasr.constants import DATASETS
 from rtasr.utils import resolve_cache_dir
 
 
@@ -35,11 +36,12 @@ class tqdm_rich(std_tqdm):  # pragma: no cover
     def get_or_create_progress(cls, *progress_args, **progress_kwargs):
         """Get the shared Progress instance or create one if it doesn't exist."""
         if cls._shared_prog is None:
-            cls._shared_prog = Progress(*progress_args, console=cls.console, **progress_kwargs)
+            cls._shared_prog = Progress(
+                *progress_args, console=cls.console, **progress_kwargs
+            )
             cls._shared_prog.__enter__()
 
         return cls._shared_prog
-
 
     def __init__(self, *args, **kwargs):
         """
@@ -54,10 +56,10 @@ class tqdm_rich(std_tqdm):  # pragma: no cover
             keyword arguments for `rich.progress.Progress()`.
         """
         kwargs = kwargs.copy()
-        kwargs['gui'] = True
-        kwargs['disable'] = bool(kwargs.get('disable', False))
-        progress = kwargs.pop('progress', None)
-        options = kwargs.pop('options', {}).copy()
+        kwargs["gui"] = True
+        kwargs["disable"] = bool(kwargs.get("disable", False))
+        progress = kwargs.pop("progress", None)
+        options = kwargs.pop("options", {}).copy()
 
         super(tqdm_rich, self).__init__(*args, **kwargs)
 
@@ -67,16 +69,27 @@ class tqdm_rich(std_tqdm):  # pragma: no cover
         d = self.format_dict
         if progress is None:
             progress = (
-                "[progress.description]{task.description}"
-                "[progress.percentage]{task.percentage:>4.0f}%",
+                (
+                    "[progress.description]{task.description}"
+                    "[progress.percentage]{task.percentage:>4.0f}%"
+                ),
                 BarColumn(bar_width=None),
                 FractionColumn(
-                    unit_scale=d['unit_scale'], unit_divisor=d['unit_divisor']),
-                "[", TimeElapsedColumn(), "<", TimeRemainingColumn(),
-                ",", RateColumn(unit=d['unit'], unit_scale=d['unit_scale'],
-                                unit_divisor=d['unit_divisor']), "]"
+                    unit_scale=d["unit_scale"], unit_divisor=d["unit_divisor"]
+                ),
+                "[",
+                TimeElapsedColumn(),
+                "<",
+                TimeRemainingColumn(),
+                ",",
+                RateColumn(
+                    unit=d["unit"],
+                    unit_scale=d["unit_scale"],
+                    unit_divisor=d["unit_divisor"],
+                ),
+                "]",
             )
-        options.setdefault('transient', not self.leave)
+        options.setdefault("transient", not self.leave)
 
         self._prog = self.get_or_create_progress(*progress, **options)
         self._task_id = self._prog.add_task(self.desc or "", **d)
@@ -91,7 +104,7 @@ class tqdm_rich(std_tqdm):  # pragma: no cover
         pass
 
     def display(self, *_, **__):
-        if not hasattr(self, '_prog'):
+        if not hasattr(self, "_prog"):
             return
         self._prog.update(self._task_id, completed=self.n, description=self.desc)
 
@@ -103,7 +116,7 @@ class tqdm_rich(std_tqdm):  # pragma: no cover
         ----------
         total  : int or float, optional. Total to use for the new bar.
         """
-        if hasattr(self, '_prog'):
+        if hasattr(self, "_prog"):
             self._prog.reset(total=total)
         super(tqdm_rich, self).reset(total=total)
 
@@ -137,6 +150,7 @@ class rich_tqdm_cls:
             if attr != "_lock":
                 raise AttributeError(attr) from e
 
+
 # Overwrite the tqdm reference in datasets.utils.logging
 logging.tqdm = rich_tqdm_cls()
 
@@ -157,10 +171,42 @@ def prepare_fleurs_dataset(output_dir: str = None, use_cache: bool = True) -> No
     else:
         download_mode = DownloadMode.FORCE_REDOWNLOAD
 
-    load_dataset(
-        "google/fleurs", "en_us",
+    dataset = load_dataset(
+        "google/fleurs",
+        "en_us",
         cache_dir=str(output_dir),
         download_mode=download_mode,
     )
 
-    print("🌸 Downloaded all splits")
+    print("🌸 [bold green]Downloaded all splits for `google/fleurs`.[/bold green]")
+
+    with Progress() as progress:
+        all_splits = DATASETS["fleurs"]["splits"]
+        all_splits_task_id = progress.add_task(
+            "[bold purple]Preparing transcriptions files...[/bold purple]",
+            total=len(all_splits),
+        )
+
+        for split in all_splits:
+            dialogue_split_dir = output_dir / "dialogues" / split
+            dialogue_split_dir.mkdir(parents=True, exist_ok=True)
+
+            split_dataset = dataset[split]
+            split_progress_task_id = progress.add_task(
+                f"{split.upper()}", total=len(split_dataset)
+            )
+
+            for sample in split_dataset:
+                audio_filename = Path(sample["path"]).name.split(".")[0]
+                raw_transcription = sample["raw_transcription"]
+                with open(dialogue_split_dir / f"{audio_filename}.txt", "w") as f:
+                    f.write(raw_transcription)
+
+                progress.update(split_progress_task_id, advance=1)
+
+            progress.update(split_progress_task_id, visible=False)
+            progress.advance(all_splits_task_id)
+
+        progress.update(all_splits_task_id, visible=False)
+
+    print("🌸 [bold green]Prepared all splits for `google/fleurs`.[/bold green]")

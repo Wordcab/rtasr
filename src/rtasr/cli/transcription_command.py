@@ -226,8 +226,10 @@ class TranscriptionASRCommand:
                 for split in splits:
                     split_data = hf_dataset[split]
                     for data_item in split_data:
-                        _path = Path(data_item["path"])
-                        audio_path = _path.parent / split / _path.name
+                        audio_path = (
+                            Path(data_item["path"]).parent
+                            / f"{data_item['audio']['path']}"
+                        )
                         audio_filepaths[split].append(audio_path)
 
             else:

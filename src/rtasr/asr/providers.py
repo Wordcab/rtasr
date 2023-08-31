@@ -47,6 +47,14 @@ from rtasr.concurrency import ConcurrencyHandler, ConcurrencyToken
 from rtasr.utils import build_query_string
 
 
+class GatewayTimeoutError(Exception):
+    """Exception raised when the API call times out."""
+    def __init__(self, status_code) -> None:
+        """Initialize the exception."""
+        self.status_code = status_code
+        super().__init__(f"Gateway Timeout: Status Code {status_code}")
+
+
 class ProviderConfig(BaseModel):
     """The base class for all ASR provider configurations."""
 
@@ -329,6 +337,7 @@ class ASRProvider(ABC):
             except (
                 aiohttp.client_exceptions.ClientOSError,
                 aiohttp.client_exceptions.ServerDisconnectedError,
+                GatewayTimeoutError,
             ) as e:
                 retries += 1
                 if retries >= self.max_retries:
@@ -606,7 +615,12 @@ class AssemblyAI(ASRProvider):
                 data=f,
                 headers=headers,
             ) as response:
-                content = (await response.text()).strip()
+                if response.status == 500:
+                    raise GatewayTimeoutError(response.status)
+                elif response.status == 401 or response.status == 400:
+                    raise Exception(await response.text())
+                else:
+                    content = (await response.text()).strip()
 
         upload_url = json.loads(content).get("upload_url")
         payload = {"audio_url": upload_url, **self.options}
@@ -614,7 +628,12 @@ class AssemblyAI(ASRProvider):
         async with session.post(
             url=f"{url}/transcript", json=payload, headers=headers
         ) as response:
-            content = (await response.text()).strip()
+            if response.status == 500:
+                raise GatewayTimeoutError(response.status)
+            elif response.status == 401 or response.status == 400:
+                raise Exception(await response.text())
+            else:
+                content = (await response.text()).strip()
 
         transcript_id = json.loads(content).get("id")
 
@@ -622,7 +641,12 @@ class AssemblyAI(ASRProvider):
             async with session.get(
                 url=f"{url}/transcript/{transcript_id}", headers=headers
             ) as response:
-                content = (await response.text()).strip()
+                if response.status == 500:
+                    raise GatewayTimeoutError(response.status)
+                elif response.status == 401 or response.status == 400:
+                    raise Exception(await response.text())
+                else:
+                    content = (await response.text()).strip()
 
             body = json.loads(content)
             if body.get("status") == "completed":
@@ -777,7 +801,12 @@ class Deepgram(ASRProvider):
         _url = f"{url}{build_query_string(self.options)}"
         async with aiofiles.open(audio_file, mode="rb") as f:
             async with session.post(url=_url, data=f, headers=headers) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                elif response.status == 504:
+                    raise GatewayTimeoutError(response.status)
+                else:
+                    raise Exception(await response.text())
 
         if not content:
             status = TranscriptionStatus.FAILED
@@ -892,7 +921,12 @@ class RevAI(ASRProvider):
             async with session.post(
                 url=f"{url}/jobs/", data=form, headers=headers
             ) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                elif response.status == 504:
+                    raise GatewayTimeoutError(response.status)
+                else:
+                    raise Exception(await response.text())
 
         body = json.loads(content)
         job_id = body.get("id")
@@ -901,23 +935,31 @@ class RevAI(ASRProvider):
             async with session.get(
                 url=f"{url}/jobs/{job_id}", headers=headers
             ) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
 
-            body = json.loads(content)
-            if body.get("status") == "transcribed":
-                status = TranscriptionStatus.COMPLETED
-                break
-            elif body.get("status") == "failed":
-                status = TranscriptionStatus.FAILED
-                break
-            else:
-                await asyncio.sleep(3)
+                    body = json.loads(content)
+                    if body.get("status") == "transcribed":
+                        status = TranscriptionStatus.COMPLETED
+                        break
+                    elif body.get("status") == "failed":
+                        status = TranscriptionStatus.FAILED
+                        break
+                    else:
+                        await asyncio.sleep(3)
+                elif response.status == 504:
+                    await asyncio.sleep(3)
+                else:
+                    raise Exception(await response.text())
 
         if status == TranscriptionStatus.COMPLETED:
             async with session.get(
                 url=f"{url}/jobs/{job_id}/transcript", headers=headers
             ) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                else:
+                    raise Exception(await response.text())
 
             body = json.loads(content)
             asr_output = RevAIOutput.from_json(body)
@@ -1010,7 +1052,12 @@ class Speechmatics(ASRProvider):
             form.add_field("config", json.dumps(self.options, ensure_ascii=False))
 
             async with session.post(url=_url, data=form, headers=headers) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                elif response.status == 503:
+                    raise GatewayTimeoutError(response.status)
+                else:
+                    raise Exception(await response.text())
 
         body = json.loads(content)
         if body.get("error") == "Forbidden":
@@ -1023,7 +1070,12 @@ class Speechmatics(ASRProvider):
 
         while True:
             async with session.get(url=f"{_url}/{job_id}", headers=headers) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                elif response.status == 503:
+                    asyncio.sleep(3)
+                else:
+                    raise Exception(await response.text())
 
             body = json.loads(content)
             _job = body.get("job")
@@ -1042,7 +1094,12 @@ class Speechmatics(ASRProvider):
                 url=f"{_url}/{job_id}/transcript?format=json-v2",
                 headers=headers,
             ) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                elif response.status == 503:
+                    raise GatewayTimeoutError(response.status)
+                else:
+                    raise Exception(await response.text())
 
             body = json.loads(content)
             asr_output = SpeechmaticsOutput.from_json(body)
@@ -1132,6 +1189,8 @@ class Wordcab(ASRProvider):
                 if response.status == 201 or response.status == 200:
                     content = (await response.text()).strip()
                 elif response.status == 504:
+                    raise GatewayTimeoutError(response.status)
+                else:
                     raise Exception(f"Wordcab API unavailable {response.status}.")
 
         body = json.loads(content)
@@ -1142,7 +1201,12 @@ class Wordcab(ASRProvider):
             async with session.get(
                 url=f"{url}/jobs/{job_name}", headers=headers
             ) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                elif response.status == 504:
+                    asyncio.sleep(3)
+                else:
+                    raise Exception(await response.text())
 
             body = json.loads(content)
             if body.get("job_status") == "TranscriptComplete":
@@ -1158,7 +1222,12 @@ class Wordcab(ASRProvider):
             async with session.get(
                 url=f"{url}/transcripts/{transcript_id}", headers=headers
             ) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                elif response.status == 504:
+                    raise GatewayTimeoutError(response.status)
+                else:
+                    raise Exception(await response.text())
 
             body = json.loads(content)
             asr_output = WordcabOutput.from_json(body)

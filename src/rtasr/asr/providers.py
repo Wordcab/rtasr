@@ -224,68 +224,68 @@ class ASRProvider(ABC):
 
             step_progress_task_id = step_progress.add_task(
                 "",
-                action=f"[bold green]{self.__class__.__name__}[/bold green]",
+                action=(
+                    f"[bold yellow][ {split_name} ][/bold yellow]"
+                    f" [bold green]{self.__class__.__name__}[/bold green]"
+                ),
                 total=len(tasks),
             )
 
-            try:
-                for future in asyncio.as_completed(tasks):
-                    task_result = await future
-                    audio_file_name, status, asr_output = task_result
+        try:
+            for future in asyncio.as_completed(tasks):
+                task_result = await future
+                audio_file_name, status, asr_output = task_result
 
-                    if (
-                        status == TranscriptionStatus.CACHED
-                        or status == TranscriptionStatus.COMPLETED
-                    ):
-                        task_tracking[audio_file_name]["status"] = status
-                        _split = task_tracking[audio_file_name]["split"]
+                if (
+                    status == TranscriptionStatus.CACHED
+                    or status == TranscriptionStatus.COMPLETED
+                ):
+                    task_tracking[audio_file_name]["status"] = status
+                    _split = task_tracking[audio_file_name]["split"]
 
-                        if not task_tracking[audio_file_name]["rttm_cache"]:
-                            rttm_lines = await self.result_to_rttm(
-                                asr_output=asr_output
-                            )
-                            await self._save_rttm_files(
-                                audio_file_name=audio_file_name,
-                                rttm_lines=rttm_lines,
-                                output_dir=output_dir / _split,
-                            )
+                    if not task_tracking[audio_file_name]["rttm_cache"]:
+                        rttm_lines = await self.result_to_rttm(asr_output=asr_output)
+                        await self._save_rttm_files(
+                            audio_file_name=audio_file_name,
+                            rttm_lines=rttm_lines,
+                            output_dir=output_dir / _split,
+                        )
 
-                        if not task_tracking[audio_file_name]["dialogue_cache"]:
-                            dialogue_lines = await self.result_to_dialogue(
-                                asr_output=asr_output
-                            )
-                            await self._save_dialogue_files(
-                                audio_file_name=audio_file_name,
-                                dialogue_lines=dialogue_lines,
-                                output_dir=output_dir / _split,
-                            )
+                    if not task_tracking[audio_file_name]["dialogue_cache"]:
+                        dialogue_lines = await self.result_to_dialogue(
+                            asr_output=asr_output
+                        )
+                        await self._save_dialogue_files(
+                            audio_file_name=audio_file_name,
+                            dialogue_lines=dialogue_lines,
+                            output_dir=output_dir / _split,
+                        )
 
-                        if not task_tracking[audio_file_name]["asr_output_cache"]:
-                            await self._save_asr_outputs(
-                                audio_file_name=audio_file_name,
-                                asr_output=asr_output,
-                                output_dir=output_dir / _split,
-                            )
+                    if not task_tracking[audio_file_name]["asr_output_cache"]:
+                        await self._save_asr_outputs(
+                            audio_file_name=audio_file_name,
+                            asr_output=asr_output,
+                            output_dir=output_dir / _split,
+                        )
 
-                    elif status == TranscriptionStatus.FAILED:
-                        task_tracking[audio_file_name]["status"] = status
-                        if isinstance(asr_output, Exception):
-                            task_tracking[audio_file_name]["error"] = str(asr_output)
+                elif status == TranscriptionStatus.FAILED:
+                    task_tracking[audio_file_name]["status"] = status
+                    if isinstance(asr_output, Exception):
+                        task_tracking[audio_file_name]["error"] = str(asr_output)
 
-                    step_progress.advance(step_progress_task_id)
+                step_progress.advance(step_progress_task_id)
 
-            except Exception as e:
-                print(
-                    f"[bold red]Problem with {self.__class__.__name__} -> {e}[/bold"
-                    " red]]"
-                )
-                # If there is an exception, we mark all the tasks still in progress
-                # as failed.
-                for task in task_tracking.values():
-                    if task["status"] == TranscriptionStatus.IN_PROGRESS:
-                        task_tracking[task["audio_file_name"]][
-                            "status"
-                        ] = TranscriptionStatus.FAILED
+        except Exception as e:
+            print(
+                f"[bold red]Problem with {self.__class__.__name__} -> {e}[/bold red]]"
+            )
+            # If there is an exception, we mark all the tasks still in progress
+            # as failed.
+            for task in task_tracking.values():
+                if task["status"] == TranscriptionStatus.IN_PROGRESS:
+                    task_tracking[task["audio_file_name"]][
+                        "status"
+                    ] = TranscriptionStatus.FAILED
 
         step_progress.update(step_progress_task_id, advance=len(audio_files))
         split_progress.advance(split_progress_task_id)
@@ -1129,7 +1129,10 @@ class Wordcab(ASRProvider):
             form.add_field("file", f, filename=audio_file.name)
 
             async with session.post(url=_url, data=form, headers=headers) as response:
-                content = (await response.text()).strip()
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                else:
+                    raise Exception(f"Wordcab API unavailable {response.status}.")
 
         body = json.loads(content)
         job_name = body.get("job_name")

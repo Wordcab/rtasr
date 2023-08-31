@@ -371,7 +371,9 @@ class TranscriptionASRCommand:
         use_cache: bool,
         debug: bool,
     ) -> List[ProviderResult]:
-        splits_progress_task_id = splits_progress.add_task("", total=len(engines))
+        splits_progress_task_id = splits_progress.add_task(
+            "", total=len(engines) * len(audio_files.keys())
+        )
 
         timeout = aiohttp.ClientTimeout(total=1800)
         async with aiohttp.ClientSession(timeout=timeout) as session:

@@ -296,7 +296,7 @@ class ASRProvider(ABC):
                         "status"
                     ] = TranscriptionStatus.FAILED
 
-        step_progress.update(step_progress_task_id, advance=len(audio_files))
+        step_progress.update(step_progress_task_id, advance=len(tasks))
         split_progress.advance(split_progress_task_id)
 
         status_counts = Counter(task["status"] for task in task_tracking.values())

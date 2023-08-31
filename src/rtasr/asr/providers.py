@@ -1129,9 +1129,9 @@ class Wordcab(ASRProvider):
             form.add_field("file", f, filename=audio_file.name)
 
             async with session.post(url=_url, data=form, headers=headers) as response:
-                if response.status == 200:
+                if response.status == 201 or response.status == 200:
                     content = (await response.text()).strip()
-                else:
+                elif response.status == 504:
                     raise Exception(f"Wordcab API unavailable {response.status}.")
 
         body = json.loads(content)

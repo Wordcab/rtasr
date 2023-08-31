@@ -1132,9 +1132,7 @@ class Wordcab(ASRProvider):
                 if response.status == 200:
                     content = (await response.text()).strip()
                 else:
-                    raise Exception(
-                        f"Wordcab API unavailable {response.status}."
-                    )
+                    raise Exception(f"Wordcab API unavailable {response.status}.")
 
         body = json.loads(content)
         job_name = body.get("job_name")

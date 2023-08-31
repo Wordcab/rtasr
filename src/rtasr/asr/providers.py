@@ -49,6 +49,7 @@ from rtasr.utils import build_query_string
 
 class GatewayTimeoutError(Exception):
     """Exception raised when the API call times out."""
+
     def __init__(self, status_code) -> None:
         """Initialize the exception."""
         self.status_code = status_code

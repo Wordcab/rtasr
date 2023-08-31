@@ -349,7 +349,10 @@ class TranscriptionASRCommand:
                     f" [green]{result.completed}[/green]/[cyan]{result.cached}[/cyan]/[red]{result.failed}[/red]"
                 )
                 if len(result.errors) > 0:
-                    errors = "\n".join([f"  - {e}" for e in result.errors])
+                    _errors = []
+                    for e in result.errors:
+                        _errors.extend(e.split("\n"))
+                    errors = "".join([f"  - {e}" for e in _errors])
                     print(
                         f"[bold red]{len(result.errors)} Errors[/bold red]:\n{errors}"
                     )

@@ -1053,7 +1053,7 @@ class Speechmatics(ASRProvider):
             form.add_field("config", json.dumps(self.options, ensure_ascii=False))
 
             async with session.post(url=_url, data=form, headers=headers) as response:
-                if response.status == 200:
+                if response.status == 201:
                     content = (await response.text()).strip()
                 elif response.status == 503:
                     raise GatewayTimeoutError(response.status)

@@ -22,21 +22,29 @@
 
 ---
 
-## Early Results
+## Results
+
+### WER
+
+`wer` = Word Error Rate, `mer` = Match Error Rate, `wil` = Word Information Lost
+
+
+* Dataset: [Fleurs](https://huggingface.co/datasets/google/fleurs)
+
+![WER evaluation](./assets/wer_evaluation_fleurs.png)
 
 ### DER
 
-* Dataset: [AMI Corpus](http://groups.inf.ed.ac.uk/ami/corpus/)
-
-![DER evaluation](./assets/der_evaluation_ami.png)
+`der` = Diarization Error Rate, `miss` = missed detection, `confusion` = incorrect detection, `fa` = false alarm
 
 * Dataset: [VoxConverse](https://www.robots.ox.ac.uk/~vgg/data/voxconverse/)
 
 ![DER evaluation](./assets/der_evaluation_voxconverse.png)
 
-### WER
+* Dataset: [AMI Corpus](http://groups.inf.ed.ac.uk/ami/corpus/)
 
-Work in progress...
+![DER evaluation](./assets/der_evaluation_ami.png)
+
 
 ## Installation
 

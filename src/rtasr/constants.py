@@ -27,7 +27,7 @@ DATASETS = OrderedDict(
                     "test": "test/rttm",
                     "train": "train/rttm",
                 },
-                "metrics": ["der", "wer"],
+                "metrics": ["der", "wer", "wrr"],
                 "number_of_files": {
                     "train": 134,
                     "dev": 18,
@@ -39,7 +39,7 @@ DATASETS = OrderedDict(
             "fleurs",
             {
                 "splits": ["train", "validation", "test"],
-                "metrics": ["wer"],
+                "metrics": ["wer", "wrr"],
                 "number_of_files": {
                     "train": 2602,
                     "validation": 394,
@@ -202,3 +202,4 @@ class Metrics(str, Enum):
 
     DER = "DER"
     WER = "WER"
+    WRR = "WRR"

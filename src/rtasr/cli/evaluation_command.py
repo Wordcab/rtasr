@@ -232,7 +232,7 @@ class EvaluationCommand:
                     "dataset": _dataset,
                 }
 
-            elif _metric == Metrics.WER:
+            elif _metric == Metrics.WER or _metric == Metrics.WRR:
                 ref_dialogues: Dict[str, List[str]] = {s: [] for s in splits}
                 for split in splits:
                     _path = dataset_dir / "dialogues" / split
@@ -402,7 +402,7 @@ class EvaluationCommand:
         debug: bool,
     ) -> List[EvaluationResult]:
         """
-        Run the evaluation for the Word Error Rate (WER).
+        Run the evaluation for the Word Error Rate (WER) and Word Recognition Rate (WRR).
 
         Args:
             ref_dialogues (Dict[str, List[Path]]):

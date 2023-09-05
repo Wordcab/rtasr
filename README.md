@@ -24,14 +24,16 @@
 
 ## Results
 
-### WER
+### WER & WRR
 
-`wer` = Word Error Rate, `mer` = Match Error Rate, `wil` = Word Information Lost
+`wer` = Word Error Rate, `mer` = Match Error Rate, `wil` = Word Information Lost, `wrr` = Word Recognition Rate
 
 
 * Dataset: [Fleurs](https://huggingface.co/datasets/google/fleurs)
 
 ![WER evaluation](./assets/wer_evaluation_fleurs.png)
+
+![WRR evaluation](./assets/wrr_evaluation_fleurs.png)
 
 ### DER
 

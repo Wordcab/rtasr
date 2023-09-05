@@ -40,7 +40,7 @@ class TestConstants:
             "test": "test/rttm",
             "train": "train/rttm",
         }
-        assert DATASETS["ami"]["metrics"] == ["der", "wer"]
+        assert DATASETS["ami"]["metrics"] == ["der", "wer", "wrr"]
         assert DATASETS["ami"]["number_of_files"] == {
             "train": 134,
             "dev": 18,
@@ -50,7 +50,7 @@ class TestConstants:
     def test_datasets_fleurs(self) -> None:
         """Test Fleurs dataset."""
         assert DATASETS["fleurs"]["splits"] == ["train", "validation", "test"]
-        assert DATASETS["fleurs"]["metrics"] == ["wer"]
+        assert DATASETS["fleurs"]["metrics"] == ["wer", "wrr"]
         assert DATASETS["fleurs"]["number_of_files"] == {
             "train": 2602,
             "validation": 394,
@@ -201,15 +201,20 @@ class TestConstants:
         assert Metrics.__members__ == {
             "DER": "DER",
             "WER": "WER",
+            "WRR": "WRR",
         }
 
         assert Metrics.DER == "DER"
         assert Metrics.WER == "WER"
+        assert Metrics.WRR == "WRR"
 
         assert Metrics.DER == Metrics("DER")
         assert Metrics.WER == Metrics("WER")
+        assert Metrics.WRR == Metrics("WRR")
 
         with pytest.raises(ValueError):
             Metrics("der")
         with pytest.raises(ValueError):
             Metrics("wer")
+        with pytest.raises(ValueError):
+            Metrics("wrr")

@@ -39,6 +39,7 @@ class ProviderComputeScore(BaseModel):
     mer: Union[float, None]
     wer: Union[float, None]
     wil: Union[float, None]
+    wrr: Union[float, None]
     status: EvaluationStatus
 
 
@@ -110,7 +111,11 @@ async def evaluate_wer(
                     status == EvaluationStatus.CACHED
                     or status == EvaluationStatus.EVALUATED
                 ):
-                    file_exists, file_path = await _check_cache(
+                    _results = task_result.scores[provider].model_dump()
+                    wrr_results = _results.pop("wrr")
+
+                    # WER
+                    wer_file_exists, wer_file_path = await _check_cache(
                         file_name=filename,
                         evaluation_dir=evaluation_dir,
                         split=split_name,
@@ -118,7 +123,7 @@ async def evaluate_wer(
                         metric="wer",
                     )
 
-                    if use_cache and file_exists:
+                    if use_cache and wer_file_exists:
                         task_tracking[filename]["provider_results"][
                             provider
                         ] = EvaluationStatus.CACHED
@@ -127,8 +132,30 @@ async def evaluate_wer(
                             provider
                         ] = EvaluationStatus.EVALUATED
                         await store_evaluation_results(
-                            results=task_result.scores[provider].model_dump(),
-                            save_path=file_path,
+                            results=_results,
+                            save_path=wer_file_path,
+                        )
+
+                    # WRR
+                    wrr_file_exists, wrr_file_path = await _check_cache(
+                        file_name=filename,
+                        evaluation_dir=evaluation_dir,
+                        split=split_name,
+                        provider=provider,
+                        metric="wrr",
+                    )
+
+                    if use_cache and wrr_file_exists:
+                        task_tracking[filename]["provider_results"][
+                            provider
+                        ] = EvaluationStatus.CACHED
+                    else:
+                        task_tracking[filename]["provider_results"][
+                            provider
+                        ] = EvaluationStatus.EVALUATED
+                        await store_evaluation_results(
+                            results={"wrr": wrr_results, "status": status},
+                            save_path=wrr_file_path,
                         )
 
                 else:
@@ -215,11 +242,13 @@ async def compute_score(
                     reference_transform=wer_contiguous,
                     hypothesis_transform=wer_contiguous,
                 )
+                _wrr = 1 - _score.wer
                 score = ProviderComputeScore(
                     hits=_score.hits,
                     mer=_score.mer,
                     wer=_score.wer,
                     wil=_score.wil,
+                    wrr=_wrr,
                     status=EvaluationStatus.EVALUATED,
                 )
 
@@ -229,6 +258,7 @@ async def compute_score(
                     mer=None,
                     wer=None,
                     wil=None,
+                    wrr=None,
                     status=EvaluationStatus.NOT_FOUND,
                 )
 

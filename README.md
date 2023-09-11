@@ -33,7 +33,11 @@
 
 ![WER evaluation](./assets/wer_evaluation_fleurs.png)
 
-![WRR evaluation](./assets/wrr_evaluation_fleurs.png)
+<div style="display: flex; justify-content: space-between;">
+    <img src="./assets/wer_table_evaluation_fleurs.png" alt="WRR evaluation" width="55%" />
+    <img src="./assets/wrr_table_evaluation_fleurs.png" alt="WER evaluation" width="40%" />
+</div>
+
 
 ### DER
 
@@ -41,11 +45,17 @@
 
 * Dataset: [VoxConverse](https://www.robots.ox.ac.uk/~vgg/data/voxconverse/)
 
-![DER evaluation](./assets/der_evaluation_voxconverse.png)
+<div style="display: flex; justify-content: space-between;">
+    <img src="./assets/der_evaluation_voxconverse.png" alt="DER graph evaluation" width="50%" />
+    <img src="./assets/der_table_evaluation_voxconverse.png" alt="DER table evaluation" width="45%" />
+</div>
 
 * Dataset: [AMI Corpus](http://groups.inf.ed.ac.uk/ami/corpus/)
 
-![DER evaluation](./assets/der_evaluation_ami.png)
+<div style="display: flex; justify-content: space-between;">
+    <img src="./assets/der_evaluation_ami.png" alt="DER graph evaluation" width="50%" />
+    <img src="./assets/der_table_evaluation_ami.png" alt="DER table evaluation" width="45%" />
+</div>
 
 
 ## Installation

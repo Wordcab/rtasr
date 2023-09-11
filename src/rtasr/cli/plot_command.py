@@ -5,12 +5,14 @@ from pathlib import Path
 from typing import List, Union
 
 from rich import print
+from typing_extensions import Literal
 
 from rtasr.cli_messages import error_message
 from rtasr.constants import DATASETS, Metrics
 from rtasr.plots import (
     DataPoint,
     load_data_from_cache,
+    plot_data_into_table,
     plot_data_point_distribution,
 )
 
@@ -18,6 +20,7 @@ from rtasr.plots import (
 def plot_command_factory(args: argparse.Namespace):
     return PlotCommand(
         metric=args.metric,
+        plot_type=args.plot_type,
         dataset=args.dataset,
         split=args.split,
         evaluation_dir=args.evaluation_dir,
@@ -38,6 +41,15 @@ class PlotCommand:
             help="The metric to plot.",
             type=str,
             required=True,
+        )
+        subparser.add_argument(
+            "-t",
+            "--plot_type",
+            help="The plot type to use. Defaults to `graph`.",
+            type=str,
+            required=True,
+            default="graph",
+            choices=["graph", "table"],
         )
         subparser.add_argument(
             "-d",
@@ -78,6 +90,7 @@ class PlotCommand:
     def __init__(
         self,
         metric: str,
+        plot_type: Literal["graph", "table"],
         dataset: str,
         split: str,
         evaluation_dir: Union[str, None] = None,
@@ -85,6 +98,7 @@ class PlotCommand:
     ) -> None:
         """Initialize the command."""
         self.metric = metric
+        self.plot_type = plot_type
         self.dataset = dataset
         self.split = split
         self.evaluation_dir = evaluation_dir
@@ -162,9 +176,14 @@ class PlotCommand:
                 )
                 exit(1)
 
-            save_path = plot_data_point_distribution(
-                data=data, metric=_metric, dataset=_dataset, output_dir=self.output_dir
-            )
+            if self.plot_type == "table":
+                save_path = plot_data_into_table(
+                    data=data, metric=_metric, dataset=_dataset, output_dir=self.output_dir
+                )
+            else:
+                save_path = plot_data_point_distribution(
+                    data=data, metric=_metric, dataset=_dataset, output_dir=self.output_dir
+                )
 
             print(f"Plot saved to [bold]{save_path}[/bold].")
 

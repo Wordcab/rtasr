@@ -3,6 +3,7 @@
 import datetime
 import json
 from collections import Counter
+from enum import Enum
 from pathlib import Path
 from typing import Dict, List
 
@@ -20,6 +21,19 @@ class DataPoint(BaseModel):
     asr_provider: str
     metric: str
     value: float
+
+
+class ProviderNameDisplay(str, Enum):
+    """The provider name display."""
+
+    assemblyai = "AssemblyAI"
+    aws = "AWS"
+    azure = "Azure"
+    deepgram = "Deepgram"
+    google = "Google"
+    revai = "Rev.ai"
+    speechmatics = "Speechmatics"
+    wordcab = "Wordcab"
 
 
 def load_data_from_cache(
@@ -144,6 +158,95 @@ def plot_data_point_distribution(
         save_path,
         dpi=300,
         bbox_inches="tight",
+    )
+
+    return save_path
+
+
+def plot_data_into_table(data: List[DataPoint], metric: str, dataset: str, output_dir: Path) -> Path:
+    """Plot the data into a table."""
+    _data = [entry.model_dump() for entry in data]
+
+    df = pd.DataFrame(_data)
+    df = df.rename(
+        columns={"asr_provider": "ASR Provider", "metric": "Metric", "value": "Value"}
+    )
+
+    df = df[df["Metric"] != "hits"]
+    df = df[df["Metric"] != "false_alarms"]
+
+    fig = plt.gcf()
+    ax = plt.gca()
+
+    all_providers = get_provider_names(data)
+    all_metrics = get_metric_names(data)
+
+    # Remove false_alarm and hits from the list of metrics to display
+    if "false_alarm" in all_metrics:
+        all_metrics.remove("false_alarm")
+    if "hits" in all_metrics:
+        all_metrics.remove("hits")
+
+    columns = ["ASR Provider"] + all_metrics
+    table_data = {provider: [] for provider in all_providers}
+    for m in all_metrics:
+        for provider in all_providers:
+            all_values = df.loc[
+                (df["ASR Provider"] == provider) & (df["Metric"] == m), "Value"
+            ].values
+            if len(all_values) > 0:
+                table_data[provider].append(round(all_values.mean(), 3))
+            else:
+                table_data[provider].append(0)
+
+    # Update provider names with display names
+    _table_data = table_data.copy()
+    for k in table_data.keys():
+        _table_data[ProviderNameDisplay[k].value] = table_data.get(k)
+
+    rows_data = [[provider] + _table_data[provider] for provider in all_providers]
+    table = ax.table(
+        cellText=rows_data, cellLoc="center", colLabels=columns, loc="center"
+    )
+
+    table.auto_set_font_size(False)
+    table.set_fontsize(10)
+    table.scale(1, 1.5)
+
+    # Change background color for header
+    for i in range(len(columns)):
+        table[(0, i)].set_facecolor("#56b5fd")
+        table[(0, i)].set_text_props(color="w")
+        table[(0, i)].set_fontsize(12)
+
+    # Make the best metric bold
+    for i in range(1, len(all_metrics) + 1):
+        if metric == "WER" or metric == "DER":
+            best_metric = min([row[i] for row in rows_data])
+        else:
+            best_metric = max([row[i] for row in rows_data])
+
+        for j in range(1, len(all_providers) + 1):
+            if rows_data[j - 1][i] == best_metric:
+                table[(j, i)].set_text_props(weight="bold")
+            else:
+                table[(j, i)].set_text_props(color="#444444")
+
+    table.auto_set_column_width(col=list(range(len(columns))))
+
+    fig.tight_layout()
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis("off")
+
+    # Save the plot
+    save_path = output_dir / f"{metric.lower()}_evaluation_{dataset.lower()}.png"
+    plt.savefig(
+        save_path,
+        dpi=300,
+        bbox_inches="tight",
+        pad_inches=0,
+        transparent=True,
     )
 
     return save_path

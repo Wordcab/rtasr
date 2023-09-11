@@ -178,11 +178,17 @@ class PlotCommand:
 
             if self.plot_type == "table":
                 save_path = plot_data_into_table(
-                    data=data, metric=_metric, dataset=_dataset, output_dir=self.output_dir
+                    data=data,
+                    metric=_metric,
+                    dataset=_dataset,
+                    output_dir=self.output_dir,
                 )
             else:
                 save_path = plot_data_point_distribution(
-                    data=data, metric=_metric, dataset=_dataset, output_dir=self.output_dir
+                    data=data,
+                    metric=_metric,
+                    dataset=_dataset,
+                    output_dir=self.output_dir,
                 )
 
             print(f"Plot saved to [bold]{save_path}[/bold].")

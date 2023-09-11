@@ -163,7 +163,9 @@ def plot_data_point_distribution(
     return save_path
 
 
-def plot_data_into_table(data: List[DataPoint], metric: str, dataset: str, output_dir: Path) -> Path:
+def plot_data_into_table(
+    data: List[DataPoint], metric: str, dataset: str, output_dir: Path
+) -> Path:
     """Plot the data into a table."""
     _data = [entry.model_dump() for entry in data]
 

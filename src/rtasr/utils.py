@@ -15,6 +15,7 @@ import aiohttp
 import dotenv
 import numpy as np
 from aiopath import AsyncPath
+from pydantic import BaseModel
 from rich import print
 from rich.console import Group
 from rich.panel import Panel
@@ -25,6 +26,13 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
 )
+
+
+class ProviderPricing(BaseModel):
+    """Provider pricing."""
+
+    value: float
+    unit: str
 
 
 def attach_punctuation_to_last_word(sentence: str) -> str:
@@ -258,6 +266,34 @@ def get_human_readable_duration(seconds: Union[float, List[float]]) -> str:
     m, s = divmod(seconds, 60)
 
     return f"{int(m):02d}:{int(s):02d}"
+
+
+def get_human_readable_price(seconds: Union[float, List[float]], pricing: dict) -> str:
+    """
+    Convert seconds to human readable price.
+
+    Args:
+        seconds (Union[float, List[float]]):
+            Duration in seconds or list of durations in seconds.
+        pricing (dict):
+            Pricing of provider containing value and unit.
+
+    Returns:
+        Human readable price.
+    """
+    if isinstance(seconds, list):
+        seconds = np.sum(seconds)
+
+    _pricing = ProviderPricing(**pricing)
+
+    if _pricing.unit == "minute":
+        price = _pricing.value * seconds / 60
+    elif _pricing.unit == "hour":
+        price = _pricing.value * seconds / 3600
+    else:
+        price = _pricing.value * seconds
+
+    return f"${price:.2f}"
 
 
 def get_files(path: Path) -> Path:

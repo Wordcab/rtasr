@@ -93,6 +93,10 @@ PROVIDERS = OrderedDict(
                     "speaker_labels": True,
                     "punctuate": True,
                 },
+                "pricing": {
+                    "value": 0.000181,
+                    "unit": "second",
+                },
             },
         ),
         (
@@ -103,6 +107,7 @@ PROVIDERS = OrderedDict(
                 "output": "AwsOutput",
                 "speaker_map": "AwsSpeakerMap",
                 "options": {},
+                "pricing": {},
             },
         ),
         (
@@ -113,6 +118,7 @@ PROVIDERS = OrderedDict(
                 "output": "AzureOutput",
                 "speaker_map": "AzureSpeakerMap",
                 "options": {},
+                "pricing": {},
             },
         ),
         (
@@ -129,6 +135,10 @@ PROVIDERS = OrderedDict(
                     "punctuate": True,
                     "utterances": True,
                 },
+                "pricing": {
+                    "value": 0.0044,
+                    "unit": "minute",
+                },
             },
         ),
         (
@@ -139,6 +149,7 @@ PROVIDERS = OrderedDict(
                 "output": "GoogleOutput",
                 "speaker_map": "GoogleSpeakerMap",
                 "options": {},
+                "pricing": {},
             },
         ),
         (
@@ -155,6 +166,10 @@ PROVIDERS = OrderedDict(
                     "skip_postprocessing": False,
                     "skip_punctuation": False,
                     "transcriber": "machine",
+                },
+                "pricing": {
+                    "value": 0.02,
+                    "unit": "minute",
                 },
             },
         ),
@@ -174,6 +189,10 @@ PROVIDERS = OrderedDict(
                         "operating_point": "enhanced",
                     },
                 },
+                "pricing": {
+                    "value": 0.0174,
+                    "unit": "minute",
+                },
             },
         ),
         (
@@ -190,6 +209,10 @@ PROVIDERS = OrderedDict(
                     "dual_channel": False,
                     "only_api": False,
                     "source": "audio",
+                },
+                "pricing": {
+                    "value": 0.0041,
+                    "unit": "minute",
                 },
             },
         ),

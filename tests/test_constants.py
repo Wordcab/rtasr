@@ -111,6 +111,10 @@ class TestConstants:
             "speaker_labels": True,
             "punctuate": True,
         }
+        assert PROVIDERS["assemblyai"]["pricing"] == {
+            "value": 0.000181,
+            "unit": "second",
+        }
 
     def test_providers_aws(self) -> None:
         """Test AWS provider."""
@@ -119,6 +123,7 @@ class TestConstants:
         assert PROVIDERS["aws"]["output"] == "AwsOutput"
         assert PROVIDERS["aws"]["speaker_map"] == "AwsSpeakerMap"
         assert PROVIDERS["aws"]["options"] == {}
+        assert PROVIDERS["aws"]["pricing"] == {}
 
     def test_providers_azure(self) -> None:
         """Test Azure provider."""
@@ -127,6 +132,7 @@ class TestConstants:
         assert PROVIDERS["azure"]["output"] == "AzureOutput"
         assert PROVIDERS["azure"]["speaker_map"] == "AzureSpeakerMap"
         assert PROVIDERS["azure"]["options"] == {}
+        assert PROVIDERS["azure"]["pricing"] == {}
 
     def test_providers_deepgram(self) -> None:
         """Test Deepgram provider."""
@@ -141,6 +147,10 @@ class TestConstants:
             "punctuate": True,
             "utterances": True,
         }
+        assert PROVIDERS["deepgram"]["pricing"] == {
+            "value": 0.0044,
+            "unit": "minute",
+        }
 
     def test_providers_google(self) -> None:
         """Test Google provider."""
@@ -149,6 +159,7 @@ class TestConstants:
         assert PROVIDERS["google"]["output"] == "GoogleOutput"
         assert PROVIDERS["google"]["speaker_map"] == "GoogleSpeakerMap"
         assert PROVIDERS["google"]["options"] == {}
+        assert PROVIDERS["google"]["pricing"] == {}
 
     def test_providers_revai(self) -> None:
         """Test Rev.ai provider."""
@@ -163,6 +174,10 @@ class TestConstants:
             "skip_postprocessing": False,
             "skip_punctuation": False,
             "transcriber": "machine",
+        }
+        assert PROVIDERS["revai"]["pricing"] == {
+            "value": 0.02,
+            "unit": "minute",
         }
 
     def test_providers_speechmatics(self) -> None:
@@ -180,6 +195,10 @@ class TestConstants:
                 "operating_point": "enhanced",
             },
         }
+        assert PROVIDERS["speechmatics"]["pricing"] == {
+            "value": 0.0174,
+            "unit": "minute",
+        }
 
     def test_providers_wordcab(self) -> None:
         """Test Wordcab provider."""
@@ -194,6 +213,10 @@ class TestConstants:
             "dual_channel": False,
             "only_api": False,
             "source": "audio",
+        }
+        assert PROVIDERS["wordcab"]["pricing"] == {
+            "value": 0.0041,
+            "unit": "minute",
         }
 
     def test_metrics(self) -> None:

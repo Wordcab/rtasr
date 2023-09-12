@@ -9,11 +9,12 @@ from datasets import load_dataset
 from rich import print
 
 from rtasr.cli_messages import error_message
-from rtasr.constants import DATASETS
+from rtasr.constants import DATASETS, PROVIDERS
 from rtasr.utils import (
     get_audio_duration_from_file,
     get_audio_duration_from_samples,
     get_human_readable_duration,
+    get_human_readable_price,
 )
 
 
@@ -145,6 +146,13 @@ class AudioLengthCommand:
                 f" yellow]{get_human_readable_duration(audio_durations)} (minutes:seconds)"
                 " [/bold yellow]"
             )
+            print("Estimated pricing:")
+            for _, val in PROVIDERS.items():
+                if val["pricing"] != {}:
+                    print(
+                        f"[bold purple]  - {val['engine']}:[/bold purple]"
+                        f" {get_human_readable_price(audio_durations, val['pricing'])}"
+                    )
 
         except KeyboardInterrupt:
             print("\n[bold red]Cancelled by user.[/bold red]\n")

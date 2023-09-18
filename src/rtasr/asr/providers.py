@@ -349,7 +349,7 @@ class ASRProvider(ABC):
                     print(
                         f"Retrying {audio_file.name} for {self.__class__.__name__}..."
                     )
-                    await asyncio.sleep(3)
+                    await asyncio.sleep(1)
 
             except Exception as e:
                 status = TranscriptionStatus.FAILED

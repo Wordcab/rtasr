@@ -204,7 +204,6 @@ PROVIDERS = OrderedDict(
                 "speaker_map": "WordcabSpeakerMap",
                 "concurrency_limit": 5,
                 "options": {
-                    "alignment": False,
                     "diarize": True,
                     "dual_channel": False,
                     "only_api": False,
@@ -212,6 +211,24 @@ PROVIDERS = OrderedDict(
                 },
                 "pricing": {
                     "value": 0.0041,
+                    "unit": "minute",
+                },
+            },
+        ),
+        (
+            "wordcab_hosted",
+            {
+                "engine": "WordcabHosted",
+                "output": "WordcabHostedOutput",
+                "speaker_map": "WordcabHostedSpeakerMap",
+                "concurrency_limit": 5,
+                "options": {
+                    "diarization": True,
+                    "dual_channel": False,
+                    "source_lang": "en",
+                },
+                "pricing": {
+                    "value": 0.0,  # You need to host your own Wordcab server.
                     "unit": "minute",
                 },
             },

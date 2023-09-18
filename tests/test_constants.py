@@ -208,7 +208,6 @@ class TestConstants:
         assert PROVIDERS["wordcab"]["speaker_map"] == "WordcabSpeakerMap"
         assert PROVIDERS["wordcab"]["concurrency_limit"] == 5
         assert PROVIDERS["wordcab"]["options"] == {
-            "alignment": False,
             "diarize": True,
             "dual_channel": False,
             "only_api": False,

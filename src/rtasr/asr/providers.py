@@ -23,6 +23,7 @@ from rtasr.asr.options import (
     GoogleOptions,
     RevAIOptions,
     SpeechmaticsOptions,
+    WordcabHostedOptions,
     WordcabOptions,
 )
 from rtasr.asr.schemas import (
@@ -40,6 +41,7 @@ from rtasr.asr.schemas import (
     RevAIOutput,
     SpeechmaticsOutput,
     SpeechmaticsResult,
+    WordcabHostedOutput,
     WordcabOutput,
     WordcabTranscript,
 )
@@ -1261,3 +1263,48 @@ class Wordcab(ASRProvider):
             rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
 
         return rttm_lines
+
+
+class WordcabHosted(ASRProvider):
+    """The ASR provider class for Wordcab hosted."""
+
+    def __init__(
+        self,
+        api_url: str,
+        api_key: str,
+        options: dict,
+        concurrency_limit: Union[int, None],
+    ) -> None:
+        super().__init__(api_url, api_key, concurrency_limit)
+        self.options = WordcabHostedOptions(**options)
+
+    @property
+    def output_schema(self) -> WordcabHostedOutput:
+        """ "The output format of the Wordcab hosted ASR provider."""
+        return WordcabHostedOutput
+
+    async def get_transcription(
+        self,
+        audio_file: Path,
+        url: HttpUrl,
+        session: aiohttp.ClientSession,
+    ) -> Tuple[str, TranscriptionStatus, WordcabHostedOutput]:
+        """Run the Wordcab hosted ASR provider."""
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            form = aiohttp.FormData()
+            form.add_field("file", f, filename=audio_file.name)
+
+            async with session.post(url=url, data=form) as response:
+                if response.status == 201 or response.status == 200:
+                    content = (await response.text()).strip()
+                elif response.status == 504:
+                    raise GatewayTimeoutError(response.status)
+                else:
+                    raise Exception(
+                        f"Wordcab Hosted API unavailable {response.status}."
+                    )
+
+        body = json.loads(content)
+        asr_output = WordcabHostedOutput.from_json(body)
+
+        return TranscriptionStatus.COMPLETED, asr_output

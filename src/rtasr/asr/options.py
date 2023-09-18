@@ -139,8 +139,20 @@ class WordcabOptions(TypedDict, total=False):
     https://docs.wordcab.com/reference/post_transcribe
     """
 
-    alignment: bool
     diarization: bool
     display_name: str
+    dual_channel: bool
+    source_lang: str
+
+
+class WordcabHostedOptions(TypedDict, total=False):
+    """
+    The options for the Wordcab hosted transcription.
+
+    References from the `wordcab-transcribe` project:
+    https://github.com/Wordcab/wordcab-transcribe
+    """
+
+    diarization: bool
     dual_channel: bool
     source_lang: str

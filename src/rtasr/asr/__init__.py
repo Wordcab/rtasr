@@ -8,6 +8,7 @@ from .options import (
     GoogleOptions,
     RevAIOptions,
     SpeechmaticsOptions,
+    WordcabHostedOptions,
     WordcabOptions,
 )
 from .providers import (
@@ -21,6 +22,7 @@ from .providers import (
     RevAI,
     Speechmatics,
     Wordcab,
+    WordcabHosted,
 )
 
 __all__ = [
@@ -42,4 +44,6 @@ __all__ = [
     "SpeechmaticsOptions",
     "Wordcab",
     "WordcabOptions",
+    "WordcabHosted",
+    "WordcabHostedOptions",
 ]

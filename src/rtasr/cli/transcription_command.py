@@ -166,6 +166,13 @@ class TranscriptionASRCommand:
                     print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
                     exit(1)
 
+            if self.local_file is None and self.dataset is None:
+                print(
+                    "You must specify either a local file or a dataset to run"
+                    " transcription."
+                )
+                exit(1)
+
             if self.local_file is not None:
                 local_file = Path(self.local_file)
                 if not local_file.exists():

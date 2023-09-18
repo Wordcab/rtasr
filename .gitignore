@@ -117,3 +117,7 @@ venv.bak/
 
 # .DS_Store
 .DS_Store
+
+# local audio folder
+local-audio/
+audio/

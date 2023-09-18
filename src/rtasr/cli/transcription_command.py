@@ -23,6 +23,7 @@ from rtasr.utils import create_live_panel, get_api_key, resolve_cache_dir
 def transcription_asr_command_factory(args: argparse.Namespace):
     return TranscriptionASRCommand(
         providers=args.providers,
+        local_file=args.local_file,
         dataset=args.dataset,
         split=args.split,
         dataset_dir=args.dataset_dir,
@@ -54,7 +55,23 @@ class TranscriptionASRCommand:
             nargs="+",
         )
         subparser.add_argument(
-            "-d", "--dataset", help="The dataset to use.", required=True, type=str
+            "-l",
+            "--local_file",
+            help=(
+                "The local file to use for transcription. If specified, the dataset"
+                " and split arguments are ignored."
+            ),
+            required=False,
+            default=None,
+            type=str,
+        )
+        subparser.add_argument(
+            "-d",
+            "--dataset",
+            help="The dataset to use.",
+            required=False,
+            default=None,
+            type=str,
         )
         subparser.add_argument(
             "-s",
@@ -113,8 +130,9 @@ class TranscriptionASRCommand:
     def __init__(
         self,
         providers: List[str],
-        dataset: str,
         split: str,
+        local_file: Union[str, None] = None,
+        dataset: Union[str, None] = None,
         output_dir: Union[str, None] = None,
         data_range: Union[str, None] = None,
         dataset_dir: Union[str, None] = None,
@@ -123,6 +141,7 @@ class TranscriptionASRCommand:
     ) -> None:
         """Initialize the command."""
         self.providers = providers
+        self.local_file = local_file
         self.dataset = dataset
         self.split = split
         self.output_dir = output_dir
@@ -147,7 +166,16 @@ class TranscriptionASRCommand:
                     print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
                     exit(1)
 
-            if self.dataset.lower() not in DATASETS.keys():
+            if self.local_file is not None:
+                local_file = Path(self.local_file)
+                if not local_file.exists():
+                    print(f"Local file does not exist: {local_file.resolve()}")
+                    exit(1)
+
+                self.dataset = "local"
+                self.split = "local"
+
+            if self.dataset != "local" and self.dataset.lower() not in DATASETS.keys():
                 print(
                     error_message.format(input_type="dataset", user_input=self.dataset)
                 )
@@ -174,7 +202,7 @@ class TranscriptionASRCommand:
             else:
                 dataset_dir = Path(self.dataset_dir) / "datasets" / _dataset
 
-            if not dataset_dir.exists():
+            if not dataset_dir.exists() and _dataset != "local":
                 print(
                     f"Dataset directory does not exist: {dataset_dir.resolve()}\nPlease"
                     f" run `rtasr download -d {_dataset} --no-cache` to download the"
@@ -190,6 +218,8 @@ class TranscriptionASRCommand:
             splits: List[str] = []
             if self.split.lower() == "all":
                 splits.extend(DATASETS[_dataset]["splits"])
+            elif self.split.lower() == "local":
+                splits.append("local")
             elif self.split.lower() in DATASETS[_dataset]["splits"]:
                 splits.append(self.split.lower())
             else:
@@ -206,7 +236,15 @@ class TranscriptionASRCommand:
 
             print(f"Using splits: {splits}")
 
-            if _dataset == "fleurs":
+            if _dataset == "local":
+                if local_file.is_dir():
+                    audio_filepaths: Dict[str, List[Path]] = {
+                        "local": list(local_file.iterdir())
+                    }
+                else:
+                    audio_filepaths: Dict[str, List[Path]] = {"local": [local_file]}
+
+            elif _dataset == "fleurs":
                 os.environ["HF_DATASETS_OFFLINE"] = "1"
                 try:
                     hf_dataset = load_dataset(

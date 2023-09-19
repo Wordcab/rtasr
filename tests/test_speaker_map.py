@@ -12,6 +12,7 @@ from rtasr.speaker_map import (
     RevAISpeakerMap,
     SpeechmaticsSpeakerMap,
     VoxConverseSpeakerMap,
+    WordcabHostedSpeakerMap,
     WordcabSpeakerMap,
 )
 
@@ -190,8 +191,11 @@ class TestSpeakerMapping:
         """Test DeepgramSpeakerMap and RevAISpeakerMap with valid speaker ID."""
         assert DeepgramSpeakerMap.from_value(speaker_id) == value
         assert RevAISpeakerMap.from_value(speaker_id) == value
-        assert DeepgramSpeakerMap.from_value(speaker_id) == RevAISpeakerMap.from_value(
-            speaker_id
+        assert WordcabHostedSpeakerMap.from_value(speaker_id) == value
+        assert (
+            DeepgramSpeakerMap.from_value(speaker_id)
+            == RevAISpeakerMap.from_value(speaker_id)
+            == WordcabHostedSpeakerMap.from_value(speaker_id)
         )
 
     @pytest.mark.parametrize(
@@ -218,6 +222,16 @@ class TestSpeakerMapping:
             ),
         ):
             RevAISpeakerMap.from_value(speaker_id)
+
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                f"Speaker ID {speaker_id} not found in speaker map."
+                "HINT: Speaker IDs are in the format `X` where `X` is a number, "
+                "between 0 and 25. For example, `0` or `25` are valid speaker IDs."
+            ),
+        ):
+            WordcabHostedSpeakerMap.from_value(speaker_id)
 
     @pytest.mark.parametrize(
         "speaker_id, value",

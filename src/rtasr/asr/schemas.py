@@ -230,3 +230,33 @@ class WordcabOutput(ASROutput):
     summary_id_set: List[str]
     transcript: List[WordcabTranscript]
     transcript_id: str
+
+
+class WordcabHostedTranscript(BaseModel):
+    """Wordcab hosted transcript schema."""
+
+    end: float
+    speaker: int
+    start: float
+    text: str
+    words: List[WordcabWord]
+
+
+class WordcabHostedProcessingTimes(BaseModel):
+    """Wordcab hosted processing times schema."""
+
+    total: float
+    transcription: float
+    diarization: float
+    post_processing: float
+
+
+class WordcabHostedOutput(ASROutput):
+    """Wordcab hosted output schema."""
+
+    audio_duration: float
+    diarization: bool
+    process_times: WordcabHostedProcessingTimes
+    source_lang: str
+    timestamps: str
+    utterances: List[WordcabHostedTranscript]

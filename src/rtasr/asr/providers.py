@@ -23,6 +23,7 @@ from rtasr.asr.options import (
     GoogleOptions,
     RevAIOptions,
     SpeechmaticsOptions,
+    WordcabHostedOptions,
     WordcabOptions,
 )
 from rtasr.asr.schemas import (
@@ -40,6 +41,8 @@ from rtasr.asr.schemas import (
     RevAIOutput,
     SpeechmaticsOutput,
     SpeechmaticsResult,
+    WordcabHostedOutput,
+    WordcabHostedTranscript,
     WordcabOutput,
     WordcabTranscript,
 )
@@ -60,7 +63,7 @@ class ProviderConfig(BaseModel):
     """The base class for all ASR provider configurations."""
 
     api_url: HttpUrl
-    api_key: SecretStr
+    api_key: Union[SecretStr, None]  # Wordcab self-hosted without auth
 
 
 class ProviderResult(BaseModel):
@@ -318,6 +321,7 @@ class ASRProvider(ABC):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
+        **kwargs,
     ) -> Tuple[str, TranscriptionStatus, ASROutput]:
         """Run the ASR provider."""
         retries = 0
@@ -330,6 +334,7 @@ class ASRProvider(ABC):
                     audio_file=audio_file,
                     url=url,
                     session=session,
+                    **kwargs,
                 )
                 status, asr_output = results
 
@@ -1256,6 +1261,86 @@ class Wordcab(ASRProvider):
         for transcript in all_transcripts:
             start_seconds: float = transcript.timestamp_start / 1000
             end_seconds: float = transcript.timestamp_end / 1000
+            speaker: str = transcript.speaker
+
+            rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+
+        return rttm_lines
+
+
+class WordcabHosted(ASRProvider):
+    """The ASR provider class for Wordcab hosted."""
+
+    def __init__(
+        self,
+        api_url: str,
+        api_key: str,
+        options: dict,
+        concurrency_limit: Union[int, None],
+        host: str,
+        port: int,
+    ) -> None:
+        _api_url = api_url.format(host=host, port=port)
+        super().__init__(_api_url, api_key, concurrency_limit)
+        self.options = WordcabHostedOptions(**options)
+
+    @property
+    def output_schema(self) -> WordcabHostedOutput:
+        """ "The output format of the Wordcab hosted ASR provider."""
+        return WordcabHostedOutput
+
+    async def get_transcription(
+        self,
+        audio_file: Path,
+        url: HttpUrl,
+        session: aiohttp.ClientSession,
+    ) -> Tuple[str, TranscriptionStatus, WordcabHostedOutput]:
+        """Run the Wordcab hosted ASR provider."""
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            form = aiohttp.FormData()
+            form.add_field("file", f, filename=audio_file.name)
+
+            for k, v in self.options.items():
+                if isinstance(v, (dict, list, tuple)):
+                    serialized_value = json.dumps(v)
+                else:
+                    serialized_value = str(v)
+
+                form.add_field(k, serialized_value)
+
+            async with session.post(url=str(url), data=form) as response:
+                if response.status == 201 or response.status == 200:
+                    content = (await response.text()).strip()
+                elif response.status == 504:
+                    raise GatewayTimeoutError(response.status)
+                else:
+                    raise Exception(
+                        f"Wordcab Hosted API unavailable {response.status}."
+                    )
+
+        body = json.loads(content)
+        asr_output = WordcabHostedOutput.from_json(body)
+
+        return TranscriptionStatus.COMPLETED, asr_output
+
+    async def result_to_dialogue(self, asr_output: WordcabHostedOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        all_transcripts: List[WordcabHostedTranscript] = asr_output.utterances
+
+        dialogue_lines: List[str] = []
+        for transcript in all_transcripts:
+            dialogue_lines.append(transcript.text)
+
+        return dialogue_lines
+
+    async def result_to_rttm(self, asr_output: WordcabHostedOutput) -> List[str]:
+        """Convert the result to RTTM format for DER."""
+        all_transcripts: List[WordcabHostedTranscript] = asr_output.utterances
+
+        rttm_lines: List[str] = []
+        for transcript in all_transcripts:
+            start_seconds: float = transcript.start
+            end_seconds: float = transcript.end
             speaker: str = transcript.speaker
 
             rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")

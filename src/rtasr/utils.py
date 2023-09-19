@@ -198,7 +198,12 @@ def get_api_key(provider: str) -> Union[str, None]:
     config = dotenv.dotenv_values(".env")
 
     key = config.get(f"{provider.upper()}_API_KEY", None)
-    if key is None or key == "" or key == "<your key here>":
+    if (
+        key is None
+        or key == ""
+        or key == "<your key here>"
+        and provider != "wordcab-hosted"
+    ):
         print(
             f"No API key found for {provider.upper()}. "
             f"Please add `{provider.upper()}_API_KEY` to the `.env` file."

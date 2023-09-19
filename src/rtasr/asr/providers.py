@@ -320,6 +320,7 @@ class ASRProvider(ABC):
         audio_file: Path,
         url: HttpUrl,
         session: aiohttp.ClientSession,
+        **kwargs,
     ) -> Tuple[str, TranscriptionStatus, ASROutput]:
         """Run the ASR provider."""
         retries = 0
@@ -332,6 +333,7 @@ class ASRProvider(ABC):
                     audio_file=audio_file,
                     url=url,
                     session=session,
+                    **kwargs,
                 )
                 status, asr_output = results
 
@@ -1274,8 +1276,12 @@ class WordcabHosted(ASRProvider):
         api_key: str,
         options: dict,
         concurrency_limit: Union[int, None],
+        host: str,
+        port: int,
     ) -> None:
-        super().__init__(api_url, api_key, concurrency_limit)
+        super().__init__(
+            api_url.format(host=host, port=port), api_key, concurrency_limit
+        )
         self.options = WordcabHostedOptions(**options)
 
     @property
@@ -1293,6 +1299,9 @@ class WordcabHosted(ASRProvider):
         async with aiofiles.open(audio_file, mode="rb") as f:
             form = aiohttp.FormData()
             form.add_field("file", f, filename=audio_file.name)
+
+            for k, v in self.options.dict().items():
+                form.add_field(k, v)
 
             async with session.post(url=url, data=form) as response:
                 if response.status == 201 or response.status == 200:

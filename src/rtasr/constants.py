@@ -216,8 +216,9 @@ PROVIDERS = OrderedDict(
             },
         ),
         (
-            "wordcab_hosted",
+            "wordcab-hosted",
             {
+                "url": "https://{host}:{port}/api/v1/audio",
                 "engine": "WordcabHosted",
                 "output": "WordcabHostedOutput",
                 "speaker_map": "WordcabHostedSpeakerMap",

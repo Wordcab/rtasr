@@ -31,6 +31,8 @@ def transcription_asr_command_factory(args: argparse.Namespace):
         output_dir=args.output_dir,
         use_cache=args.no_cache,
         debug=args.debug,
+        host=args.host,
+        port=args.port,
     )
 
 
@@ -125,6 +127,20 @@ class TranscriptionASRCommand:
             required=False,
             action="store_true",
         )
+        subparser.add_argument(
+            "--host",
+            help="The host of the Wordcab self-hosted server.",
+            required=False,
+            default=None,
+            type=str,
+        )
+        subparser.add_argument(
+            "--port",
+            help="The port of the Wordcab self-hosted server.",
+            required=False,
+            default=None,
+            type=int,
+        )
         subparser.set_defaults(func=transcription_asr_command_factory)
 
     def __init__(
@@ -138,6 +154,8 @@ class TranscriptionASRCommand:
         dataset_dir: Union[str, None] = None,
         use_cache: bool = True,
         debug: bool = False,
+        host: Union[str, None] = None,
+        port: Union[int, None] = None,
     ) -> None:
         """Initialize the command."""
         self.providers = providers
@@ -149,6 +167,8 @@ class TranscriptionASRCommand:
         self.dataset_dir = dataset_dir
         self.use_cache = use_cache
         self.debug = debug
+        self.host = host
+        self.port = port
 
     def run(self) -> None:
         """Run the command.
@@ -164,6 +184,14 @@ class TranscriptionASRCommand:
                         error_message.format(input_type="provider", user_input=provider)
                     )
                     print("".join([f"  - [bold]{p}[bold]\n" for p in PROVIDERS.keys()]))
+                    exit(1)
+
+            if "wordcab-hosted" in self.providers:
+                if self.host is None or self.port is None:
+                    print(
+                        "You must specify the host and port of the self-hosted Wordcab"
+                        " server with the `--host` and `--port` arguments."
+                    )
                     exit(1)
 
             if self.local_file is None and self.dataset is None:
@@ -341,16 +369,19 @@ class TranscriptionASRCommand:
 
                 _api_key: Union[str, None] = get_api_key(_provider)
                 if _api_key is not None:
-                    engines.append(
-                        engine_class(
-                            api_url=PROVIDERS[_provider].get("url", None),
-                            api_key=_api_key,
-                            options=PROVIDERS[_provider].get("options", {}),
-                            concurrency_limit=PROVIDERS[_provider].get(
-                                "concurrency_limit", None
-                            ),
-                        )
-                    )
+                    kwargs = {
+                        "api_url": PROVIDERS[_provider].get("url", None),
+                        "api_key": _api_key,
+                        "options": PROVIDERS[_provider].get("options", {}),
+                        "concurrency_limit": PROVIDERS[_provider].get(
+                            "concurrency_limit", None
+                        ),
+                    }
+                    if _provider == "wordcab-hosted":
+                        kwargs["host"] = self.host
+                        kwargs["port"] = self.port
+
+                    engines.append(engine_class(**kwargs))
 
             (
                 current_progress,

@@ -322,3 +322,48 @@ class WordcabSpeakerMap(str, Enum):
             )
         else:
             return cls[_speaker_id].value
+
+
+class WordcabHostedSpeakerMap(str, Enum):
+    """Wordcab self-hosted speaker map."""
+
+    _0 = "A"
+    _1 = "B"
+    _2 = "C"
+    _3 = "D"
+    _4 = "E"
+    _5 = "F"
+    _6 = "G"
+    _7 = "H"
+    _8 = "I"
+    _9 = "J"
+    _10 = "K"
+    _11 = "L"
+    _12 = "M"
+    _13 = "N"
+    _14 = "O"
+    _15 = "P"
+    _16 = "Q"
+    _17 = "R"
+    _18 = "S"
+    _19 = "T"
+    _20 = "U"
+    _21 = "V"
+    _22 = "W"
+    _23 = "X"
+    _24 = "Y"
+    _25 = "Z"
+
+    @classmethod
+    def from_value(cls, speaker_id: int) -> str:
+        """Get speaker map from an integer value."""
+        _speaker_id = f"_{speaker_id}"
+
+        if _speaker_id not in cls.__members__:
+            raise ValueError(
+                f"Speaker ID {speaker_id} not found in speaker map."
+                "HINT: Speaker IDs are in the format `X` where `X` is a number, "
+                "between 0 and 25. For example, `0` or `25` are valid speaker IDs."
+            )
+        else:
+            return cls[_speaker_id].value

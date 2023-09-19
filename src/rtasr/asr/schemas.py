@@ -235,9 +235,9 @@ class WordcabOutput(ASROutput):
 class WordcabHostedTranscript(BaseModel):
     """Wordcab hosted transcript schema."""
 
-    end: str
-    speaker: str
-    start: str
+    end: float
+    speaker: int
+    start: float
     text: str
     words: List[WordcabWord]
 

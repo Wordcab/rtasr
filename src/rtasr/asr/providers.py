@@ -63,7 +63,7 @@ class ProviderConfig(BaseModel):
     """The base class for all ASR provider configurations."""
 
     api_url: HttpUrl
-    api_key: SecretStr
+    api_key: Union[SecretStr, None]  # Wordcab self-hosted without auth
 
 
 class ProviderResult(BaseModel):
@@ -1280,9 +1280,8 @@ class WordcabHosted(ASRProvider):
         host: str,
         port: int,
     ) -> None:
-        super().__init__(
-            api_url.format(host=host, port=port), api_key, concurrency_limit
-        )
+        _api_url = api_url.format(host=host, port=port)
+        super().__init__(_api_url, api_key, concurrency_limit)
         self.options = WordcabHostedOptions(**options)
 
     @property
@@ -1301,10 +1300,15 @@ class WordcabHosted(ASRProvider):
             form = aiohttp.FormData()
             form.add_field("file", f, filename=audio_file.name)
 
-            for k, v in self.options.dict().items():
-                form.add_field(k, v)
+            for k, v in self.options.items():
+                if isinstance(v, (dict, list, tuple)):
+                    serialized_value = json.dumps(v)
+                else:
+                    serialized_value = str(v)
 
-            async with session.post(url=url, data=form) as response:
+                form.add_field(k, serialized_value)
+
+            async with session.post(url=str(url), data=form) as response:
                 if response.status == 201 or response.status == 200:
                     content = (await response.text()).strip()
                 elif response.status == 504:

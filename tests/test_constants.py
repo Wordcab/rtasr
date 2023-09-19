@@ -226,7 +226,7 @@ class TestConstants:
         assert PROVIDERS["wordcab-hosted"]["speaker_map"] == "WordcabHostedSpeakerMap"
         assert PROVIDERS["wordcab-hosted"]["concurrency_limit"] == 5
         assert PROVIDERS["wordcab-hosted"]["options"] == {
-            "diarize": True,
+            "diarization": True,
             "dual_channel": False,
             "source_lang": "en",
         }

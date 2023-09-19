@@ -42,6 +42,7 @@ from rtasr.asr.schemas import (
     SpeechmaticsOutput,
     SpeechmaticsResult,
     WordcabHostedOutput,
+    WordcabHostedTranscript,
     WordcabOutput,
     WordcabTranscript,
 )
@@ -1317,3 +1318,27 @@ class WordcabHosted(ASRProvider):
         asr_output = WordcabHostedOutput.from_json(body)
 
         return TranscriptionStatus.COMPLETED, asr_output
+
+    async def result_to_dialogue(self, asr_output: WordcabHostedOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        all_transcripts: List[WordcabHostedTranscript] = asr_output.utterances
+
+        dialogue_lines: List[str] = []
+        for transcript in all_transcripts:
+            dialogue_lines.append(transcript.text)
+
+        return dialogue_lines
+
+    async def result_to_rttm(self, asr_output: WordcabHostedOutput) -> List[str]:
+        """Convert the result to RTTM format for DER."""
+        all_transcripts: List[WordcabHostedTranscript] = asr_output.utterances
+
+        rttm_lines: List[str] = []
+        for transcript in all_transcripts:
+            start_seconds: float = transcript.start
+            end_seconds: float = transcript.end
+            speaker: str = transcript.speaker
+
+            rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+
+        return rttm_lines

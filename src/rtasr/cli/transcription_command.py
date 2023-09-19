@@ -368,7 +368,7 @@ class TranscriptionASRCommand:
                 )
 
                 _api_key: Union[str, None] = get_api_key(_provider)
-                if _api_key is not None:
+                if _api_key is not None or _provider == "wordcab-hosted":
                     kwargs = {
                         "api_url": PROVIDERS[_provider].get("url", None),
                         "api_key": _api_key,

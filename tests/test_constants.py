@@ -218,6 +218,23 @@ class TestConstants:
             "unit": "minute",
         }
 
+    def test_providers_wordcab_hosted(self) -> None:
+        """Test Wordcab self-hosted provider."""
+        assert PROVIDERS["wordcab_hosted"]["url"] == "http://{host}:{port}/api/v1/audio"
+        assert PROVIDERS["wordcab_hosted"]["engine"] == "WordcabHosted"
+        assert PROVIDERS["wordcab_hosted"]["output"] == "WordcabHostedOutput"
+        assert PROVIDERS["wordcab_hosted"]["speaker_map"] == "WordcabHostedSpeakerMap"
+        assert PROVIDERS["wordcab_hosted"]["concurrency_limit"] == 5
+        assert PROVIDERS["wordcab_hosted"]["options"] == {
+            "diarize": True,
+            "dual_channel": False,
+            "source_lang": "en",
+        }
+        assert PROVIDERS["wordcab_hosted"]["pricing"] == {
+            "value": 0.0,
+            "unit": "minute",
+        }
+
     def test_metrics(self) -> None:
         """Test Metrics enum."""
         assert Metrics.__members__ == {

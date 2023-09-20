@@ -34,6 +34,7 @@ class ProviderNameDisplay(str, Enum):
     revai = "Rev.ai"
     speechmatics = "Speechmatics"
     wordcab = "Wordcab"
+    wordcab_hosted = "Wordcab Self-Hosted"
 
 
 def load_data_from_cache(
@@ -204,6 +205,7 @@ def plot_data_into_table(
     # Update provider names with display names
     _table_data = table_data.copy()
     for k in table_data.keys():
+        k = k.replace("-", "_")
         _table_data[ProviderNameDisplay[k].value] = table_data.get(k)
 
     rows_data = [[provider] + _table_data[provider] for provider in all_providers]

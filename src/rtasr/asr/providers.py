@@ -105,7 +105,9 @@ class ASRProvider(ABC):
         """
         self.config = ProviderConfig(api_url=api_url, api_key=api_key)
         self.concurrency_handler = ConcurrencyHandler(limit=concurrency_limit)
+
         self.max_retries = 3
+        self.provider_name = self.__class__.__name__.lower()
 
     @property
     @abstractmethod
@@ -389,19 +391,19 @@ class ASRProvider(ABC):
         _file_name = audio_file.name.split(".")[0]
         asr_output_file_path = (
             output_dir
-            / f"{self.__class__.__name__.lower()}"
+            / f"{self.provider_name}"
             / "original"
             / f"{_file_name}.json"
         )
         rttm_file_path = (
             output_dir
-            / f"{self.__class__.__name__.lower()}"
+            / f"{self.provider_name}"
             / "rttm"
             / f"{_file_name}.rttm"
         )
         dialogue_file_path = (
             output_dir
-            / f"{self.__class__.__name__.lower()}"
+            / f"{self.provider_name}"
             / "dialogue"
             / f"{_file_name}.txt"
         )
@@ -455,7 +457,7 @@ class ASRProvider(ABC):
         _file_name = audio_file.name.split(".")[0]
         asr_output_file_path = (
             output_dir
-            / f"{self.__class__.__name__.lower()}"
+            / f"{self.provider_name}"
             / "original"
             / f"{_file_name}.json"
         )
@@ -487,7 +489,7 @@ class ASRProvider(ABC):
         _file_name = audio_file_name.split(".")[0]
         asr_output_file_path = AsyncPath(
             output_dir
-            / f"{self.__class__.__name__.lower()}"
+            / f"{self.provider_name}"
             / "original"
             / f"{_file_name}.json"
         )
@@ -519,7 +521,7 @@ class ASRProvider(ABC):
         _file_name = audio_file_name.split(".")[0]
         dialogue_file_path = AsyncPath(
             output_dir
-            / f"{self.__class__.__name__.lower()}"
+            / f"{self.provider_name}"
             / "dialogue"
             / f"{_file_name}.txt"
         )
@@ -549,7 +551,7 @@ class ASRProvider(ABC):
         _file_name = audio_file_name.split(".")[0]
         rttm_file_path = AsyncPath(
             output_dir
-            / f"{self.__class__.__name__.lower()}"
+            / f"{self.provider_name}"
             / "rttm"
             / f"{_file_name}.rttm"
         )
@@ -1283,6 +1285,7 @@ class WordcabHosted(ASRProvider):
         _api_url = api_url.format(host=host, port=port)
         super().__init__(_api_url, api_key, concurrency_limit)
         self.options = WordcabHostedOptions(**options)
+        self.provider_name = "wordcab-hosted"
 
     @property
     def output_schema(self) -> WordcabHostedOutput:

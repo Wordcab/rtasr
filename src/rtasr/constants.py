@@ -131,7 +131,7 @@ PROVIDERS = OrderedDict(
                 "concurrency_limit": 5,
                 "options": {
                     "diarize": True,
-                    "model": "nova",
+                    "model": "nova-2-ea",
                     "punctuate": True,
                     "utterances": True,
                 },

@@ -143,7 +143,7 @@ class TestConstants:
         assert PROVIDERS["deepgram"]["concurrency_limit"] == 5
         assert PROVIDERS["deepgram"]["options"] == {
             "diarize": True,
-            "model": "nova",
+            "model": "nova-2-ea",
             "punctuate": True,
             "utterances": True,
         }

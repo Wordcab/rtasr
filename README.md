@@ -24,6 +24,9 @@
 
 ## Results
 
+> [!IMPORTANT]\
+> Deepgram benchmark results have been updated with the latest Nova 2 model.
+
 ### WER & WRR
 
 `wer` = Word Error Rate, `mer` = Match Error Rate, `wil` = Word Information Lost, `wrr` = Word Recognition Rate

@@ -390,22 +390,13 @@ class ASRProvider(ABC):
         """
         _file_name = audio_file.name.split(".")[0]
         asr_output_file_path = (
-            output_dir
-            / f"{self.provider_name}"
-            / "original"
-            / f"{_file_name}.json"
+            output_dir / f"{self.provider_name}" / "original" / f"{_file_name}.json"
         )
         rttm_file_path = (
-            output_dir
-            / f"{self.provider_name}"
-            / "rttm"
-            / f"{_file_name}.rttm"
+            output_dir / f"{self.provider_name}" / "rttm" / f"{_file_name}.rttm"
         )
         dialogue_file_path = (
-            output_dir
-            / f"{self.provider_name}"
-            / "dialogue"
-            / f"{_file_name}.txt"
+            output_dir / f"{self.provider_name}" / "dialogue" / f"{_file_name}.txt"
         )
 
         asr_output_exists = await asr_output_file_path.exists()
@@ -456,10 +447,7 @@ class ASRProvider(ABC):
         """
         _file_name = audio_file.name.split(".")[0]
         asr_output_file_path = (
-            output_dir
-            / f"{self.provider_name}"
-            / "original"
-            / f"{_file_name}.json"
+            output_dir / f"{self.provider_name}" / "original" / f"{_file_name}.json"
         )
 
         async with aiofiles.open(asr_output_file_path, mode="r") as f:
@@ -488,10 +476,7 @@ class ASRProvider(ABC):
         """
         _file_name = audio_file_name.split(".")[0]
         asr_output_file_path = AsyncPath(
-            output_dir
-            / f"{self.provider_name}"
-            / "original"
-            / f"{_file_name}.json"
+            output_dir / f"{self.provider_name}" / "original" / f"{_file_name}.json"
         )
         if not await asr_output_file_path.parent.exists():
             await asr_output_file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -520,10 +505,7 @@ class ASRProvider(ABC):
         """
         _file_name = audio_file_name.split(".")[0]
         dialogue_file_path = AsyncPath(
-            output_dir
-            / f"{self.provider_name}"
-            / "dialogue"
-            / f"{_file_name}.txt"
+            output_dir / f"{self.provider_name}" / "dialogue" / f"{_file_name}.txt"
         )
         if not await dialogue_file_path.parent.exists():
             await dialogue_file_path.parent.mkdir(parents=True, exist_ok=True)
@@ -550,10 +532,7 @@ class ASRProvider(ABC):
         """
         _file_name = audio_file_name.split(".")[0]
         rttm_file_path = AsyncPath(
-            output_dir
-            / f"{self.provider_name}"
-            / "rttm"
-            / f"{_file_name}.rttm"
+            output_dir / f"{self.provider_name}" / "rttm" / f"{_file_name}.rttm"
         )
         if not await rttm_file_path.parent.exists():
             await rttm_file_path.parent.mkdir(parents=True, exist_ok=True)

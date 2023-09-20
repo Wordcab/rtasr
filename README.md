@@ -48,12 +48,18 @@
 
 * Dataset: [VoxConverse](https://www.robots.ox.ac.uk/~vgg/data/voxconverse/)
 
+> [!NOTE]\
+> Click on the images to get a bigger display.
+
 <div style="display: flex; justify-content: space-between;">
     <img src="./assets/der_evaluation_voxconverse.png" alt="DER graph evaluation" width="50%" />
     <img src="./assets/der_table_evaluation_voxconverse.png" alt="DER table evaluation" width="45%" />
 </div>
 
 * Dataset: [AMI Corpus](http://groups.inf.ed.ac.uk/ami/corpus/)
+
+> [!NOTE]\
+> Click on the images to get a bigger display.
 
 <div style="display: flex; justify-content: space-between;">
     <img src="./assets/der_evaluation_ami.png" alt="DER graph evaluation" width="50%" />

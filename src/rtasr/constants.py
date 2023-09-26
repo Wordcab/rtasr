@@ -142,6 +142,27 @@ PROVIDERS = OrderedDict(
             },
         ),
         (
+            "elevateai",
+            {
+                "url": "https://api.elevateai.com/v1/interactions",
+                "engine": "ElevateAI",
+                "output": "ElevateAIOutput",
+                "speaker_map": "ElevateAISpeakerMap",
+                "concurrency_limit": 5,
+                "options": {
+                    "type": "audio",
+                    "languageTag": "en",
+                    "vertical": "default",
+                    "audioTranscriptionMode": "highAccuracy",
+                    "includeAiResults": True,
+                },
+                "pricing": {
+                    "value": 0.0030,
+                    "unit": "minute",
+                },
+            },
+        ),
+        (
             "google",
             {
                 "url": "",

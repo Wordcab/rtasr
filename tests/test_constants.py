@@ -152,6 +152,25 @@ class TestConstants:
             "unit": "minute",
         }
 
+    def test_providers_elevateai(self) -> None:
+        """Test ElevateAI provider."""
+        assert PROVIDERS["elevateai"]["url"] == "https://api.elevateai.com/v1/interactions"
+        assert PROVIDERS["elevateai"]["engine"] == "ElevateAI"
+        assert PROVIDERS["elevateai"]["output"] == "ElevateAIOutput"
+        assert PROVIDERS["elevateai"]["speaker_map"] == "ElevateAISpeakerMap"
+        assert PROVIDERS["elevateai"]["concurrency_limit"] == 5
+        assert PROVIDERS["elevateai"]["options"] == {
+            "type": "audio",
+            "languageTag": "en",
+            "vertical": "default",
+            "audioTranscriptionMode": "highAccuracy",
+            "includeAiResults": True,
+        }
+        assert PROVIDERS["elevateai"]["pricing"] == {
+            "value": 0.0030,
+            "unit": "minute",
+        }
+
     def test_providers_google(self) -> None:
         """Test Google provider."""
         assert PROVIDERS["google"]["url"] == ""

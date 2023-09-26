@@ -127,6 +127,10 @@ class DeepgramOutput(ASROutput):
     results: DeepgramResult
 
 
+class ElevateAIOutput(ASROutput):
+    """ElevateAI output schema."""
+
+
 class GoogleOutput(ASROutput):
     """Google output schema."""
 

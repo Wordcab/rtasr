@@ -892,9 +892,16 @@ class ElevateAI(ASRProvider):
 
         async with aiofiles.open(audio_file, mode="rb") as f:
             form = aiohttp.FormData()
-            form.add_field(f"{audio_file.name}", f, filename=audio_file.name, content_type="application/octet-stream")
+            form.add_field(
+                f"{audio_file.name}",
+                f,
+                filename=audio_file.name,
+                content_type="application/octet-stream",
+            )
 
-        async with session.post(url=f"{url}/{interaction_id}/upload", data=form) as response:
+        async with session.post(
+            url=f"{url}/{interaction_id}/upload", data=form
+        ) as response:
             if response.status == 201 or response.status == 200:
                 pass
             elif response.status == 504:
@@ -973,7 +980,9 @@ class ElevateAI(ASRProvider):
 
     async def result_to_rttm(self, asr_output: ElevateAIOutput) -> List[str]:
         """Convert the result to RTTM format for DER."""
-        utterances = asr_output.sentenceSegments  # We skip redaction that don't have a speaker attribute
+        utterances = (
+            asr_output.sentenceSegments
+        )  # We skip redaction that don't have a speaker attribute
 
         rttm_lines: List[str] = []
         for utterance in utterances:

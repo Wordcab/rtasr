@@ -135,6 +135,7 @@ class ElevateAIRedactionSegment(BaseModel):
     score: float
     startTimeOffset: int
 
+
 class ElevateAISentenceSegment(BaseModel):
     """ElevateAI segment schema."""
 
@@ -143,6 +144,7 @@ class ElevateAISentenceSegment(BaseModel):
     phrase: str
     score: float
     startTimeOffset: int
+
 
 class ElevateAIOutput(ASROutput):
     """ElevateAI output schema."""

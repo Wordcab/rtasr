@@ -139,6 +139,52 @@ class DeepgramSpeakerMap(str, Enum):
             return cls[_speaker_id].value
 
 
+# TODO: The current ElevateAI speaker map only supports up to 2 speakers...
+# But we'll keep the rest of the participants here for future use.
+class ElevateAISpeakerMap(str, Enum):
+    """ElevateAI speaker map."""
+
+    participantOne = "A"
+    participantTwo = "B"
+    participantThree = "C"
+    participantFour = "D"
+    participantFive = "E"
+    participantSix = "F"
+    participantSeven = "G"
+    participantEight = "H"
+    participantNine = "I"
+    participantTen = "J"
+    participantEleven = "K"
+    participantTwelve = "L"
+    participantThirteen = "M"
+    participantFourteen = "N"
+    participantFifteen = "O"
+    participantSixteen = "P"
+    participantSeventeen = "Q"
+    participantEighteen = "R"
+    participantNineteen = "S"
+    participantTwenty = "T"
+    participantTwentyOne = "U"
+    participantTwentyTwo = "V"
+    participantTwentyThree = "W"
+    participantTwentyFour = "X"
+    participantTwentyFive = "Y"
+    participantTwentySix = "Z"
+
+    @classmethod
+    def from_value(cls, speaker_id: str) -> str:
+        """Get speaker map from a string value."""
+        if speaker_id not in cls.__members__:
+            raise ValueError(
+                f"Speaker name {speaker_id} not found in speaker map.HINT: Speaker"
+                " names are in the format `participantX` where `X` is a number, "
+                "between `One` and `TwentySix`. For example, `participantOne` or"
+                "`participantTwentySix` are valid speaker names."
+            )
+        else:
+            return cls[speaker_id].value
+
+
 class GoogleSpeakerMap(str, Enum):
     """Google speaker map."""
 

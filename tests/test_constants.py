@@ -154,7 +154,9 @@ class TestConstants:
 
     def test_providers_elevateai(self) -> None:
         """Test ElevateAI provider."""
-        assert PROVIDERS["elevateai"]["url"] == "https://api.elevateai.com/v1/interactions"
+        assert (
+            PROVIDERS["elevateai"]["url"] == "https://api.elevateai.com/v1/interactions"
+        )
         assert PROVIDERS["elevateai"]["engine"] == "ElevateAI"
         assert PROVIDERS["elevateai"]["output"] == "ElevateAIOutput"
         assert PROVIDERS["elevateai"]["speaker_map"] == "ElevateAISpeakerMap"

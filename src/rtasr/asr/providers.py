@@ -37,6 +37,8 @@ from rtasr.asr.schemas import (
     DeepgramOutput,
     DeepgramUtterance,
     ElevateAIOutput,
+    ElevateAIRedactionSegment,
+    ElevateAISentenceSegment,
     GoogleOutput,
     RevAIElement,
     RevAIMonologue,
@@ -941,13 +943,47 @@ class ElevateAI(ASRProvider):
 
         return status, asr_output
 
+    def _order_results(
+        self, asr_output: ElevateAIOutput
+    ) -> List[Union[ElevateAIRedactionSegment, ElevateAISentenceSegment]]:
+        """Order the results of the ElevateAI ASR provider."""
+        sentences: List[ElevateAISentenceSegment] = asr_output.sentenceSegments
+        redactions: List[ElevateAIRedactionSegment] = asr_output.redactionSegments
+
+        # We need to sort the sentences and redactions by their start time.
+        utterances = sorted(
+            sentences + redactions,
+            key=lambda x: x.startTimeOffset,
+        )
+
+        return utterances
+
     async def result_to_dialogue(self, asr_output: ElevateAIOutput) -> List[str]:
         """Convert the result to dialogue format for WER."""
-        pass
+        utterances = self._order_results(asr_output)
+
+        dialogue_lines: List[str] = []
+        for utterance in utterances:
+            if isinstance(utterance, ElevateAISentenceSegment):
+                dialogue_lines.append(utterance.phrase)
+            elif isinstance(utterance, ElevateAIRedactionSegment):
+                dialogue_lines.append(utterance.redaction)
+
+        return dialogue_lines
 
     async def result_to_rttm(self, asr_output: ElevateAIOutput) -> List[str]:
         """Convert the result to RTTM format for DER."""
-        pass
+        utterances = asr_output.sentenceSegments  # We skip redaction that don't have a speaker attribute
+
+        rttm_lines: List[str] = []
+        for utterance in utterances:
+            start_seconds: float = utterance.startTimeOffset / 1000
+            end_seconds: float = utterance.endTimeOffset / 1000
+            speaker: int = utterance.participant
+
+            rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+
+        return rttm_lines
 
 
 class Google(ASRProvider):

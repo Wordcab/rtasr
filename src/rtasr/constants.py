@@ -210,7 +210,7 @@ PROVIDERS = OrderedDict(
                     "source": "audio",
                 },
                 "pricing": {
-                    "value": 0.0041,
+                    "value": 0.00665,
                     "unit": "minute",
                 },
             },

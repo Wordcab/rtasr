@@ -872,14 +872,14 @@ class ElevateAI(ASRProvider):
         form = aiohttp.FormData()
         form.add_field("originalFileName", audio_file.name)
         for k, v in self.options.items():
-            if isinstance(v, (dict, list, tuple)):
+            if isinstance(v, (bool, dict, list, tuple)):
                 serialized_value = json.dumps(v)
             else:
                 serialized_value = str(v)
 
             form.add_field(k, serialized_value)
 
-        async with session.post(url=str(url), data=form) as response:
+        async with session.post(url=str(url), data=form, headers=headers) as response:
             if response.status == 201 or response.status == 200:
                 content = (await response.text()).strip()
             elif response.status == 504:
@@ -887,6 +887,7 @@ class ElevateAI(ASRProvider):
             else:
                 raise Exception(await response.text())
 
+        print(content)
         body = json.loads(content)
         interaction_id = body.get("interactionIdentifier")
 
@@ -900,7 +901,7 @@ class ElevateAI(ASRProvider):
             )
 
         async with session.post(
-            url=f"{url}/{interaction_id}/upload", data=form
+            url=f"{url}/{interaction_id}/upload", data=form, headers=headers,
         ) as response:
             if response.status == 201 or response.status == 200:
                 pass

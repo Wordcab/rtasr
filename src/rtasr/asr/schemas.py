@@ -127,6 +127,32 @@ class DeepgramOutput(ASROutput):
     results: DeepgramResult
 
 
+class ElevateAIRedactionSegment(BaseModel):
+    """ElevateAI redaction segment schema."""
+
+    endTimeOffset: int
+    result: str
+    score: float
+    startTimeOffset: int
+
+
+class ElevateAISentenceSegment(BaseModel):
+    """ElevateAI segment schema."""
+
+    endTimeOffset: int
+    participant: str
+    phrase: str
+    score: float
+    startTimeOffset: int
+
+
+class ElevateAIOutput(ASROutput):
+    """ElevateAI output schema."""
+
+    redactionSegments: List[ElevateAIRedactionSegment]
+    sentenceSegments: List[ElevateAISentenceSegment]
+
+
 class GoogleOutput(ASROutput):
     """Google output schema."""
 

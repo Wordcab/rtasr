@@ -9,6 +9,7 @@ from rtasr.speaker_map import (
     AMISpeakerMap,
     AssemblyAISpeakerMap,
     DeepgramSpeakerMap,
+    ElevateAISpeakerMap,
     RevAISpeakerMap,
     SpeechmaticsSpeakerMap,
     VoxConverseSpeakerMap,
@@ -335,3 +336,54 @@ class TestSpeakerMapping:
             ),
         ):
             VoxConverseSpeakerMap.from_value(speaker_id)
+
+    @pytest.mark.parametrize(
+        "speaker_id, value",
+        [
+            ("participantOne", "A"),
+            ("participantTwo", "B"),
+            ("participantThree", "C"),
+            ("participantFour", "D"),
+            ("participantFive", "E"),
+            ("participantSix", "F"),
+            ("participantSeven", "G"),
+            ("participantEight", "H"),
+            ("participantNine", "I"),
+            ("participantTen", "J"),
+            ("participantEleven", "K"),
+            ("participantTwelve", "L"),
+            ("participantThirteen", "M"),
+            ("participantFourteen", "N"),
+            ("participantFifteen", "O"),
+            ("participantSixteen", "P"),
+            ("participantSeventeen", "Q"),
+            ("participantEighteen", "R"),
+            ("participantNineteen", "S"),
+            ("participantTwenty", "T"),
+            ("participantTwentyOne", "U"),
+            ("participantTwentyTwo", "V"),
+            ("participantTwentyThree", "W"),
+            ("participantTwentyFour", "X"),
+            ("participantTwentyFive", "Y"),
+            ("participantTwentySix", "Z"),
+        ],
+    )
+    def test_elevateai_speaker_map_with_valid(self, speaker_id, value) -> None:
+        """Test ElevateAI speaker map with valid speaker ID."""
+        assert ElevateAISpeakerMap.from_value(speaker_id) == value
+
+    @pytest.mark.parametrize(
+        "speaker_id", ["1", 1, "abc", "spk1", "SPEAKER A", "spk27"]
+    )
+    def test_elevateai_speaker_map_with_invalid(self, speaker_id: Any) -> None:
+        """Test VoxConverseSpeakerMap with invalid speaker ID."""
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                f"Speaker name {speaker_id} not found in speaker map.HINT: Speaker"
+                " names are in the format `participantX` where `X` is a number, "
+                "between `One` and `TwentySix`. For example, `participantOne` or"
+                "`participantTwentySix` are valid speaker names."
+            ),
+        ):
+            ElevateAISpeakerMap.from_value(speaker_id)

@@ -30,6 +30,7 @@ class ProviderNameDisplay(str, Enum):
     aws = "AWS"
     azure = "Azure"
     deepgram = "Deepgram"
+    elevateai = "ElevateAI"
     google = "Google"
     revai = "Rev.ai"
     speechmatics = "Speechmatics"

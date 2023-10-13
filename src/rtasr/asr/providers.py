@@ -20,6 +20,7 @@ from rtasr.asr.options import (
     AwsOptions,
     AzureOptions,
     DeepgramOptions,
+    ElevateAIOptions,
     GoogleOptions,
     RevAIOptions,
     SpeechmaticsOptions,
@@ -35,6 +36,9 @@ from rtasr.asr.schemas import (
     AzureOutput,
     DeepgramOutput,
     DeepgramUtterance,
+    ElevateAIOutput,
+    ElevateAIRedactionSegment,
+    ElevateAISentenceSegment,
     GoogleOutput,
     RevAIElement,
     RevAIMonologue,
@@ -829,6 +833,163 @@ class Deepgram(ASRProvider):
             start_seconds: float = utterance.start
             end_seconds: float = utterance.end
             speaker: int = utterance.speaker
+
+            rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
+
+        return rttm_lines
+
+
+class ElevateAI(ASRProvider):
+    """The ASR provider class for ElevateAI."""
+
+    def __init__(
+        self,
+        api_url: str,
+        api_key: str,
+        options: dict,
+        concurrency_limit: Union[int, None],
+    ) -> None:
+        super().__init__(api_url, api_key, concurrency_limit)
+        self.options = ElevateAIOptions(**options)
+
+    @property
+    def output_schema(self) -> ElevateAIOutput:
+        """The output format of the ElevateAI ASR provider."""
+        return ElevateAIOutput
+
+    async def get_transcription(
+        self,
+        audio_file: Path,
+        url: HttpUrl,
+        session: aiohttp.ClientSession,
+    ) -> Tuple[TranscriptionStatus, ElevateAIOutput]:
+        """Call the API of the ElevateAI ASR provider."""
+        headers = {
+            "Content-Type": "application/json",
+            "X-API-Token": f"{self.config.api_key.get_secret_value()}",
+        }
+
+        form = aiohttp.FormData()
+        form.add_field("originalFileName", audio_file.name)
+        for k, v in self.options.items():
+            if isinstance(v, (bool, dict, list, tuple)):
+                serialized_value = json.dumps(v)
+            else:
+                serialized_value = str(v)
+
+            form.add_field(k, serialized_value)
+
+        async with session.post(url=str(url), data=form, headers=headers) as response:
+            if response.status == 201 or response.status == 200:
+                content = (await response.text()).strip()
+            elif response.status == 504:
+                raise GatewayTimeoutError(response.status)
+            else:
+                raise Exception(await response.text())
+
+        print(content)
+        body = json.loads(content)
+        interaction_id = body.get("interactionIdentifier")
+
+        async with aiofiles.open(audio_file, mode="rb") as f:
+            form = aiohttp.FormData()
+            form.add_field(
+                f"{audio_file.name}",
+                f,
+                filename=audio_file.name,
+                content_type="application/octet-stream",
+            )
+
+        async with session.post(
+            url=f"{url}/{interaction_id}/upload", data=form, headers=headers,
+        ) as response:
+            if response.status == 201 or response.status == 200:
+                pass
+            elif response.status == 504:
+                raise GatewayTimeoutError(response.status)
+            else:
+                raise Exception(await response.text())
+
+        headers.pop("Content-Type")
+        headers["Accept-Encoding"] = "gzip, deflate, br"
+        while True:
+            async with session.get(
+                url=f"{url}/{interaction_id}/status", headers=headers
+            ) as response:
+                if response.status == 200:
+                    content = (await response.text()).strip()
+
+                    body = json.loads(content)
+                    if body.get("status") == "processed":
+                        status = TranscriptionStatus.COMPLETED
+                        break
+                    elif body.get("status") == "processingFailed":
+                        status = TranscriptionStatus.FAILED
+                        break
+                    else:
+                        await asyncio.sleep(3)
+                elif response.status == 504:
+                    await asyncio.sleep(3)
+                else:
+                    raise Exception(await response.text())
+
+        if status == TranscriptionStatus.COMPLETED:
+            headers["Content-Type"] = "application/json"
+            async with session.get(
+                url=f"{url}/{interaction_id}/transcripts/punctuated", headers=headers
+            ) as response:
+                if response.status == 200:
+                    content = (await response.text()).strip()
+                else:
+                    raise Exception(await response.text())
+
+            body = json.loads(content)
+            asr_output = ElevateAIOutput.from_json(body)
+
+        else:
+            asr_output = body.get("errorMessage")
+
+        return status, asr_output
+
+    def _order_results(
+        self, asr_output: ElevateAIOutput
+    ) -> List[Union[ElevateAIRedactionSegment, ElevateAISentenceSegment]]:
+        """Order the results of the ElevateAI ASR provider."""
+        sentences: List[ElevateAISentenceSegment] = asr_output.sentenceSegments
+        redactions: List[ElevateAIRedactionSegment] = asr_output.redactionSegments
+
+        # We need to sort the sentences and redactions by their start time.
+        utterances = sorted(
+            sentences + redactions,
+            key=lambda x: x.startTimeOffset,
+        )
+
+        return utterances
+
+    async def result_to_dialogue(self, asr_output: ElevateAIOutput) -> List[str]:
+        """Convert the result to dialogue format for WER."""
+        utterances = self._order_results(asr_output)
+
+        dialogue_lines: List[str] = []
+        for utterance in utterances:
+            if isinstance(utterance, ElevateAISentenceSegment):
+                dialogue_lines.append(utterance.phrase)
+            elif isinstance(utterance, ElevateAIRedactionSegment):
+                dialogue_lines.append(utterance.redaction)
+
+        return dialogue_lines
+
+    async def result_to_rttm(self, asr_output: ElevateAIOutput) -> List[str]:
+        """Convert the result to RTTM format for DER."""
+        utterances = (
+            asr_output.sentenceSegments
+        )  # We skip redaction that don't have a speaker attribute
+
+        rttm_lines: List[str] = []
+        for utterance in utterances:
+            start_seconds: float = utterance.startTimeOffset / 1000
+            end_seconds: float = utterance.endTimeOffset / 1000
+            speaker: int = utterance.participant
 
             rttm_lines.append(f"{start_seconds} {end_seconds} {speaker}")
 

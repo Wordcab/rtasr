@@ -84,6 +84,21 @@ class DeepgramOptions(TypedDict, total=False):
     version: str
 
 
+class ElevateAIOptions(TypedDict, total=False):
+    """
+    The options for the ElevateAI transcription.
+
+    References from the ElevateAI docs:
+    https://docs.elevateai.com/transcription-features
+    """
+
+    type: str
+    languageTag: str
+    vertical: str
+    audioTranscriptionMode: str
+    includeAiResults: bool
+
+
 class GoogleOptions(TypedDict, total=False):
     """
     The options for the Google transcription.

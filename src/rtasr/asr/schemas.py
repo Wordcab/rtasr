@@ -205,7 +205,7 @@ class WordcabWord(BaseModel):
     """Wordcab word schema."""
 
     end: float
-    score: float
+    probability: float
     start: float
     word: str
 

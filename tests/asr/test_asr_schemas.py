@@ -371,8 +371,8 @@ class TestASROutputs:
         assert hasattr(word, "end")
         assert isinstance(word.end, float)
 
-        assert hasattr(word, "score")
-        assert isinstance(word.score, float)
+        assert hasattr(word, "probability")
+        assert isinstance(word.probability, float)
 
         assert hasattr(word, "start")
         assert isinstance(word.start, float)
